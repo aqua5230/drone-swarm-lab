@@ -59,7 +59,32 @@
         <div id="canvas-holder"></div>
         <div id="controls-holder"></div>
       </div>
-      <section id="lesson-notes" class="notes"></section>
+      <section id="lesson-notes" class="notes">
+<h2>行為會不會「長大就走樣」</h2>
+<p>前面三課都在玩一兩百隻。但有個合理的擔心：規則在小群裡好看，<strong>放大一百倍會不會就亂掉了</strong>？</p>
+<p>自己試。把 <code>count</code>（數量）從現在的位置一路往右拉。<button class="try" data-preset='{"count":1500}'>幫我拉到 1500</button></p>
+<p>看清楚了嗎——<strong>行為一點沒變</strong>。一樣分流、合流、繞圈，只是現在是一片黑壓壓的潮水。</p>
+<p>這是群飛最反直覺、也最關鍵的一個性質：<strong>尺度無關（scale-free，同一套局部規則，10 隻和 1000 隻長出來的集體行為是同一種，不需要為「變多」改寫任何規則）</strong>。因為每隻的規則只跟「附近鄰居」有關，根本不在乎全場到底有 10 隻還是 1000 隻。一隻 boid 永遠只看身邊那幾個。</p>
+<p>軍事上這四個字很重，叫<strong>飽和（saturation）</strong>：防禦系統一次能對付的目標有上限，你只要派得比那個上限多，就壓垮它——而群飛規則「加量不加價」，再多也是同一套程式。</p>
+<h2>但電腦撐得住嗎？這才是真戰場</h2>
+<p>行為不走樣，不代表跑得動。看左上角的 <strong>FPS（每秒畫幾張，越高越順，60 算滿）</strong>。現在還是綠的、很順。</p>
+<p>為什麼順？因為預設開著 <code>useGrid</code>（空間網格）。這是把畫面切成一格格的棋盤，每隻只去<strong>翻自己那格和周圍 8 格</strong>找鄰居——不管全場幾千隻，每隻要看的永遠只有附近一小撮。工作量大致跟著數量<strong>等比</strong>增加（這叫 <strong>O(n)</strong>，n 是數量，工作量跟 n 成正比）。</p>
+<p>現在做一件殘忍的事：<strong>把 <code>useGrid</code> 關掉</strong>。</p>
+<p>FPS 直接跳水,綠變黃變紅,畫面開始卡。為什麼?關掉網格後,每一隻都得<strong>回頭掃過全場每一隻</strong>來找鄰居。1000 隻就是 1000×1000 = 一百萬次比對,每一幀。這叫 <strong>O(n²)</strong>(工作量跟數量的平方成正比)——數量加倍,電腦的活變四倍。</p>
+<p><button class="try" data-preset='{"count":900,"useGrid":false}'>幫我關網格、設 900 隻看它崩</button></p>
+<h2>這一課真正的重點：規則不變，工程才是關卡</h2>
+<p>把上面合起來:</p>
+<ul>
+<li><strong>群飛行為本身,擴量幾乎免費</strong>——同一套規則,十隻或一萬隻都成立,這是攻擊方的禮物。</li>
+<li><strong>撐起這個擴量的,是底層那個「只看附近」的資料結構</strong>——選錯演算法(O(n²)),你在小群裡完全看不出問題,一上量就原地爆炸。</li>
+</ul>
+<p>換句話說:能不能真的放出「一千架」,瓶頸常常不在群飛的點子,在<strong>有沒有人把找鄰居這件事做對</strong>。點子人人會講,工程才是門檻。</p>
+<h2>換個方向問</h2>
+<p>到這裡,我們都把每隻 boid 當成「只會飛」的點。但真實的無人機身上有<strong>感測器</strong>——牠看得到東西。</p>
+<p>如果每隻只看得到一小塊,<strong>一大群合起來</strong>能看到什麼?下一課,我們給牠們裝上眼睛。</p>
+<hr>
+<p>源頭:空間切格找鄰居的標準手法,見 Daniel Shiffman《The Nature of Code》第 5 章 spatial subdivision;群飛的尺度無關性源自 Reynolds (1987) 的局部規則設計。</p>
+</section>
     </div>
   </main>
 

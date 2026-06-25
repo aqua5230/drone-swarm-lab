@@ -59,7 +59,32 @@
         <div id="canvas-holder"></div>
         <div id="controls-holder"></div>
       </div>
-      <section id="lesson-notes" class="notes"></section>
+      <section id="lesson-notes" class="notes">
+<h2>換你當造物主</h2>
+<p>走到這裡，你不再是看動畫的人了。前九課每一條規則，都在你手上拆解過、調壞過、又救回來過。這一課沒有教案——把它們<strong>全部疊在一起</strong>，旋鈕交給你。</p>
+<p>場上現在同時跑著：</p>
+<ul>
+<li><strong>三規則</strong>（分離／對齊／聚合）撐起群飛本身——第 1 課。</li>
+<li><strong>空間網格</strong>讓幾百隻照樣順——第 4 課。</li>
+<li><strong>障礙閃避</strong>：點畫布任何地方放一塊石頭，看群體像水一樣繞過去、再合攏。</li>
+<li><strong>掠食者</strong>（紅色大三角）會追群獵殺，附近的 boid 轉黃、炸開逃竄——這是「分離」的近親，恐懼版。</li>
+</ul>
+<h2>幾個值得自己試的玩法</h2>
+<p><strong>看群體「開花」躲捕食。</strong> 預設掠食者開著。盯著紅三角衝進群裡那一刻——群體會瞬間裂成一圈、像煙火炸開，再從兩側合回去。這個閃避隊形沒有任何一隻在指揮，是恐懼半徑內的局部反應疊出來的。<button class="try" data-preset='{"fearRadius":170,"cohesion":1.6}'>幫我放大恐懼、加強聚合</button>，逃竄會更戲劇化。</p>
+<p><strong>用障礙做一道牆。</strong> 沿著一條線連點好幾下，擺出一排石頭，看群體被擠成一股水流穿過縫隙——這就是第 7 課那道牆的活體版。</p>
+<p><strong>把聚合關掉，看它退化成一盤散沙。</strong> <button class="try" data-preset='{"cohesion":0,"alignment":0}'>幫我關掉聚合與對齊</button>——回到第 1 課的起點：沒有那幾條規則，就沒有群。</p>
+<p><strong>人海。</strong> <button class="try" data-preset='{"count":700}'>給我 700 隻</button>，掠食者在裡面再怎麼吃，也吃不垮這個群——第 8 課的韌性，你親眼再看一次。</p>
+<h2>走完這條線，你帶走了什麼</h2>
+<p>回頭看你按過的這一長串旋鈕，會發現它們其實在講同一件事：</p>
+<blockquote>
+<p><strong>複雜、聰明、強韌的集體行為，不需要一個聰明的中央。它從一堆笨個體之間的簡單規則裡，自己長出來。</strong></p>
+</blockquote>
+<p>這句話一旦看懂，你看世界的方式會變。鳥群、螞蟻、大腦、市場、網路、輿論、無人機群——表面天差地別，底層跑的是同一套湧現邏輯。你不再問「誰在背後操盤」，你開始問「是哪幾條局部規則，長出了這個整體」。</p>
+<p>而這正是這個專案最初押下的賭注：<strong>把自主這一層理解到最深的人，能看見別人看不見的結構，也才守得住別人守不住的線。</strong> 你從第 1 課那群找不到老大的三角形出發，一路走到第 9 課那個「人該站在哪裡」的抉擇——這條線，你已經自己走完了一遍。</p>
+<p>接下來，換你拿這套眼光，去看你真正在乎的那個世界。</p>
+<hr>
+<p>源頭：本課整合 Reynolds (1987) 的 boids、掠食者—被捕食者的轉向行為（Reynolds 1999《Steering Behaviors for Autonomous Characters》, GDC）與前述各課機制。<a href="https://www.red3d.com/cwr/steer/">Steering Behaviors</a></p>
+</section>
     </div>
   </main>
 

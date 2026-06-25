@@ -59,7 +59,35 @@
         <div id="canvas-holder"></div>
         <div id="controls-holder"></div>
       </div>
-      <section id="lesson-notes" class="notes"></section>
+      <section id="lesson-notes" class="notes">
+<h2>一個生死攸關的決定，沒有人主持</h2>
+<p>上一課群體掃完場、發現了東西。但發現之後，常常要<strong>一起做一個決定</strong>：撲哪個？去哪裡？而且選錯會死。</p>
+<p>蜜蜂每年春天都在賭這把。老巢太擠，一半的蜂要帶著蜂后集體搬家。偵察蜂飛出去找到好幾個樹洞，全群必須<strong>選定同一個</strong>——選太小會凍死、選太曝露會被吃掉。</p>
+<p>關鍵是：<strong>蜂后不做這個決定。</strong> 她只負責被帶著走。那這幾千隻，怎麼在沒有主席、沒有計票員的情況下達成共識？</p>
+<h2>兩條規則，看著它收斂</h2>
+<p>畫面上三個圈是候選地點，圈越大代表<strong>品質越好</strong>（A 最好）。小圓點是蜜蜂：灰色 = 還沒決定，染上顏色 = 認定了某個地點。</p>
+<p>每隻蜂只做兩件事：</p>
+<ol>
+<li><strong>認定一個地點後，就去拉票</strong>——而且好地點的蜂拉得更賣力（這對應蜜蜂的「搖擺舞」，蜂為越好的地點跳越久越用力，吸引越多同伴去看）。</li>
+<li><strong>撞見認定別處的蜂，就互相喊停</strong>——這叫<strong>交叉抑制（cross-inhibition，看到不同意見不是吵架，而是讓彼此都「降溫」、退回未決定）</strong>。</li>
+</ol>
+<p>看左上角三條票數長條慢慢動。好地點 A 拉票快、又少人放棄，票數穩穩往右爬；差地點的票像漏水的桶，補進來又流掉。等某一條越過那條紅線（<strong>法定門檻 quorum，過了這個比例就算數，不必等到全票</strong>），全群定案。</p>
+<p><strong>整個過程沒有任何一隻看到全局票數。</strong> 每隻只跟撞到的那幾隻互動，但群體層級浮現出一場乾淨的選舉——又是湧現。</p>
+<h2>為什麼「喊停」這條這麼重要</h2>
+<p>你可能覺得交叉抑制很怪：看到不同意見幹嘛要自廢武功？把它關掉就知道了。<button class="try" data-preset='{"inhibit":0}'>幫我關掉交叉抑制</button></p>
+<p>現在讓兩個地點<strong>一樣好</strong>：<button class="try" data-preset='{"qualityA":1,"qualityB":1,"inhibit":0}'>兩個一樣好、又沒喊停</button></p>
+<p>群體會<strong>卡死</strong>——A 和 B 各拉走一半，誰也過不了門檻，僵在那裡。對搬家的蜂群來說，僵局 = 死亡。</p>
+<p>把交叉抑制開回來：<button class="try" data-preset='{"qualityA":1,"qualityB":1,"inhibit":1}'>一樣好，但開喊停</button></p>
+<p>神奇的事發生了：即使兩邊一樣好，群體還是會<strong>自己打破對稱</strong>、果斷倒向其中一邊。喊停這條，就是大自然給「平手該怎麼辦」寫的解法——它讓群體<strong>寧可快快選一個，也不要完美地僵住</strong>。</p>
+<h2>這不只是蜜蜂</h2>
+<p>這套「拉票 ∝ 品質、加上交叉抑制」的數學，被原封不動搬進<strong>機器人群的分散式決策</strong>：一群無人車要選集合點、一群感測器要選領頭節點、區塊鏈要在沒有中央的情況下對「哪條鏈是真的」達成共識——骨子裡都是同一個問題：<strong>一大群平等的個體，怎麼在沒有老大、只靠局部互動的情況下，又快又準地選同一個答案。</strong></p>
+<p>而且它還很抗操弄：你買通幾隻蜂去吹捧爛地點，交叉抑制會把那點虛火澆熄。沒有中央，也就<strong>沒有一個可以被收買或攻破的計票中心</strong>。</p>
+<h2>下一步：把「黑板」交給環境</h2>
+<p>蜜蜂靠「直接互相拉票」。但還有一種更省、更不需要碰面的協調法——<strong>不跟同伴說話，只在環境裡留記號</strong>，讓後來的同伴讀記號就好。</p>
+<p>螞蟻就是這樣，不開會、不投票，卻能挖出全城最短的覓食路線。下一課，我們撒費洛蒙。</p>
+<hr>
+<p>源頭：Thomas D. Seeley《Honeybee Democracy》(2010);交叉抑制打破僵局的數學模型見 Seeley et al. (2012)《Stop Signals Provide Cross Inhibition in Collective Decision-Making by Honeybee Swarms》, Science 335. <a href="https://doi.org/10.1126/science.1210361">DOI</a></p>
+</section>
     </div>
   </main>
 

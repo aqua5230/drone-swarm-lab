@@ -59,7 +59,30 @@
         <div id="canvas-holder"></div>
         <div id="controls-holder"></div>
       </div>
-      <section id="lesson-notes" class="notes"></section>
+      <section id="lesson-notes" class="notes">
+<h2>群體靠什麼黏在一起</h2>
+<p>上一課右半邊那群之所以是「一個群」，靠的是一件沒明說的事：<strong>每隻都看得到鄰居</strong>。看得到，才能對齊、才能聚合。</p>
+<p>那些藍色的細線，就是「看得到」這件事——一條線 = 兩隻現在能互通消息。整片連成一張網，所以它是一個群。</p>
+<p>現在我們來剪這張網。</p>
+<h2>剪法一：把眼睛縮小</h2>
+<p><code>commsRadius</code>（通訊半徑）是每隻「聽得到多遠」。一開始很大，整群連成一片，左上角的「群島數」是 1——<strong>一片，就是一個群</strong>。</p>
+<p>把它慢慢拉小。<button class="try" data-preset='{"commsRadius":45}'>幫我剪到一半</button></p>
+<p>看著線一條條斷掉。到某個點，整片網「啪」地裂開——群島數從 1 跳到 3、5、8……顏色也從藍轉黃轉紅。每一座島自己飛自己的，誰也不知道別座島在哪。<strong>協同，瓦解了。</strong></p>
+<p>這不是慢慢變差，是<strong>突然斷裂</strong>。網路科學叫它<strong>滲流臨界（percolation threshold，連線密度跌破某個門檻，整張網會猛然從「連通」塌成「碎片」，不是線性下滑）</strong>。差一條線，可能就是一個群和一盤散沙的分界。</p>
+<h2>剪法二：不縮眼睛，下干擾</h2>
+<p>把 <code>commsRadius</code> 拉回大,改動 <code>packetLoss</code>(封包遺失率)。這模擬的是<strong>電子干擾</strong>:看得到,但訊息送不到——每條連線每一幀都有機率「掉包」。</p>
+<p><button class="try" data-preset='{"commsRadius":120,"packetLoss":0.75}'>幫我開強干擾</button></p>
+<p>連線開始閃爍、時有時無,群體變得神經質、抖動、不時裂開又勉強接回。這就是戰場上<strong>通訊對抗</strong>的樣子:不必打下任何一架,只要讓牠們「聽不清楚」,協同就會打折。</p>
+<h2>這就是無人機群的命門，也是它的設計重點</h2>
+<p>把兩個滑桿一起想:一個攻擊群最怕的不是被打下幾架,是<strong>被切斷彼此</strong>。所以真實的群飛系統會拼命<strong>把通訊半徑做大、把抗掉包做強</strong>——多頻段、跳頻、網狀中繼,就是為了把「群島數」死死壓在 1。</p>
+<p>反過來,防禦方想的是同一張圖的另一面:<strong>與其追著打,不如讓它碎島。</strong> 干擾、誘騙、切斷中繼,把一個協同的群打成一群各自亂飛的個體。</p>
+<p>這一課給你的是一把尺:<strong>群體的存亡,可以化約成「這張通訊網連不連通」這一個問題。</strong></p>
+<h2>下一個問題：人多就一定好嗎</h2>
+<p>到這裡我們都在玩一兩百隻。但真正讓人睡不著的詞是「飽和」——<strong>上千架</strong>一起來。</p>
+<p>數量放大一百倍,這套「只看鄰居」的規則還成立嗎?電腦又撐不撐得住?下一課,我們把滑桿拉到底。</p>
+<hr>
+<p>源頭:連通性突然崩塌的數學,來自滲流理論;群體機器人的通訊韌性綜述見 Brambilla et al. (2013)《Swarm robotics: a review from the swarm engineering perspective》, Swarm Intelligence 7(1). <a href="https://doi.org/10.1007/s11721-012-0075-2">DOI</a></p>
+</section>
     </div>
   </main>
 

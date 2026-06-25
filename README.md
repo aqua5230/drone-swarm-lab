@@ -60,6 +60,15 @@ lessons/<id>/
 
 **加一課** = 開一個 `lessons/<id>/` 放三檔 + `shared/lessons.js` 加一筆，前面的課不受影響。
 
+### 編輯課文後要重跑預渲染
+
+每課的教學文除了被 `shared/lesson.js` 即時渲染，也預先烤成**靜態 HTML** 塞進該課 `index.html`，
+讓不跑 JS 的搜尋爬蟲與 AI 答題引擎也讀得到（SEO/GEO）。改過任何 `lesson.md` 後，重跑一次同步：
+
+```bash
+node tools/prerender.mjs   # 只需 node，marked 已內建在 tools/
+```
+
 ## 本機怎麼跑
 
 教學文用 `fetch` 載入，**不能直接雙擊開 `index.html`**（瀏覽器的 CORS 會擋），請起個本機伺服器：
