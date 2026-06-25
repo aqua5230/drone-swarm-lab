@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第 8 課 · 抗毀韌性 — Swarm Lab 群飛智能教學</title>
+
+  <!-- SEO -->
+  <meta name="description" content="靠互斥均勻鋪滿區域的群體，被打掉一半個體後如何自動補位、重新蓋滿空缺，以及維持覆蓋的最小生存兵力概念。" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://aqua5230.github.io/drone-swarm-lab/lessons/08-resilience/" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="第 8 課 · 抗毀韌性 — Swarm Lab" />
+  <meta property="og:description" content="打掉一半個體，剩下的自己補位、重新蓋滿空缺。" />
+  <meta property="og:url" content="https://aqua5230.github.io/drone-swarm-lab/lessons/08-resilience/" />
+  <meta property="og:site_name" content="Swarm Lab" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="第 8 課 · 抗毀韌性 — Swarm Lab" />
+  <meta name="twitter:description" content="打掉一半個體，剩下的自己補位、重新蓋滿空缺。" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LearningResource",
+    "name": "第 8 課 · 抗毀韌性",
+    "description": "靠互斥鋪滿區域的群體，被打掉一部分後自動補位、恢復覆蓋。",
+    "url": "https://aqua5230.github.io/drone-swarm-lab/lessons/08-resilience/",
+    "inLanguage": "zh-Hant",
+    "isAccessibleForFree": true,
+    "learningResourceType": "互動模擬",
+    "isPartOf": { "@type": "Course", "name": "群飛智能互動教學", "url": "https://aqua5230.github.io/drone-swarm-lab/" }
+  }
+  </script>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/open-props@1/open-props.min.css" />
+  <link rel="stylesheet" href="../../shared/style.css" />
+
+  <script src="https://cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/p5@1/lib/p5.min.js"></script>
+  <script type="module">
+    import { Pane } from "https://cdn.jsdelivr.net/npm/tweakpane@4/dist/tweakpane.min.js";
+    window.Tweakpane = { Pane };
+  </script>
+</head>
+<body>
+  <nav id="site-nav"></nav>
+
+  <main>
+    <header>
+      <h1>第 8 課 · 抗毀韌性</h1>
+      <p class="lede">
+        一群靠「互相推開」把整片區域鋪得均勻的個體。在畫布上點一下，炸掉一片——
+        缺口打開，鄰居自動流進來補位。打掉一半，它還是會自己長回來。
+      </p>
+    </header>
+
+    <div class="lesson-layout">
+      <div class="stage">
+        <div id="canvas-holder"></div>
+        <div id="controls-holder"></div>
+      </div>
+      <section id="lesson-notes" class="notes"></section>
+    </div>
+  </main>
+
+  <script src="sketch.js"></script>
+  <script type="module">
+    import { mountNav } from '../../shared/site.js';
+    import { mountLesson } from '../../shared/lesson.js';
+    mountNav('../../', '08-resilience');
+    mountLesson('lesson.md', '#lesson-notes');
+  </script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://aqua5230.github.io/drone-swarm-lab/</loc><lastmod>2026-06-25</lastmod><priority>1.0</priority></url>
+  <url><loc>https://aqua5230.github.io/drone-swarm-lab/lessons/01-boids/</loc><lastmod>2026-06-25</lastmod><priority>0.8</priority></url>
+  <url><loc>https://aqua5230.github.io/drone-swarm-lab/lessons/02-decentralized/</loc><lastmod>2026-06-25</lastmod><priority>0.8</priority></url>
+  <url><loc>https://aqua5230.github.io/drone-swarm-lab/lessons/03-broken-comms/</loc><lastmod>2026-06-25</lastmod><priority>0.8</priority></url>
+  <url><loc>https://aqua5230.github.io/drone-swarm-lab/lessons/04-scaling/</loc><lastmod>2026-06-25</lastmod><priority>0.8</priority></url>
+  <url><loc>https://aqua5230.github.io/drone-swarm-lab/lessons/05-sensing/</loc><lastmod>2026-06-25</lastmod><priority>0.8</priority></url>
+  <url><loc>https://aqua5230.github.io/drone-swarm-lab/lessons/06-consensus/</loc><lastmod>2026-06-25</lastmod><priority>0.8</priority></url>
+  <url><loc>https://aqua5230.github.io/drone-swarm-lab/lessons/07-stigmergy/</loc><lastmod>2026-06-25</lastmod><priority>0.8</priority></url>
+  <url><loc>https://aqua5230.github.io/drone-swarm-lab/lessons/08-resilience/</loc><lastmod>2026-06-25</lastmod><priority>0.8</priority></url>
+  <url><loc>https://aqua5230.github.io/drone-swarm-lab/lessons/09-human-loop/</loc><lastmod>2026-06-25</lastmod><priority>0.8</priority></url>
+  <url><loc>https://aqua5230.github.io/drone-swarm-lab/lessons/10-sandbox/</loc><lastmod>2026-06-25</lastmod><priority>0.8</priority></url>
+</urlset>

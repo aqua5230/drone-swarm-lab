@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第 3 課 · 斷通訊還能協同嗎 — Swarm Lab 群飛智能教學</title>
+
+  <!-- SEO -->
+  <meta name="description" content="剪短通訊半徑、加上封包遺失，看群體在滲流臨界點突然碎成孤島——通訊網的連通性如何決定群體的存亡。" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://aqua5230.github.io/drone-swarm-lab/lessons/03-broken-comms/" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="第 3 課 · 斷通訊還能協同嗎 — Swarm Lab" />
+  <meta property="og:description" content="剪短通訊半徑、加上封包遺失，看群體在哪一刻碎成孤島。" />
+  <meta property="og:url" content="https://aqua5230.github.io/drone-swarm-lab/lessons/03-broken-comms/" />
+  <meta property="og:site_name" content="Swarm Lab" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="第 3 課 · 斷通訊還能協同嗎 — Swarm Lab" />
+  <meta name="twitter:description" content="剪通訊半徑、加封包遺失，看群體在哪一刻碎成孤島。" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LearningResource",
+    "name": "第 3 課 · 斷通訊還能協同嗎",
+    "description": "通訊半徑與封包遺失如何讓群體在滲流門檻突然從一片連通塌成碎島。",
+    "url": "https://aqua5230.github.io/drone-swarm-lab/lessons/03-broken-comms/",
+    "inLanguage": "zh-Hant",
+    "isAccessibleForFree": true,
+    "learningResourceType": "互動模擬",
+    "isPartOf": { "@type": "Course", "name": "群飛智能互動教學", "url": "https://aqua5230.github.io/drone-swarm-lab/" }
+  }
+  </script>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/open-props@1/open-props.min.css" />
+  <link rel="stylesheet" href="../../shared/style.css" />
+
+  <script src="https://cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/p5@1/lib/p5.min.js"></script>
+  <script type="module">
+    import { Pane } from "https://cdn.jsdelivr.net/npm/tweakpane@4/dist/tweakpane.min.js";
+    window.Tweakpane = { Pane };
+  </script>
+</head>
+<body>
+  <nav id="site-nav"></nav>
+
+  <main>
+    <header>
+      <h1>第 3 課 · 斷通訊，還協同得起來嗎</h1>
+      <p class="lede">
+        每隻只跟「聽得到」的鄰居協同。把通訊半徑剪短、把封包遺失調高——
+        看這群在哪一刻從一片，碎成一座座孤島。
+      </p>
+    </header>
+
+    <div class="lesson-layout">
+      <div class="stage">
+        <div id="canvas-holder"></div>
+        <div id="controls-holder"></div>
+      </div>
+      <section id="lesson-notes" class="notes"></section>
+    </div>
+  </main>
+
+  <script src="sketch.js"></script>
+  <script type="module">
+    import { mountNav } from '../../shared/site.js';
+    import { mountLesson } from '../../shared/lesson.js';
+    mountNav('../../', '03-broken-comms');
+    mountLesson('lesson.md', '#lesson-notes');
+  </script>
+</body>
+</html>

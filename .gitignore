@@ -1,0 +1,10 @@
+.DS_Store
+node_modules/
+*.log
+
+# AI / 工作脈絡檔，不上傳（資安）
+.claude/
+CLAUDE.md
+
+# 暫存／雜物
+bing_test.html

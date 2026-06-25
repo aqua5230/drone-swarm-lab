@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第 1 課 · Boids 三規則 — Swarm Lab 群飛智能教學</title>
+
+  <!-- SEO -->
+  <meta name="description" content="分離／對齊／聚合——沒有指揮官的群飛，整群卻像一個生命體。互動模擬看「湧現」，並親手點掉任一隻，證明群體沒有大腦可砍。" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://aqua5230.github.io/drone-swarm-lab/lessons/01-boids/" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="第 1 課 · Boids 三規則 — Swarm Lab" />
+  <meta property="og:description" content="分離／對齊／聚合——沒有指揮官的群飛，整群卻像一個生命體。互動模擬看「湧現」。" />
+  <meta property="og:url" content="https://aqua5230.github.io/drone-swarm-lab/lessons/01-boids/" />
+  <meta property="og:site_name" content="Swarm Lab" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="第 1 課 · Boids 三規則 — Swarm Lab" />
+  <meta name="twitter:description" content="分離／對齊／聚合——沒有指揮官的群飛，看「湧現」。" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LearningResource",
+    "name": "第 1 課 · Boids 三規則",
+    "description": "分離／對齊／聚合三條局部規則，如何讓沒有指揮官的群體湧現出像生命體的流動。",
+    "url": "https://aqua5230.github.io/drone-swarm-lab/lessons/01-boids/",
+    "inLanguage": "zh-Hant",
+    "isAccessibleForFree": true,
+    "learningResourceType": "互動模擬",
+    "isPartOf": { "@type": "Course", "name": "群飛智能互動教學", "url": "https://aqua5230.github.io/drone-swarm-lab/" }
+  }
+  </script>
+
+  <!-- Open Props：現成設計變數 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/open-props@1/open-props.min.css" />
+  <link rel="stylesheet" href="../../shared/style.css" />
+
+  <!-- pangu：盤古之白，中文與英文/數字間自動補空隙 -->
+  <script src="https://cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+
+  <!-- p5.js：畫面引擎 -->
+  <script src="https://cdn.jsdelivr.net/npm/p5@1/lib/p5.min.js"></script>
+  <!-- Tweakpane v4 是 ES module：載入後掛回全域供 sketch.js 使用 -->
+  <script type="module">
+    import { Pane } from "https://cdn.jsdelivr.net/npm/tweakpane@4/dist/tweakpane.min.js";
+    window.Tweakpane = { Pane };
+  </script>
+</head>
+<body>
+  <nav id="site-nav"></nav>
+
+  <main>
+    <header>
+      <h1>第 1 課 · Boids：沒有指揮官的群飛</h1>
+      <p class="lede">
+        每個個體只看附近鄰居、只跑三條規則——分離、對齊、聚合——
+        沒有中央指揮，整群卻像一個生命體一樣流動。
+        拖右邊的滑桿改規則，或點掉任一隻，看群體當場反應。
+      </p>
+    </header>
+
+    <!-- 寬螢幕：左邊沙盤釘住、右邊文章捲動 -->
+    <div class="lesson-layout">
+      <div class="stage">
+        <!-- p5 會把畫布掛在這裡 -->
+        <div id="canvas-holder"></div>
+        <!-- Tweakpane 面板掛進這，疊在畫布右上角 -->
+        <div id="controls-holder"></div>
+      </div>
+
+      <!-- 教學文由 lesson.md 載入後渲染進來 -->
+      <section id="lesson-notes" class="notes"></section>
+    </div>
+  </main>
+
+  <!-- 本課的群飛邏輯（p5 global mode） -->
+  <script src="sketch.js"></script>
+  <!-- 導覽列 + 教學文 -->
+  <script type="module">
+    import { mountNav } from '../../shared/site.js';
+    import { mountLesson } from '../../shared/lesson.js';
+    mountNav('../../', '01-boids');
+    mountLesson('lesson.md', '#lesson-notes');
+  </script>
+</body>
+</html>

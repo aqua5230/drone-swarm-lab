@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第 2 課 · 去中心化 vs 中央控制 — Swarm Lab 群飛智能教學</title>
+
+  <!-- SEO -->
+  <meta name="description" content="把『有老大』和『沒老大』兩種群體並排斬首，對照單點故障與抗打擊的取捨——為什麼去中心化群體砍不到頭。" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://aqua5230.github.io/drone-swarm-lab/lessons/02-decentralized/" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="第 2 課 · 去中心化 vs 中央控制 — Swarm Lab" />
+  <meta property="og:description" content="把『有老大』和『沒老大』兩種群體並排斬首，看單點故障與抗打擊的取捨。" />
+  <meta property="og:url" content="https://aqua5230.github.io/drone-swarm-lab/lessons/02-decentralized/" />
+  <meta property="og:site_name" content="Swarm Lab" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="第 2 課 · 去中心化 vs 中央控制 — Swarm Lab" />
+  <meta name="twitter:description" content="把『有老大』和『沒老大』擺一起斬首，看誰先垮。" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LearningResource",
+    "name": "第 2 課 · 去中心化 vs 中央控制",
+    "description": "並排比較中央控制與去中心化群體在被斬首時的差異，理解單點故障與抗打擊的取捨。",
+    "url": "https://aqua5230.github.io/drone-swarm-lab/lessons/02-decentralized/",
+    "inLanguage": "zh-Hant",
+    "isAccessibleForFree": true,
+    "learningResourceType": "互動模擬",
+    "isPartOf": { "@type": "Course", "name": "群飛智能互動教學", "url": "https://aqua5230.github.io/drone-swarm-lab/" }
+  }
+  </script>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/open-props@1/open-props.min.css" />
+  <link rel="stylesheet" href="../../shared/style.css" />
+
+  <script src="https://cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/p5@1/lib/p5.min.js"></script>
+  <script type="module">
+    import { Pane } from "https://cdn.jsdelivr.net/npm/tweakpane@4/dist/tweakpane.min.js";
+    window.Tweakpane = { Pane };
+  </script>
+</head>
+<body>
+  <nav id="site-nav"></nav>
+
+  <main>
+    <header>
+      <h1>第 2 課 · 去中心化 vs 中央控制</h1>
+      <p class="lede">
+        左邊有一個金色指揮官，其他全跟著牠走；右邊沒有頭，各看各的鄰居。
+        按一下「同時斬首」，兩邊都失去一個——看誰垮、誰照飛。
+      </p>
+    </header>
+
+    <div class="lesson-layout">
+      <div class="stage">
+        <div id="canvas-holder"></div>
+        <div id="controls-holder"></div>
+      </div>
+      <section id="lesson-notes" class="notes"></section>
+    </div>
+  </main>
+
+  <script src="sketch.js"></script>
+  <script type="module">
+    import { mountNav } from '../../shared/site.js';
+    import { mountLesson } from '../../shared/lesson.js';
+    mountNav('../../', '02-decentralized');
+    mountLesson('lesson.md', '#lesson-notes');
+  </script>
+</body>
+</html>

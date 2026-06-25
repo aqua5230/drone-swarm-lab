@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Swarm Lab · 群飛智能互動教學｜Boids、去中心化、群體共識</title>
+
+  <!-- SEO -->
+  <meta name="description" content="用瀏覽器就能玩的群飛智能（swarm intelligence）互動教學。一課一概念、可即時調參數、附一手出處——從 Boids 三規則到群體共識、抗毀韌性與人在環路，看懂去中心化群體與自主系統的底層原理。零安裝、開源。" />
+  <meta name="keywords" content="群飛智能,swarm intelligence,boids,湧現,去中心化,群體共識,蟻群,費洛蒙,自主系統,無人機群,p5.js,互動教學" />
+  <meta name="author" content="Swarm Lab" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://aqua5230.github.io/drone-swarm-lab/" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Swarm Lab · 群飛智能互動教學" />
+  <meta property="og:description" content="用瀏覽器就能玩的群飛智能互動教學。從 Boids 三規則到群體共識、抗毀韌性與人在環路，看懂去中心化群體與自主原理。零安裝、開源。" />
+  <meta property="og:url" content="https://aqua5230.github.io/drone-swarm-lab/" />
+  <meta property="og:site_name" content="Swarm Lab" />
+  <meta property="og:locale" content="zh_TW" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Swarm Lab · 群飛智能互動教學" />
+  <meta name="twitter:description" content="用瀏覽器就能玩的群飛智能互動教學。一課一概念、可即時調參、附一手出處。零安裝、開源。" />
+
+  <!-- Open Props：現成設計變數 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/open-props@1/open-props.min.css" />
+  <link rel="stylesheet" href="./shared/style.css" />
+
+  <!-- 結構化資料：網站 + 課程清單，讓搜尋引擎與 AI 答題引擎認得這是一套教學課程 -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://aqua5230.github.io/drone-swarm-lab/#website",
+        "name": "Swarm Lab · 群飛實驗室",
+        "url": "https://aqua5230.github.io/drone-swarm-lab/",
+        "description": "用瀏覽器就能玩的群飛智能互動教學，一課一概念、可即時調參、附一手出處。",
+        "inLanguage": "zh-Hant"
+      },
+      {
+        "@type": "Course",
+        "name": "群飛智能互動教學",
+        "description": "從 Boids 三規則到群體共識、抗毀韌性與人在環路，10 課演示去中心化群體與自主系統的底層原理。",
+        "url": "https://aqua5230.github.io/drone-swarm-lab/",
+        "inLanguage": "zh-Hant",
+        "isAccessibleForFree": true,
+        "provider": { "@type": "Organization", "name": "Swarm Lab" },
+        "hasCourseInstance": {
+          "@type": "CourseInstance",
+          "courseMode": "online",
+          "courseWorkload": "PT2H"
+        }
+      },
+      {
+        "@type": "ItemList",
+        "name": "課程清單",
+        "itemListOrder": "https://schema.org/ItemListOrderAscending",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Boids 三規則", "url": "https://aqua5230.github.io/drone-swarm-lab/lessons/01-boids/" },
+          { "@type": "ListItem", "position": 2, "name": "去中心化 vs 中央控制", "url": "https://aqua5230.github.io/drone-swarm-lab/lessons/02-decentralized/" },
+          { "@type": "ListItem", "position": 3, "name": "斷通訊還能協同嗎", "url": "https://aqua5230.github.io/drone-swarm-lab/lessons/03-broken-comms/" },
+          { "@type": "ListItem", "position": 4, "name": "從 10 隻到 2000 隻", "url": "https://aqua5230.github.io/drone-swarm-lab/lessons/04-scaling/" },
+          { "@type": "ListItem", "position": 5, "name": "分散式感知", "url": "https://aqua5230.github.io/drone-swarm-lab/lessons/05-sensing/" },
+          { "@type": "ListItem", "position": 6, "name": "群體共識", "url": "https://aqua5230.github.io/drone-swarm-lab/lessons/06-consensus/" },
+          { "@type": "ListItem", "position": 7, "name": "費洛蒙與自組織分工", "url": "https://aqua5230.github.io/drone-swarm-lab/lessons/07-stigmergy/" },
+          { "@type": "ListItem", "position": 8, "name": "抗毀韌性", "url": "https://aqua5230.github.io/drone-swarm-lab/lessons/08-resilience/" },
+          { "@type": "ListItem", "position": 9, "name": "人在環路", "url": "https://aqua5230.github.io/drone-swarm-lab/lessons/09-human-loop/" },
+          { "@type": "ListItem", "position": 10, "name": "綜合沙盒", "url": "https://aqua5230.github.io/drone-swarm-lab/lessons/10-sandbox/" }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <nav id="site-nav"></nav>
+
+  <main>
+    <header>
+      <h1>Swarm Lab · 群飛智能教學</h1>
+      <p class="lede">
+        一課一概念、可即時調參、附一手出處。打開即動、零安裝、開源。
+        看懂群飛與自主原理——從「沒有指揮官的群體」開始。
+      </p>
+    </header>
+
+    <!-- 課程目錄由 lessons.js 清單生成 -->
+    <div id="lesson-grid" class="lesson-grid"></div>
+  </main>
+
+  <script type="module">
+    import { mountNav, mountIndex } from './shared/site.js';
+    mountNav('', null);
+    mountIndex('');
+  </script>
+</body>
+</html>

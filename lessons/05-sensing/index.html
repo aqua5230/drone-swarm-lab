@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第 5 課 · 分散式感知 — Swarm Lab 群飛智能教學</title>
+
+  <!-- SEO -->
+  <meta name="description" content="每個個體只有小視野，群體靠散開與覆蓋拼出整片區域的偵察——合起來看見的全貌，住在牠們鋪開的方式裡。" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://aqua5230.github.io/drone-swarm-lab/lessons/05-sensing/" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="第 5 課 · 分散式感知 — Swarm Lab" />
+  <meta property="og:description" content="每隻只看得到一點點，合起來卻能把整片戰場掃乾淨。" />
+  <meta property="og:url" content="https://aqua5230.github.io/drone-swarm-lab/lessons/05-sensing/" />
+  <meta property="og:site_name" content="Swarm Lab" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="第 5 課 · 分散式感知 — Swarm Lab" />
+  <meta name="twitter:description" content="每隻只看一點點，合起來把整片迷霧掃乾淨。" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LearningResource",
+    "name": "第 5 課 · 分散式感知",
+    "description": "小視野的個體靠散開與覆蓋，讓群體拼出單一個體看不到的全貌。",
+    "url": "https://aqua5230.github.io/drone-swarm-lab/lessons/05-sensing/",
+    "inLanguage": "zh-Hant",
+    "isAccessibleForFree": true,
+    "learningResourceType": "互動模擬",
+    "isPartOf": { "@type": "Course", "name": "群飛智能互動教學", "url": "https://aqua5230.github.io/drone-swarm-lab/" }
+  }
+  </script>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/open-props@1/open-props.min.css" />
+  <link rel="stylesheet" href="../../shared/style.css" />
+
+  <script src="https://cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/p5@1/lib/p5.min.js"></script>
+  <script type="module">
+    import { Pane } from "https://cdn.jsdelivr.net/npm/tweakpane@4/dist/tweakpane.min.js";
+    window.Tweakpane = { Pane };
+  </script>
+</head>
+<body>
+  <nav id="site-nav"></nav>
+
+  <main>
+    <header>
+      <h1>第 5 課 · 分散式感知</h1>
+      <p class="lede">
+        每隻只照亮身邊一小圈，誰也看不到全貌。但牠們會自動往「沒探過的暗處」走——
+        一大群合起來，把整片迷霧掃乾淨，順手揪出藏在裡面的目標。
+      </p>
+    </header>
+
+    <div class="lesson-layout">
+      <div class="stage">
+        <div id="canvas-holder"></div>
+        <div id="controls-holder"></div>
+      </div>
+      <section id="lesson-notes" class="notes"></section>
+    </div>
+  </main>
+
+  <script src="sketch.js"></script>
+  <script type="module">
+    import { mountNav } from '../../shared/site.js';
+    import { mountLesson } from '../../shared/lesson.js';
+    mountNav('../../', '05-sensing');
+    mountLesson('lesson.md', '#lesson-notes');
+  </script>
+</body>
+</html>

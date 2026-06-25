@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第 9 課 · 人在環路｜自主系統的倫理線 — Swarm Lab 群飛智能教學</title>
+
+  <!-- SEO -->
+  <meta name="description" content="人在環內／環上／環外三種介入模式，親手量出『把人移出環路』省下的時間與付出的錯誤，理解『有意義的人類控制』這條倫理紅線。" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://aqua5230.github.io/drone-swarm-lab/lessons/09-human-loop/" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="第 9 課 · 人在環路 — Swarm Lab" />
+  <meta property="og:description" content="自主歸自主，人類在哪一格按下同意？畫出不可逾越的線。" />
+  <meta property="og:url" content="https://aqua5230.github.io/drone-swarm-lab/lessons/09-human-loop/" />
+  <meta property="og:site_name" content="Swarm Lab" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="第 9 課 · 人在環路 — Swarm Lab" />
+  <meta name="twitter:description" content="自主歸自主，人類在哪一格按下同意？" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LearningResource",
+    "name": "第 9 課 · 人在環路",
+    "description": "人在環內／環上／環外三模式，量化移走人類的代價與有意義的人類控制。",
+    "url": "https://aqua5230.github.io/drone-swarm-lab/lessons/09-human-loop/",
+    "inLanguage": "zh-Hant",
+    "isAccessibleForFree": true,
+    "learningResourceType": "互動模擬",
+    "isPartOf": { "@type": "Course", "name": "群飛智能互動教學", "url": "https://aqua5230.github.io/drone-swarm-lab/" }
+  }
+  </script>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/open-props@1/open-props.min.css" />
+  <link rel="stylesheet" href="../../shared/style.css" />
+
+  <script src="https://cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/p5@1/lib/p5.min.js"></script>
+  <script type="module">
+    import { Pane } from "https://cdn.jsdelivr.net/npm/tweakpane@4/dist/tweakpane.min.js";
+    window.Tweakpane = { Pane };
+  </script>
+</head>
+<body>
+  <nav id="site-nav"></nav>
+
+  <main>
+    <header>
+      <h1>第 9 課 · 人，站在環路的哪裡？</h1>
+      <p class="lede">
+        群體越自主，人越插不上手。放下「禁區」，切換三種人類介入模式——
+        在環內、在環上、被移出環外——親手量出「把人拿掉」省了多少時間、又犯了多少錯。
+      </p>
+    </header>
+
+    <div class="lesson-layout">
+      <div class="stage">
+        <div id="canvas-holder"></div>
+        <div id="controls-holder"></div>
+      </div>
+      <section id="lesson-notes" class="notes"></section>
+    </div>
+  </main>
+
+  <script src="sketch.js"></script>
+  <script type="module">
+    import { mountNav } from '../../shared/site.js';
+    import { mountLesson } from '../../shared/lesson.js';
+    mountNav('../../', '09-human-loop');
+    mountLesson('lesson.md', '#lesson-notes');
+  </script>
+</body>
+</html>

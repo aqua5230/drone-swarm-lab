@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第 7 課 · 費洛蒙與自組織分工｜蟻群 — Swarm Lab 群飛智能教學</title>
+
+  <!-- SEO -->
+  <meta name="description" content="間接協調 stigmergy：螞蟻不互相下令，只在環境留費洛蒙、聞費洛蒙走，靠蒸發讓最短路徑自己浮現（蟻群最佳化 ACO）。" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://aqua5230.github.io/drone-swarm-lab/lessons/07-stigmergy/" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="第 7 課 · 費洛蒙與自組織分工 — Swarm Lab" />
+  <meta property="og:description" content="螞蟻不留訊息給彼此，只改環境——最短路徑自己浮現。" />
+  <meta property="og:url" content="https://aqua5230.github.io/drone-swarm-lab/lessons/07-stigmergy/" />
+  <meta property="og:site_name" content="Swarm Lab" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="第 7 課 · 費洛蒙與自組織分工 — Swarm Lab" />
+  <meta name="twitter:description" content="螞蟻只改環境，最短路徑自己浮現。" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LearningResource",
+    "name": "第 7 課 · 費洛蒙與自組織分工",
+    "description": "間接協調 stigmergy 與蟻群最佳化：靠費洛蒙與蒸發讓最短路徑自己浮現。",
+    "url": "https://aqua5230.github.io/drone-swarm-lab/lessons/07-stigmergy/",
+    "inLanguage": "zh-Hant",
+    "isAccessibleForFree": true,
+    "learningResourceType": "互動模擬",
+    "isPartOf": { "@type": "Course", "name": "群飛智能互動教學", "url": "https://aqua5230.github.io/drone-swarm-lab/" }
+  }
+  </script>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/open-props@1/open-props.min.css" />
+  <link rel="stylesheet" href="../../shared/style.css" />
+
+  <script src="https://cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/p5@1/lib/p5.min.js"></script>
+  <script type="module">
+    import { Pane } from "https://cdn.jsdelivr.net/npm/tweakpane@4/dist/tweakpane.min.js";
+    window.Tweakpane = { Pane };
+  </script>
+</head>
+<body>
+  <nav id="site-nav"></nav>
+
+  <main>
+    <header>
+      <h1>第 7 課 · 費洛蒙：不開會的分工</h1>
+      <p class="lede">
+        螞蟻不互相下令、不投票。每隻只在地上留氣味、聞氣味走——
+        全城最短的覓食路線，就這樣自己從一團亂走中浮現出來。
+      </p>
+    </header>
+
+    <div class="lesson-layout">
+      <div class="stage">
+        <div id="canvas-holder"></div>
+        <div id="controls-holder"></div>
+      </div>
+      <section id="lesson-notes" class="notes"></section>
+    </div>
+  </main>
+
+  <script src="sketch.js"></script>
+  <script type="module">
+    import { mountNav } from '../../shared/site.js';
+    import { mountLesson } from '../../shared/lesson.js';
+    mountNav('../../', '07-stigmergy');
+    mountLesson('lesson.md', '#lesson-notes');
+  </script>
+</body>
+</html>

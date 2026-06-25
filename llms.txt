@@ -1,0 +1,32 @@
+# Swarm Lab · 群飛實驗室
+
+> 用瀏覽器就能玩的群飛智能（swarm intelligence）互動教學。一課一個概念，可即時調參數親手玩，每課附一手學術出處。純靜態、零安裝、開源。核心觀念：群體的智能不住在任何單一個體身上，而住在「鄰居之間的局部規則」裡——少數便宜的節點靠局部互動，湧現出沒有人設計、沒有中央指揮的整體秩序。
+
+這套教學用一系列可互動的 p5.js 模擬，一步步演示去中心化群體（鳥群、魚群、蟻群、蜂群，以及去中心化多機器人/無人機系統）的底層原理：湧現、去中心化、抗毀韌性、分散式感知、群體共識、自組織分工，以及自主系統中「人類控制」的倫理界線。教的是公開的群飛科學與自主原理，不是武器製造。
+
+## 課程（每課皆可互動、可調參數）
+
+- [第 1 課 · Boids 三規則](https://aqua5230.github.io/drone-swarm-lab/lessons/01-boids/)：分離、對齊、聚合三條局部規則，如何讓沒有指揮官的群體湧現出像生命體的流動；可點掉任一個體，證明「沒有大腦可砍」。
+- [第 2 課 · 去中心化 vs 中央控制](https://aqua5230.github.io/drone-swarm-lab/lessons/02-decentralized/)：把「有老大」與「沒老大」兩種群體並排斬首，對照單點故障與抗打擊的取捨。
+- [第 3 課 · 斷通訊還能協同嗎](https://aqua5230.github.io/drone-swarm-lab/lessons/03-broken-comms/)：通訊半徑與封包遺失如何讓群體在某個臨界點（滲流門檻）突然碎成孤島。
+- [第 4 課 · 從 10 隻到 2000 隻](https://aqua5230.github.io/drone-swarm-lab/lessons/04-scaling/)：群飛行為的尺度無關性，以及空間網格 O(n) 與暴力法 O(n²) 在擴量時的效能差異。
+- [第 5 課 · 分散式感知](https://aqua5230.github.io/drone-swarm-lab/lessons/05-sensing/)：每個個體只有小視野，群體靠散開與覆蓋拼出整片區域的偵察。
+- [第 6 課 · 群體共識](https://aqua5230.github.io/drone-swarm-lab/lessons/06-consensus/)：蜜蜂選巢模型，靠拉票力道正比於品質加上交叉抑制，無中央達成共識並打破僵局。
+- [第 7 課 · 費洛蒙與自組織分工](https://aqua5230.github.io/drone-swarm-lab/lessons/07-stigmergy/)：間接協調（stigmergy），螞蟻只改環境、靠費洛蒙與蒸發讓最短路徑自己浮現（蟻群最佳化 ACO）。
+- [第 8 課 · 抗毀韌性](https://aqua5230.github.io/drone-swarm-lab/lessons/08-resilience/)：靠互斥均勻鋪滿區域的群體，被打掉一部分後如何自動補位、恢復覆蓋，以及最小生存兵力的概念。
+- [第 9 課 · 人在環路](https://aqua5230.github.io/drone-swarm-lab/lessons/09-human-loop/)：人在環內／環上／環外三種介入模式，量化「把人移出環路」省下的時間與付出的錯誤，以及「有意義的人類控制」這條倫理紅線。
+- [第 10 課 · 綜合沙盒](https://aqua5230.github.io/drone-swarm-lab/lessons/10-sandbox/)：把前九課規則（三規則、障礙閃避、掠食者逃竄）整合進一個開放實驗場。
+
+## 關鍵概念定義
+
+- 群飛智能（swarm intelligence）：很多簡單個體各依少數局部規則行動，整體湧現出複雜而適應的集體行為，無中央控制。
+- 湧現（emergence）：整體層級出現的秩序與智能，不存在於任何單一個體，而存在於個體之間的互動規則中。
+- 去中心化（decentralization）：沒有中央節點；好處是無單點故障、抗打擊、可擴量，代價是協調較慢、難以統一意圖或緊急喊停。
+- 間接協調（stigmergy）：個體不直接溝通，而是改寫共享環境、再對環境痕跡反應，藉此協調出複雜分工。
+- 有意義的人類控制（meaningful human control）：自主系統中，人類必須真的來得及、看得懂、能負責，而非名義上在場。
+
+## 出處
+
+- [Reynolds 1987 · Boids 原始頁](https://www.red3d.com/cwr/boids/)
+- [Paul Baran 1964 · On Distributed Communications (RAND)](https://www.rand.org/pubs/research_memoranda/RM3420.html)
+- [Article 36 · 有意義的人類控制](https://article36.org/)

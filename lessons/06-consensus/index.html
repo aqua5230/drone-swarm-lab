@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第 6 課 · 群體共識｜蜜蜂選巢 — Swarm Lab 群飛智能教學</title>
+
+  <!-- SEO -->
+  <meta name="description" content="蜜蜂怎麼不靠蜂后，全群選定同一個新家。靠拉票力道正比於品質、加上交叉抑制，無中央達成共識並打破平手僵局。" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://aqua5230.github.io/drone-swarm-lab/lessons/06-consensus/" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="第 6 課 · 群體共識 — Swarm Lab" />
+  <meta property="og:description" content="蜜蜂怎麼不靠老大，全群選定同一個新家。" />
+  <meta property="og:url" content="https://aqua5230.github.io/drone-swarm-lab/lessons/06-consensus/" />
+  <meta property="og:site_name" content="Swarm Lab" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="第 6 課 · 群體共識 — Swarm Lab" />
+  <meta name="twitter:description" content="蜜蜂怎麼不靠老大，全群選定同一個新家。" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LearningResource",
+    "name": "第 6 課 · 群體共識",
+    "description": "蜜蜂選巢模型：拉票正比品質加上交叉抑制，無中央達成共識並打破僵局。",
+    "url": "https://aqua5230.github.io/drone-swarm-lab/lessons/06-consensus/",
+    "inLanguage": "zh-Hant",
+    "isAccessibleForFree": true,
+    "learningResourceType": "互動模擬",
+    "isPartOf": { "@type": "Course", "name": "群飛智能互動教學", "url": "https://aqua5230.github.io/drone-swarm-lab/" }
+  }
+  </script>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/open-props@1/open-props.min.css" />
+  <link rel="stylesheet" href="../../shared/style.css" />
+
+  <script src="https://cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/p5@1/lib/p5.min.js"></script>
+  <script type="module">
+    import { Pane } from "https://cdn.jsdelivr.net/npm/tweakpane@4/dist/tweakpane.min.js";
+    window.Tweakpane = { Pane };
+  </script>
+</head>
+<body>
+  <nav id="site-nav"></nav>
+
+  <main>
+    <header>
+      <h1>第 6 課 · 群體共識：蜜蜂怎麼選新家</h1>
+      <p class="lede">
+        幾千隻蜜蜂要選同一個新巢，沒有蜂后下令。靠「好地點拉票拉得快」＋
+        「撞見不同意見就互相喊停」，全群慢慢倒向同一邊——還幾乎都選到最好的。
+      </p>
+    </header>
+
+    <div class="lesson-layout">
+      <div class="stage">
+        <div id="canvas-holder"></div>
+        <div id="controls-holder"></div>
+      </div>
+      <section id="lesson-notes" class="notes"></section>
+    </div>
+  </main>
+
+  <script src="sketch.js"></script>
+  <script type="module">
+    import { mountNav } from '../../shared/site.js';
+    import { mountLesson } from '../../shared/lesson.js';
+    mountNav('../../', '06-consensus');
+    mountLesson('lesson.md', '#lesson-notes');
+  </script>
+</body>
+</html>

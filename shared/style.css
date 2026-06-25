@@ -1,0 +1,364 @@
+:root {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  background: var(--gray-12, #11131a);
+  color: var(--gray-2, #e6e8ee);
+  font-family: var(--font-sans, system-ui, "PingFang TC", sans-serif);
+  line-height: var(--font-lineheight-3, 1.5);
+}
+
+main {
+  max-width: 60rem;
+  margin-inline: auto;
+  padding: var(--size-6, 1.75rem);
+}
+
+h1 {
+  font-size: var(--font-size-6, 1.85rem);
+  margin-block-end: var(--size-3, 1rem);
+  letter-spacing: -0.01em;
+}
+
+/* 標題下方一條藍色點綴線，去掉「純文字」的單調感 */
+header h1::after {
+  content: "";
+  display: block;
+  width: 3rem;
+  height: 3px;
+  margin-block-start: var(--size-2, .5rem);
+  border-radius: 2px;
+  background: var(--blue-5, #4499e6);
+}
+
+.lede {
+  color: var(--gray-4, #99a) ;
+  max-width: 42rem;
+  font-size: var(--font-size-2, 1rem);
+}
+
+#canvas-holder {
+  margin-block: var(--size-5, 1.5rem);
+  border-radius: var(--radius-3, .75rem);
+  overflow: hidden;
+  border: 1px solid var(--gray-10, #23262f);
+  box-shadow: var(--shadow-4, 0 8px 24px rgba(0, 0, 0, .4));
+}
+
+/* 課內頁：沙盤（畫布＋面板）與文章。面板疊在畫布右上角。 */
+.lesson-layout {
+  margin-block: var(--size-5, 1.5rem);
+}
+
+.stage {
+  position: relative;
+}
+
+#controls-holder {
+  position: absolute;
+  top: var(--size-2, .5rem);
+  right: var(--size-2, .5rem);
+  z-index: 5;
+  width: 14rem;
+}
+
+#canvas-holder canvas {
+  display: block;
+}
+
+/* 正文不裝盒、窄欄置中讀（仿 ciechanow.ski / distill.pub 的閱讀版面）。
+   視覺（畫布）可以寬，文字收窄到舒服的中文閱讀寬度。 */
+.notes {
+  max-width: 40rem;
+  margin-inline: auto;
+  padding-inline: var(--size-3, 1rem);
+  /* 中文閱讀版面：字略大、行距放寬、標點懸掛、避免孤行 */
+  font-size: 1.0625rem;
+  line-height: 1.85;
+  hanging-punctuation: allow-end;
+  text-wrap: pretty;
+}
+
+.notes p {
+  margin-block: var(--size-3, 1rem);
+}
+
+.notes li {
+  margin-block: var(--size-2, .5rem);
+}
+
+.notes strong {
+  color: var(--gray-1, #f1f3f8);
+}
+
+.notes hr {
+  margin-block: var(--size-5, 1.5rem);
+  border: 0;
+  border-block-start: 1px solid var(--gray-10, #23262f);
+}
+
+/* 文章內的「試試看」是可以點的字，不是盒子——點了直接設定模擬參數 */
+.notes button.try {
+  font: inherit;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--blue-4, #6ab7ff);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+.notes button.try:hover {
+  color: var(--blue-3, #8fc5ff);
+}
+
+.notes h2 {
+  margin-block: var(--size-7, 2.5rem) var(--size-2, .5rem);
+  font-size: var(--font-size-5, 1.5rem);
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -.01em;
+  color: var(--gray-1, #f1f3f8);
+}
+
+.notes h2:first-child {
+  margin-block-start: 0;
+}
+
+.notes h3 {
+  margin-block: var(--size-5, 1.5rem) var(--size-1, .25rem);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--gray-1, #f1f3f8);
+}
+
+.notes a {
+  color: var(--blue-4, #6ab7ff);
+}
+
+.notes code {
+  padding: .05em .35em;
+  border-radius: var(--radius-1, .25rem);
+  background: color-mix(in srgb, var(--gray-1, #f1f3f8) 8%, transparent);
+  color: var(--gray-2, #e6e8ee);
+  font-family: var(--font-mono, ui-monospace, "SF Mono", Menlo, monospace);
+  font-size: .85em;
+}
+
+.source {
+  color: var(--gray-6, #889);
+  font-size: var(--font-size-1, .85rem);
+  margin-block-end: 0;
+}
+
+.source a {
+  color: var(--blue-4, #6ab7ff);
+}
+
+/* 頂部導覽列：每頁共用，固定在頂端。品牌固定在左，課程連結放進可橫向
+   捲動的膠囊列——10 課也不會換行擠爆，超出寬度就左右滑。 */
+#site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  gap: var(--size-3, 1rem);
+  align-items: center;
+  padding: var(--size-3, 1rem) var(--size-6, 1.75rem);
+  background: color-mix(in srgb, var(--gray-12, #11131a) 88%, transparent);
+  backdrop-filter: blur(8px);
+  border-block-end: 1px solid var(--gray-10, #23262f);
+  font-size: var(--font-size-1, .85rem);
+}
+
+/* 左上唯一入口：品牌＋目錄鈕合一，點開抽屜 */
+.nav-menu {
+  flex: 0 0 auto;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  color: var(--gray-3, #c3c7d1);
+  background: color-mix(in srgb, var(--gray-1, #f1f3f8) 6%, transparent);
+  border: 1px solid var(--gray-10, #23262f);
+  border-radius: var(--radius-2, .5rem);
+  padding: .35rem .75rem;
+  transition: background-color .15s ease, color .15s ease;
+}
+
+.nav-menu:hover {
+  color: var(--gray-1, #f1f3f8);
+  background: color-mix(in srgb, var(--gray-1, #f1f3f8) 12%, transparent);
+}
+
+/* 抽屜式課程目錄：固定覆蓋全畫面，面板從右側滑出 */
+.nav-drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+}
+
+.nav-drawer-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(4, 6, 12, .6);
+  backdrop-filter: blur(2px);
+}
+
+.nav-drawer-panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: min(22rem, 86vw);
+  box-sizing: border-box;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-2, .5rem);
+  padding: var(--size-4, 1.25rem);
+  background: var(--gray-12, #11131a);
+  border-inline-end: 1px solid var(--gray-10, #23262f);
+  box-shadow: 16px 0 40px rgba(0, 0, 0, .45);
+}
+
+.nav-drawer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-block-end: var(--size-2, .5rem);
+}
+
+.nav-drawer-home {
+  font-weight: 700;
+  color: var(--gray-2, #e6e8ee);
+  text-decoration: none;
+}
+
+.nav-drawer-home:hover {
+  color: var(--blue-3, #8fc5ff);
+}
+
+.nav-drawer-close {
+  font: inherit;
+  cursor: pointer;
+  color: var(--gray-5, #aab);
+  background: none;
+  border: 0;
+  padding: .25rem .5rem;
+  border-radius: var(--radius-2, .5rem);
+}
+
+.nav-drawer-close:hover {
+  color: var(--gray-1, #f1f3f8);
+  background: color-mix(in srgb, var(--gray-1, #f1f3f8) 8%, transparent);
+}
+
+.nav-drawer-panel a {
+  display: flex;
+  flex-direction: column;
+  gap: .15rem;
+  padding: .6rem .75rem;
+  border-radius: var(--radius-2, .5rem);
+  text-decoration: none;
+  color: var(--gray-3, #c3c7d1);
+  border: 1px solid transparent;
+}
+
+.nav-drawer-panel a:hover {
+  background: color-mix(in srgb, var(--gray-1, #f1f3f8) 6%, transparent);
+}
+
+.nav-drawer-panel a b {
+  font-weight: 600;
+  color: var(--gray-1, #f1f3f8);
+}
+
+.nav-drawer-panel a small {
+  font-size: var(--font-size-0, .75rem);
+  color: var(--gray-5, #aab);
+}
+
+/* 目前所在課：藍框＋淡藍底，一眼看到自己在哪 */
+.nav-drawer-panel a.current {
+  border-color: color-mix(in srgb, var(--blue-5, #4499e6) 50%, transparent);
+  background: color-mix(in srgb, var(--blue-5, #4499e6) 14%, transparent);
+}
+
+.nav-drawer-panel a.current b {
+  color: var(--blue-3, #8fc5ff);
+}
+
+/* 課內頁底部：上一課／下一課 */
+.lesson-foot {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--size-3, 1rem);
+  margin-block-start: var(--size-7, 2.5rem);
+  padding-block-start: var(--size-4, 1.25rem);
+  border-block-start: 1px solid var(--gray-10, #23262f);
+}
+
+.lesson-foot a {
+  flex: 1 1 0;
+  padding: var(--size-3, 1rem);
+  border-radius: var(--radius-3, .75rem);
+  background: var(--gray-11, #1a1d27);
+  border: 1px solid transparent;
+  color: var(--gray-3, #c3c7d1);
+  text-decoration: none;
+  transition: border-color .15s ease;
+}
+
+.lesson-foot a:hover {
+  border-color: var(--blue-6, #2c6fbf);
+}
+
+.lesson-foot a.next {
+  text-align: right;
+}
+
+/* 首頁目錄：每課一張卡片 */
+.lesson-grid {
+  display: grid;
+  gap: var(--size-3, 1rem);
+  margin-block: var(--size-5, 1.5rem);
+}
+
+.lesson-card {
+  display: block;
+  padding: var(--size-4, 1.25rem) var(--size-5, 1.5rem);
+  background: var(--gray-11, #1a1d27);
+  border-radius: var(--radius-3, .75rem);
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid transparent;
+  transition: border-color .15s ease;
+}
+
+a.lesson-card:hover {
+  border-color: var(--blue-6, #2c6fbf);
+}
+
+.lesson-card h2 {
+  margin: 0 0 var(--size-1, .25rem);
+  font-size: var(--font-size-4, 1.25rem);
+}
+
+.lesson-card p {
+  margin: 0;
+  color: var(--gray-5, #aab);
+}
+
+.lesson-card.planned {
+  opacity: .5;
+  cursor: default;
+}
+
+.lesson-card .badge {
+  font-size: var(--font-size-0, .75rem);
+  color: var(--gray-6, #889);
+  margin-inline-start: var(--size-2, .5rem);
+}
