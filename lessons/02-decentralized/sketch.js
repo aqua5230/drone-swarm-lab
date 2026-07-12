@@ -44,9 +44,9 @@ class Agent {
     if (w <= 0) this.pos.x = this.x0;
   }
 
-  steerTo(targetVel) {
+  steerTo(targetVel, weight = 1) {
     const s = targetVel.copy().setMag(params.maxSpeed).sub(this.vel).limit(params.maxForce);
-    this.acc.add(s);
+    this.acc.add(s.mult(weight));
   }
 
   separate(others) {
@@ -62,7 +62,7 @@ class Agent {
     }
     if (n > 0) {
       sum.div(n);
-      this.steerTo(sum);
+      this.steerTo(sum, params.separation);
     }
     return n;
   }
@@ -96,7 +96,7 @@ function updateCentral() {
       a.separate(central);
       if (commanderAlive) {
         const toCmd = p5.Vector.sub(commander.pos, a.pos);
-        a.steerTo(toCmd.mult(params.followPull));
+        a.steerTo(toCmd, params.followPull);
       }
       // 指揮官死了：沒有目標，只剩慣性 + 分離 → 群體失去方向、攤開
     }
@@ -123,7 +123,7 @@ function updateSwarm() {
       a.steerTo(createVector(alignX / n, alignY / n));
       a.steerTo(createVector(cohX / n - a.pos.x, cohY / n - a.pos.y));
     }
-    if (sn > 0) a.steerTo(createVector(sepX, sepY).mult(params.separation));
+    if (sn > 0) a.steerTo(createVector(sepX, sepY), params.separation);
     a.update();
     a.edges();
   }

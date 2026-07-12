@@ -74,7 +74,7 @@ function step() {
       const dx = agents[i].pos.x - agents[j].pos.x;
       const dy = agents[i].pos.y - agents[j].pos.y;
       const d2 = dx * dx + dy * dy;
-      if (d2 > r2) continue;
+      if (d2 === 0 || d2 > r2) continue;
       // 在通訊半徑內，但這一幀可能掉封包
       if (random() < params.packetLoss) continue;
 
@@ -87,7 +87,6 @@ function step() {
       a.cx += agents[j].pos.x; a.cy += agents[j].pos.y;
       b.cx += agents[i].pos.x; b.cy += agents[i].pos.y;
       a.n++; b.n++;
-      const d = Math.sqrt(d2) || 1;
       a.sx += dx / d2; a.sy += dy / d2;
       b.sx -= dx / d2; b.sy -= dy / d2;
       a.sn++; b.sn++;
