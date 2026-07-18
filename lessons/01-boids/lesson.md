@@ -82,4 +82,4 @@
 
 ---
 
-源頭：Craig W. Reynolds (1987)《Flocks, Herds, and Schools: A Distributed Behavioral Model》, SIGGRAPH '87, Computer Graphics 21(4): 25–34. [原始頁](https://www.red3d.com/cwr/boids/)
+源頭：Craig W. Reynolds (1987)《Flocks, Herds, and Schools: A Distributed Behavioral Model》, SIGGRAPH ’87, Computer Graphics 21(4): 25–34. [原始頁](https://www.red3d.com/cwr/boids/)

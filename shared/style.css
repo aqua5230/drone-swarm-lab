@@ -2,12 +2,23 @@
   color-scheme: dark;
 }
 
+html, body {
+  overflow-x: clip;
+}
+
 body {
   margin: 0;
   background: var(--gray-12, #11131a);
   color: var(--gray-2, #e6e8ee);
   font-family: var(--font-sans, system-ui, "PingFang TC", sans-serif);
   line-height: var(--font-lineheight-3, 1.5);
+}
+
+/* 鍵盤操作者需要看得到焦點在哪；全站連結／按鈕統一一種焦點樣式 */
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--blue-4, #6ab7ff);
+  outline-offset: 2px;
 }
 
 main {
