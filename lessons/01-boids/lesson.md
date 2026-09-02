@@ -10,7 +10,7 @@
 
 ## 把規則關掉，看它散成一盤沙
 
-畫布右上角那排滑桿，是每隻三角形腦袋裡規則的「音量」。先把三條全部轉到靜音——把 `separation`（分離）、`alignment`（對齊）、`cohesion`（聚合）三個都拉到 **0**。懶得自己拉，就<button class="try" data-preset='{"separation":0,"alignment":0,"cohesion":0}'>讓我幫你一鍵靜音</button>。
+參數面板那排滑桿，是每隻三角形腦袋裡規則的「音量」。先把三條全部轉到靜音——把 `separation`（分離）、`alignment`（對齊）、`cohesion`（聚合）三個都拉到 **0**。懶得自己拉，就<button class="try" data-preset='{"separation":0,"alignment":0,"cohesion":0}'>讓我幫你一鍵靜音</button>。
 
 現在牠們各飛各的，撞到邊緣穿過去又從另一邊冒出來，一盤散沙。沒有規則，就沒有群。
 

@@ -15,7 +15,11 @@
   <meta property="og:url" content="https://aqua5230.github.io/drone-swarm-lab/lessons/02-decentralized/" />
   <meta property="og:site_name" content="Swarm Lab" />
   <meta property="og:locale" content="zh_TW" />
-  <meta name="twitter:card" content="summary" />
+  <meta property="og:image" content="https://aqua5230.github.io/drone-swarm-lab/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="群飛模擬畫面：一群三角形依分離／對齊／聚合三規則流動" />
+  <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="第 2 課 · 去中心化 vs 中央控制 — Swarm Lab" />
   <meta name="twitter:description" content="把『有老大』和『沒老大』擺一起斬首，看誰先垮。" />
   <script type="application/ld+json">
@@ -32,8 +36,12 @@
   }
   </script>
 
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/open-props@1/open-props.min.css" />
+  <!-- Space Grotesk：只載 Latin，中文字自動 fallback 到系統的 PingFang TC -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" />
   <link rel="stylesheet" href="../../shared/style.css" />
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml" />
 
   <script src="https://cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/p5@1/lib/p5.min.js"></script>
@@ -67,7 +75,7 @@
 <p>右半邊是<strong>去中心化</strong>：跟第 1 課一樣，沒有頭，每隻只看鄰居。</p>
 <p>兩邊現在看起來都好好的，都成群。差別還沒顯出來。</p>
 <h2>按下那個鈕</h2>
-<p>畫布右上滑桿裡有一顆 <strong>☠ 同時斬首</strong>。按下去——左邊殺掉金色指揮官，右邊隨機殺掉一隻。</p>
+<p>參數面板裡有一顆 <strong>☠ 同時斬首</strong>。按下去——左邊殺掉金色指揮官，右邊隨機殺掉一隻。</p>
 <p>看左邊。指揮官一死，底下那群<strong>瞬間失去方向</strong>，像斷了線、攤開成一盤散沙。牠們腦袋裡只有一條指令「朝指揮官靠」，現在那個目標沒了，誰也不知道該往哪。</p>
 <p>再看右邊。少了一隻，隊形補上來，<strong>照流不誤</strong>。因為右邊每隻都一樣、誰也不是非誰不可。</p>
 <p>這就是上一課那句話的代價對照：中央控制換來效率與整齊，賠上一個<strong>單點故障（single point of failure，整個系統靠某一個非它不可的點，那點一垮全垮）</strong>。去中心化反過來——亂一點、慢一點，但你<strong>砍不到牠的頭</strong>。</p>

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="14" fill="#0f172a"/>
+  <!-- 三隻朝同一方向的 boid：分離、對齊、聚合 -->
+  <g fill="#38bdf8">
+    <path d="M40 32 L24 24 L28 32 L24 40 Z"/>
+  </g>
+  <g fill="#7dd3fc" opacity=".75">
+    <path d="M26 18 L14 12 L17 18 L14 24 Z"/>
+    <path d="M26 46 L14 40 L17 46 L14 52 Z"/>
+  </g>
+</svg>

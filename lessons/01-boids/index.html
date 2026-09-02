@@ -15,7 +15,11 @@
   <meta property="og:url" content="https://aqua5230.github.io/drone-swarm-lab/lessons/01-boids/" />
   <meta property="og:site_name" content="Swarm Lab" />
   <meta property="og:locale" content="zh_TW" />
-  <meta name="twitter:card" content="summary" />
+  <meta property="og:image" content="https://aqua5230.github.io/drone-swarm-lab/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="群飛模擬畫面：一群三角形依分離／對齊／聚合三規則流動" />
+  <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="第 1 課 · Boids 三規則 — Swarm Lab" />
   <meta name="twitter:description" content="分離／對齊／聚合——沒有指揮官的群飛，看「湧現」。" />
   <script type="application/ld+json">
@@ -32,9 +36,12 @@
   }
   </script>
 
-  <!-- Open Props：現成設計變數 -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/open-props@1/open-props.min.css" />
+  <!-- Space Grotesk：只載 Latin，中文字自動 fallback 到系統的 PingFang TC -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" />
   <link rel="stylesheet" href="../../shared/style.css" />
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml" />
 
   <!-- pangu：盤古之白，中文與英文/數字間自動補空隙 -->
   <script src="https://cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
@@ -56,7 +63,7 @@
       <p class="lede">
         每個個體只看附近鄰居、只跑三條規則——分離、對齊、聚合——
         沒有中央指揮，整群卻像一個生命體一樣流動。
-        拖右邊的滑桿改規則，或點掉任一隻，看群體當場反應。
+        拖參數面板的滑桿改規則，或點掉任一隻，看群體當場反應。
       </p>
     </header>
 
@@ -65,7 +72,7 @@
       <div class="stage">
         <!-- p5 會把畫布掛在這裡 -->
         <div id="canvas-holder"></div>
-        <!-- Tweakpane 面板掛進這，疊在畫布右上角 -->
+        <!-- Tweakpane 面板掛進這：寬螢幕疊在畫布右上角，手機排到畫布下方 -->
         <div id="controls-holder"></div>
       </div>
 
@@ -77,7 +84,7 @@
 <p>更怪的是：<strong>真的沒有</strong>。沒有一隻三角形知道「群」這回事。每一隻眼裡只有身邊幾個鄰居，腦袋裡只有三條死規則。整體那種「像一個生命」的流動，沒有任何一隻在負責。</p>
 <p>不信？把牠拆開，一條規則一條規則看。</p>
 <h2>把規則關掉，看它散成一盤沙</h2>
-<p>畫布右上角那排滑桿，是每隻三角形腦袋裡規則的「音量」。先把三條全部轉到靜音——把 <code>separation</code>（分離）、<code>alignment</code>（對齊）、<code>cohesion</code>（聚合）三個都拉到 <strong>0</strong>。懶得自己拉，就<button class="try" data-preset='{"separation":0,"alignment":0,"cohesion":0}'>讓我幫你一鍵靜音</button>。</p>
+<p>參數面板那排滑桿，是每隻三角形腦袋裡規則的「音量」。先把三條全部轉到靜音——把 <code>separation</code>（分離）、<code>alignment</code>（對齊）、<code>cohesion</code>（聚合）三個都拉到 <strong>0</strong>。懶得自己拉，就<button class="try" data-preset='{"separation":0,"alignment":0,"cohesion":0}'>讓我幫你一鍵靜音</button>。</p>
 <p>現在牠們各飛各的，撞到邊緣穿過去又從另一邊冒出來，一盤散沙。沒有規則，就沒有群。</p>
 <p>好，一條一條開回來。</p>
 <h3>只開「聚合」</h3>

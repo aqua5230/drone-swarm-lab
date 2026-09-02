@@ -28,8 +28,8 @@ export function mountNav(base, current) {
       `<button class="nav-drawer-close" aria-label="關閉">✕</button></div>` +
       ready.map((lesson) => {
         const cls = lesson.id === current ? ' class="current"' : '';
-        return `<a href="${base}lessons/${lesson.id}/"${cls}>` +
-          `<b>${lesson.title}</b><small>${lesson.blurb}</small></a>`;
+        return `<a href="${base}lessons/${lesson.id}/"${cls} aria-label="${lesson.title}">` +
+          `<b>${lesson.title}</b><small aria-hidden="true">${lesson.blurb}</small></a>`;
       }).join('') +
     `</aside>`;
   document.body.appendChild(drawer);

@@ -39,7 +39,7 @@ one concept per lesson, tweak it live, sourced. Open and play, zero install.
 
 - [p5.js](https://p5js.org/) — 畫面引擎
 - [Tweakpane](https://tweakpane.github.io/docs/) — 即時調參面板
-- [Open Props](https://open-props.style/) — 排版設計變數
+- [Space Grotesk](https://fonts.google.com/specimen/Space+Grotesk) — 標題字（只載 Latin，中文走系統字）
 - [marked](https://marked.js.org/) — 把每課的 `lesson.md` 教學文轉成網頁
 - 純靜態檔，無建置工具；可直接掛 GitHub Pages
 
