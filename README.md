@@ -80,7 +80,7 @@ python3 -m http.server 8000   # 然後開 http://localhost:8000
 ## 出處（部分）
 
 - Craig W. Reynolds (1987) *Flocks, Herds, and Schools: A Distributed Behavioral Model*,
-  SIGGRAPH '87. [原始頁](https://www.red3d.com/cwr/boids/)
+  SIGGRAPH ’87. [原始頁](https://www.red3d.com/cwr/boids/)
 - Paul Baran (1964) *On Distributed Communications*, RAND — 集中／去中心／分散三張網
 - Thomas D. Seeley (2010) *Honeybee Democracy* — 蜜蜂共識與交叉抑制
 - Marco Dorigo & Thomas Stützle (2004) *Ant Colony Optimization* — 費洛蒙最短路
