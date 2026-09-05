@@ -16,6 +16,10 @@
 - [第 8 課 · 抗毀韌性](https://aqua5230.github.io/drone-swarm-lab/lessons/08-resilience/)：靠互斥均勻鋪滿區域的群體，被打掉一部分後如何自動補位、恢復覆蓋，以及最小生存兵力的概念。
 - [第 9 課 · 人在環路](https://aqua5230.github.io/drone-swarm-lab/lessons/09-human-loop/)：人在環內／環上／環外三種介入模式，量化「把人移出環路」省下的時間與付出的錯誤，以及「有意義的人類控制」這條倫理紅線。
 - [第 10 課 · 綜合沙盒](https://aqua5230.github.io/drone-swarm-lab/lessons/10-sandbox/)：把前九課規則（三規則、障礙閃避、掠食者逃竄）整合進一個開放實驗場。
+- [第 11 課 · 螢火蟲同步](https://aqua5230.github.io/drone-swarm-lab/lessons/11-sync/)：脈衝耦合振盪器，每個個體只在看到鄰居閃光時把自己的相位往前推一點，沒有共同時鐘也能全群同步（Kuramoto 序參數量化）。
+- [第 12 課 · 少數知情者領路](https://aqua5230.github.io/drone-swarm-lab/lessons/12-informed-few/)：群裡約 5% 的知情個體不需身分與號令就能把整群的航向誤差從一百多度壓到十幾度；知情者意見分歧角度小時群體折衷走中間，角度大時倒向其中一邊。
+- [第 13 課 · 群裡混進叛徒](https://aqua5230.github.io/drone-swarm-lab/lessons/13-byzantine/)：拜占庭節點與強健統計：平均值會被 3% 永不改口的節點完全帶走，中位數守到約三成五叛徒、四成五崩；但通訊半徑一小，局部鄰里過半就會傳染，兩成叛徒即可攻陷全網。
+- [第 14 課 · 自組裝隊形](https://aqua5230.github.io/drone-swarm-lab/lessons/14-self-assembly/)：梯度傳播加邊緣跟隨兩條局部規則，無全域座標、無中央分派，群體自行填成指定形狀（Kilobots）。
 
 ## 關鍵概念定義
 
@@ -24,9 +28,17 @@
 - 去中心化（decentralization）：沒有中央節點；好處是無單點故障、抗打擊、可擴量，代價是協調較慢、難以統一意圖或緊急喊停。
 - 間接協調（stigmergy）：個體不直接溝通，而是改寫共享環境、再對環境痕跡反應，藉此協調出複雜分工。
 - 有意義的人類控制（meaningful human control）：自主系統中，人類必須真的來得及、看得懂、能負責，而非名義上在場。
+- 同步（synchronization）：一群各有自然頻率的振盪器，只靠「看到鄰居發訊號就把自己的相位往前推」這條局部規則，收斂到共同節拍，不需要中央時鐘。
+- 知情少數（informed minority）：群體中只有一小部分個體握有目標資訊，且無從辨識身分，整群仍被帶往目標；知情者不下命令，只是不完全從眾，偏差經由對齊規則擴散。
+- 拜占庭容錯（Byzantine fault tolerance）：部分節點可能任意說謊或故障時仍能達成正確共識的能力；取值型問題用中位數可撐到接近一半叛徒，但門檻取決於局部鄰里而非全體比例，口頭訊息下的拜占庭將軍問題則需 n > 3f。
+- 自組裝（self-assembly）：個體不靠全域座標與中央分派，只用梯度（離種子幾跳）與邊緣跟隨兩條局部規則，集體排成指定形狀。
 
 ## 出處
 
 - [Reynolds 1987 · Boids 原始頁](https://www.red3d.com/cwr/boids/)
 - [Paul Baran 1964 · On Distributed Communications (RAND)](https://www.rand.org/pubs/research_memoranda/RM3420.html)
 - [Article 36 · 有意義的人類控制](https://article36.org/)
+- [Mirollo & Strogatz 1990 · 脈衝耦合振盪器同步](https://doi.org/10.1137/0150098)
+- [Couzin et al. 2005 · 動物群體的有效領導與決策 (Nature)](https://doi.org/10.1038/nature03236)
+- [Lamport, Shostak & Pease 1982 · 拜占庭將軍問題](https://doi.org/10.1145/357172.357176)
+- [Rubenstein, Cornejo & Nagpal 2014 · 千機自組裝 (Science)](https://doi.org/10.1126/science.1254295)

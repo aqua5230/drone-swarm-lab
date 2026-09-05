@@ -524,7 +524,7 @@ a.lesson-card:active {
   border-color: var(--accent-deep);
 }
 
-.lesson-card h2 {
+.lesson-card h3 {
   margin: 0 0 var(--space-1);
   font-family: var(--font-display);
   font-size: 1.25rem;
@@ -587,4 +587,26 @@ a.lesson-card:active {
     transition-duration: 1ms !important;
     animation-duration: 1ms !important;
   }
+}
+
+/* 篇名分隔（基礎篇／進階篇）：首頁卡片列與抽屜目錄共用 */
+.part-head {
+  font-family: var(--font-display);
+  font-size: .8rem;
+  font-weight: 700;
+  letter-spacing: .16em;
+  color: var(--text-2);
+  margin-block: var(--space-3) 0;
+  padding-block-end: var(--space-2);
+  border-block-end: 1px solid var(--line);
+}
+
+/* 首頁：讓標題自己佔滿一整列，卡片才會從下一列重新排 */
+.lesson-grid .part-head {
+  grid-column: 1 / -1;
+}
+
+.lesson-grid .part-head:first-child,
+.nav-drawer-panel .part-head:first-of-type {
+  margin-block-start: 0;
 }

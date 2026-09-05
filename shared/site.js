@@ -29,11 +29,11 @@ export function mountNav(base, current) {
       `<div class="nav-drawer-head">` +
       `<a class="nav-drawer-home" href="${base}">課程首頁</a>` +
       `<button class="nav-drawer-close" aria-label="關閉">✕</button></div>` +
-      ready.map((lesson) => {
+      withPartHeads(ready, (part) => `<h2 class="part-head">${part}</h2>`, (lesson) => {
         const cls = lesson.id === current ? ' class="current"' : '';
         return `<a href="${base}lessons/${lesson.id}/"${cls} aria-label="${lesson.title}">` +
           `<b>${lesson.title}</b><small aria-hidden="true">${lesson.blurb}</small></a>`;
-      }).join('') +
+      }) +
     `</aside>`;
   document.body.appendChild(drawer);
 
@@ -104,12 +104,26 @@ export function mountIndex(base) {
   const host = document.getElementById('lesson-grid');
   if (!host) return;
 
-  host.innerHTML = LESSONS.map((lesson) => {
-    const inner =
-      `<h2>${lesson.title}</h2><p>${lesson.blurb}</p>`;
-    if (lesson.status === 'ready') {
-      return `<a class="lesson-card" href="${base}lessons/${lesson.id}/">${inner}</a>`;
-    }
-    return `<div class="lesson-card planned">${inner}<span class="badge">規劃中</span></div>`;
+  host.innerHTML = withPartHeads(
+    LESSONS,
+    (part) => `<h2 class="part-head">${part}</h2>`,
+    (lesson) => {
+      const inner = `<h3>${lesson.title}</h3><p>${lesson.blurb}</p>`;
+      if (lesson.status === 'ready') {
+        return `<a class="lesson-card" href="${base}lessons/${lesson.id}/">${inner}</a>`;
+      }
+      return `<div class="lesson-card planned">${inner}<span class="badge">規劃中</span></div>`;
+    },
+  );
+}
+
+// 課程清單依 part 分篇：換篇時插一條標題，篇名相同的連續排在一起。
+// 沒寫 part 的課就不插標題，加課忘了填也不會壞。
+function withPartHeads(lessons, head, item) {
+  let seen = null;
+  return lessons.map((lesson) => {
+    const lead = lesson.part && lesson.part !== seen ? head(lesson.part) : '';
+    if (lesson.part) seen = lesson.part;
+    return lead + item(lesson);
   }).join('');
 }

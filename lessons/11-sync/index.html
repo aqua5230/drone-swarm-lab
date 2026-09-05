@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第 11 課 · 螢火蟲同步 — Swarm Lab 群飛智能教學</title>
+
+  <!-- SEO -->
+  <meta name="description" content="脈衝耦合振盪器：每隻只在看到鄰居閃光時把自己的相位往前推一點，沒有中央時鐘，整群卻自己對上同一拍。可調耦合強度、通訊半徑與個體差異，看同步度即時變化。" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://aqua5230.github.io/drone-swarm-lab/lessons/11-sync/" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="第 11 課 · 螢火蟲同步 — Swarm Lab" />
+  <meta property="og:description" content="沒有中央時鐘，幾千隻螢火蟲怎麼閃成同一拍？調耦合強度與通訊半徑，看同步自己長出來。" />
+  <meta property="og:url" content="https://aqua5230.github.io/drone-swarm-lab/lessons/11-sync/" />
+  <meta property="og:site_name" content="Swarm Lab" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta property="og:image" content="https://aqua5230.github.io/drone-swarm-lab/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="模擬畫面：一片暗點同時亮起，整群閃成同一拍" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="第 11 課 · 螢火蟲同步 — Swarm Lab" />
+  <meta name="twitter:description" content="沒有中央時鐘，一群振盪器怎麼自己對上同一拍。" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LearningResource",
+    "name": "第 11 課 · 螢火蟲同步",
+    "description": "脈衝耦合振盪器如何在沒有中央時鐘、只靠局部閃光的情況下自發同步，以及耦合強度、通訊半徑與個體差異對同步的影響。",
+    "url": "https://aqua5230.github.io/drone-swarm-lab/lessons/11-sync/",
+    "inLanguage": "zh-Hant",
+    "isAccessibleForFree": true,
+    "learningResourceType": "互動模擬",
+    "isPartOf": { "@type": "Course", "name": "群飛智能互動教學", "url": "https://aqua5230.github.io/drone-swarm-lab/" }
+  }
+  </script>
+
+  <!-- Space Grotesk：只載 Latin，中文字自動 fallback 到系統的 PingFang TC -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" />
+  <link rel="stylesheet" href="../../shared/style.css" />
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml" />
+
+  <!-- pangu：盤古之白，中文與英文/數字間自動補空隙 -->
+  <script src="https://cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+
+  <!-- p5.js：畫面引擎 -->
+  <script src="https://cdn.jsdelivr.net/npm/p5@1/lib/p5.min.js"></script>
+  <!-- Tweakpane v4 是 ES module：載入後掛回全域供 sketch.js 使用 -->
+  <script type="module">
+    import { Pane } from "https://cdn.jsdelivr.net/npm/tweakpane@4/dist/tweakpane.min.js";
+    window.Tweakpane = { Pane };
+  </script>
+</head>
+<body>
+  <nav id="site-nav"></nav>
+
+  <main>
+    <header>
+      <h1>第 11 課 · 沒有時鐘，卻一起閃</h1>
+      <p class="lede">
+        每隻螢火蟲只做一件事：看到旁邊閃，自己就提早一點閃。
+        沒有指揮、沒有共同時鐘，幾千隻卻能閃成同一拍。拉滑桿看它從雜訊長出節奏。
+      </p>
+    </header>
+
+    <div class="lesson-layout">
+      <div class="stage">
+        <div id="canvas-holder"></div>
+        <div id="controls-holder"></div>
+      </div>
+      <section id="lesson-notes" class="notes">
+<h2>幾千隻蟲，閃在同一拍上</h2>
+<p>東南亞的紅樹林裡有一種景象：整排螢火蟲同時亮、同時暗，連綿好幾公里，像有人在按同一個開關。</p>
+<p>早年的博物學家寫回報告，同行不信——說那一定是觀察者眨眼造成的錯覺。因為當時沒有人想得出來：<strong>幾千隻蟲，沒有指揮、沒有共同的時鐘，怎麼可能對得上拍子。</strong></p>
+<p>畫面上這群就是。看它從一片雜訊，自己長出節奏。</p>
+<h2>每一隻腦袋裡只有一個計時器</h2>
+<p>每個點肚子裡有一個慢慢充電的計時器——<strong>相位（phase）</strong>，從 0 爬到 1，爬到頂就閃一下、歸零重來。</p>
+<p>而且每隻的自然週期還不一樣（那就是 <code>spread</code> 個體差異）。這很重要：牠們天生就不整齊。</p>
+<p>唯一的互動只有一條：<strong>看到旁邊閃，自己的相位就往前跳一點點</strong>，跳多少由 <code>coupling</code>（耦合強度）決定。</p>
+<p>沒有時鐘、沒有節拍器、沒有誰在數一二三四。就這樣。</p>
+<h2>先關掉那條規則</h2>
+<p>把耦合轉到 0，看沒有互動的樣子。<button class="try" data-preset='{"coupling":0}'>幫我關掉耦合</button></p>
+<p>左上角的<strong>同步度</strong>掉下來了。畫面下方那條<strong>節奏條</strong>（每一直條＝那一幀有幾隻在閃）變成一片矮矮的雜訊——隨時都有零星幾隻在閃，但沒有拍子。</p>
+<p>現在一格一格開回來，看它在哪裡翻過去。</p>
+<p><button class="try" data-preset='{"coupling":0.03}'>0.03</button>　同步度大概十幾趴。看得出雜訊裡有一點點隆起，但拍子還是散的。</p>
+<p><button class="try" data-preset='{"coupling":0.05}'>0.05</button>　四成上下。時對時散——一群對上了，過一會兒又鬆掉。</p>
+<p><button class="try" data-preset='{"coupling":0.08}'>0.08</button>　八九成。節奏條變成一根一根乾淨的尖峰。<strong>鎖住了。</strong></p>
+<p><button class="try" data-preset='{"coupling":0.16}'>0.16</button>　滿分，而且幾秒鐘就定。</p>
+<p>注意中間那一段：0.05 到 0.08 之間，同步度從四成跳到九成。<strong>不是慢慢變好，是翻過去。</strong> 推力不夠就是不夠，夠了就整個鎖上。</p>
+<h2>為什麼「只往前推」就能收斂</h2>
+<p>這裡藏著一個很漂亮的不對稱：相位<strong>只會被往前推，不會被往後拉</strong>。</p>
+<p>想像你快充滿了，旁邊一閃，把你推過頂——你也閃了，於是你被吸進他的拍子。慢的被拉快，快的不會被拉慢。整個系統只有一個方向可以走，於是它非收斂不可。</p>
+<p>一條這麼笨的規則，居然有數學保證。1990 年 Mirollo 與 Strogatz 證出來：這種「脈衝耦合振盪器」在很寬的條件下，<strong>幾乎一定會同步</strong>。</p>
+<h2>兩件事會把它毀掉</h2>
+<p><strong>一、看不到彼此。</strong> 把通訊半徑砍小：<button class="try" data-preset='{"coupling":0.16,"radius":55}'>半徑砍到 55</button></p>
+<p>耦合明明還很強，同步度卻掉了。畫面上會出現好幾個<strong>各自同步、彼此卻對不上的島</strong>。這跟第 3 課那條線是同一個故事：協同的前提是訊息傳得到，傳不到就碎成孤島。</p>
+<p><strong>二、個體差異太大。</strong> <button class="try" data-preset='{"coupling":0.06,"radius":150,"spread":0.35}'>把個體差異拉到 0.35</button></p>
+<p>同步度掉到六成上下：有些隻天生就是慢半拍，怎麼推都追不上，拍子糊掉。</p>
+<p>但這個救得回來——<button class="try" data-preset='{"coupling":0.2,"radius":150,"spread":0.35}'>差異不變，把耦合加大到 0.2</button>　又回到滿分。</p>
+<p>所以這裡是一場拔河：<strong>「大家有多不一樣」對上「彼此推得多用力」</strong>，誰大誰贏。同步不是天生的，是推力壓過差異的結果。</p>
+<h2>打亂它，看它自己回來</h2>
+<p>在畫布上<strong>點一下</strong>，那一區的相位就被打亂。<button class="try" data-preset='{"scramble":true}'>或者整群一起打散</button></p>
+<p>不用重新校時、不用有人喊「重來」，過幾秒它自己收回同一拍。這是第 8 課那種韌性，換一個維度出現。</p>
+<h2>這不只是螢火蟲</h2>
+<p><strong>你的心跳。</strong> 竇房結那幾千個節律細胞必須幾乎同時放電，才算跳一下。它們用的就是這套互相拉扯的機制；亂掉的時候叫心律不整。</p>
+<p><strong>整片電網。</strong> 所有發電機必須鎖在同一個頻率、同一個相位，差一點就是跳電。</p>
+<p><strong>沒有 GPS 的時候怎麼對時。</strong> 一般系統靠中央時間伺服器校時；但無人機群在干擾環境下不一定連得上任何中央。於是改成<strong>跟鄰居對時</strong>——正是這一課的規則。同步好了才能輪流用同一段頻譜講話（<strong>分時多工 TDMA，每個成員分到不同的時段發訊，才不會互相蓋台</strong>），也才能一起執行同一個動作。</p>
+<p>一群東西要協同，第一件事往往不是「往哪走」，而是「現在幾點」。</p>
+<h2>下一課</h2>
+<p>同步解決的是<strong>什麼時候</strong>。</p>
+<p>那<strong>往哪走</strong>呢？而且更麻煩的是：整群裡其實只有極少數知道要去哪，其他全是跟著走的。這樣還走得對嗎？</p>
+<hr>
+<p>源頭：Renato E. Mirollo &amp; Steven H. Strogatz (1990)《Synchronization of Pulse-Coupled Biological Oscillators》, <em>SIAM Journal on Applied Mathematics</em> 50(6): 1645–1662. <a href="https://doi.org/10.1137/0150098">DOI</a></p>
+</section>
+    </div>
+  </main>
+
+  <script src="sketch.js"></script>
+  <script type="module">
+    import { mountNav } from '../../shared/site.js';
+    import { mountLesson } from '../../shared/lesson.js';
+    mountNav('../../', '11-sync');
+    mountLesson('lesson.md', '#lesson-notes');
+  </script>
+</body>
+</html>

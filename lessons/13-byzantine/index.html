@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第 13 課 · 群裡混進叛徒 — Swarm Lab 群飛智能教學</title>
+
+  <!-- SEO -->
+  <meta name="description" content="拜占庭節點：群體從彼此回報中匯總出共同估計時，少數說謊的個體如何靠平均值把整群帶偏，而中位數與修剪平均如何頂住，以及這條防線在叛徒比例到多少時失守。" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://aqua5230.github.io/drone-swarm-lab/lessons/13-byzantine/" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="第 13 課 · 群裡混進叛徒 — Swarm Lab" />
+  <meta property="og:description" content="幾隻說謊的節點就能用平均值把整群帶走；換成中位數，整群硬是不動。防線在哪裡崩？" />
+  <meta property="og:url" content="https://aqua5230.github.io/drone-swarm-lab/lessons/13-byzantine/" />
+  <meta property="og:site_name" content="Swarm Lab" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta property="og:image" content="https://aqua5230.github.io/drone-swarm-lab/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="模擬畫面：藍色誠實節點與紅色說謊節點，下方數線顯示平均值被拉走、中位數不動" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="第 13 課 · 群裡混進叛徒 — Swarm Lab" />
+  <meta name="twitter:description" content="說謊的節點怎麼帶歪群體，中位數又怎麼擋住。" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LearningResource",
+    "name": "第 13 課 · 群裡混進叛徒",
+    "description": "分散式估計中的拜占庭容錯：平均值對極端假值毫無抵抗力，中位數與修剪平均的崩潰點，以及口頭訊息下拜占庭將軍問題需要 n > 3f 的條件。",
+    "url": "https://aqua5230.github.io/drone-swarm-lab/lessons/13-byzantine/",
+    "inLanguage": "zh-Hant",
+    "isAccessibleForFree": true,
+    "learningResourceType": "互動模擬",
+    "isPartOf": { "@type": "Course", "name": "群飛智能互動教學", "url": "https://aqua5230.github.io/drone-swarm-lab/" }
+  }
+  </script>
+
+  <!-- Space Grotesk：只載 Latin，中文字自動 fallback 到系統的 PingFang TC -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" />
+  <link rel="stylesheet" href="../../shared/style.css" />
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml" />
+
+  <!-- pangu：盤古之白，中文與英文/數字間自動補空隙 -->
+  <script src="https://cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+
+  <!-- p5.js：畫面引擎 -->
+  <script src="https://cdn.jsdelivr.net/npm/p5@1/lib/p5.min.js"></script>
+  <!-- Tweakpane v4 是 ES module：載入後掛回全域供 sketch.js 使用 -->
+  <script type="module">
+    import { Pane } from "https://cdn.jsdelivr.net/npm/tweakpane@4/dist/tweakpane.min.js";
+    window.Tweakpane = { Pane };
+  </script>
+</head>
+<body>
+  <nav id="site-nav"></nav>
+
+  <main>
+    <header>
+      <h1>第 13 課 · 有幾隻在說謊</h1>
+      <p class="lede">
+        群體要靠彼此的回報湊出一個共同答案。但其中幾隻回報的是假的。
+        用平均，幾隻就能把整群帶走；換成中位數，整群硬是不動。看那條防線在哪裡崩。
+      </p>
+    </header>
+
+    <div class="lesson-layout">
+      <div class="stage">
+        <div id="canvas-holder"></div>
+        <div id="controls-holder"></div>
+      </div>
+      <section id="lesson-notes" class="notes">
+<h2>如果那少數在說謊呢</h2>
+<p>第 6 課提過一句：「你買通幾隻蜂去吹捧爛地點。」上一課證明了少數就能帶動整群。</p>
+<p>兩句合起來，是一個很難看的問題：<strong>群體靠彼此的回報湊出共同答案——那些回報，憑什麼是真的？</strong></p>
+<h2>畫面上在算什麼</h2>
+<p>每個節點手上有一個估計值（0～1）。真值是 <strong>0.5</strong>，就是數線上那條綠線。誠實節點量到的值帶一點雜訊，散在真值附近。</p>
+<p><strong>叛徒</strong>（紅圈標出來的，這是上帝視角，群體自己看不到）永遠回報同一個假值，而且<strong>不聽任何人的</strong>。</p>
+<p>每個誠實節點只做一件事：把半徑內鄰居的回報聚合起來，然後把自己的值往那個聚合值挪一點。聚合怎麼算，就是面板上那個 <code>rule</code>。</p>
+<p>下方數線上要盯兩根標記：<strong>黃色的全體平均</strong>、<strong>白色的全體中位數</strong>。</p>
+<h2>用平均：3% 就夠把全網吃掉</h2>
+<p><button class="try" data-preset='{"rule":"mean","byzantinePct":10}'>平均 ＋ 10% 叛徒</button></p>
+<p>整片顏色滑過去，誠實節點偏離真值 40% 以上。全網淪陷。</p>
+<p>你可能想說 10% 太多了。<button class="try" data-preset='{"rule":"mean","byzantinePct":3}'>那就只放 3%</button></p>
+<p><strong>一樣淪陷。</strong></p>
+<p>為什麼這麼慘？因為叛徒<strong>永不改口</strong>（分散式系統裡叫<strong>頑固節點 stubborn agent，不吸收別人的意見、只重複自己那個值</strong>）。誠實節點每一輪都往平均挪一點，叛徒不動。這在數學上是必輸的：只要網路連得通，有一個永不改口的節點，整群最後都會滑到他那裡去。</p>
+<p>少數不是「把答案拉低一點點」，是<strong>最後拿走全部</strong>。</p>
+<p>這解釋了一件反直覺的事：「大家取平均」聽起來最公平，卻是分散式系統裡<strong>最脆弱</strong>的規則。</p>
+<h2>換成中位數，整群硬是不動</h2>
+<p><button class="try" data-preset='{"rule":"median","byzantinePct":10}'>中位數 ＋ 10% 叛徒</button>　誤差 1% 上下。</p>
+<p><button class="try" data-preset='{"rule":"median","byzantinePct":35}'>加到 35%</button>　還是守住，誤差 5% 左右。</p>
+<p><button class="try" data-preset='{"rule":"median","byzantinePct":45}'>加到 45%</button>　崩了。</p>
+<p>中位數為什麼硬？因為它<strong>不管那個假值有多離譜，只管有幾個人這樣說</strong>。</p>
+<p>自己試：在畫布上左右<strong>點一下</strong>，叛徒就改口報你點的那個值。白色那根（中位數）幾乎不動，黃色那根（平均）跟著你的滑鼠跑。<strong>一個假值喊得再誇張，也只能算一票。</strong></p>
+<p>（<code>修剪平均 trimmed</code> 是折衷：頭尾各丟掉 <code>trim</code>% 再取平均。守不守得住要看你修掉的比例夠不夠蓋過叛徒，差一點就翻盤——自己調調看。）</p>
+<h2>但那條線不在 50%，在「鄰里」</h2>
+<p>這是這一課最重要的一段。</p>
+<p><button class="try" data-preset='{"rule":"median","byzantinePct":20,"radius":80}'>只有 20% 叛徒，但半徑砍到 80</button></p>
+<p><strong>照樣全網淪陷。</strong> 叛徒只有五分之一，中位數卻擋不住。</p>
+<p>因為半徑一小，每個節點聽得到的圈子就小。圈子一小，<strong>總會有某幾個鄰里的叛徒剛好過半</strong>。那幾個誠實節點被拉走了——然後對牠們的鄰居來說，等於又多了幾個「叛徒」。破口會傳染。</p>
+<p>這是第 3 課那條滲流門檻換了個樣子回來：</p>
+<blockquote>
+<p><strong>崩不崩，不是看全體比例，是看有沒有哪個鄰里先破。</strong></p>
+</blockquote>
+<p>全體 20% 很安全，某一個角落 55% 就不安全。而攻擊者不需要買通全網的一半，他只需要<strong>在某一小塊買到過半</strong>，剩下的讓系統自己傳染出去。</p>
+<p>守法也跟著出來了：<strong>把每個節點聽得到的圈子撐大</strong>（半徑拉回去試試），讓沒有任何一小塊能被局部攻陷。抗說謊不只是選對聚合規則，還是一個<strong>連通性</strong>的問題。</p>
+<h2>真正的理論界線在哪</h2>
+<p>1982 年 Lamport、Shostak 與 Pease 把這件事寫死了：如果訊息是「口頭的」（可以被轉述、竄改，沒有簽章），要讓所有誠實節點對同一件事得到相同結論，<strong>總數必須超過叛徒數的三倍</strong>（n &gt; 3f）——三分之一就是上限。</p>
+<p>這一課的取值問題比較寬鬆（中位數撐到接近一半），因為我們只要一個「差不多對的數字」，不要求每個人結論一模一樣。<strong>你要多強的一致，就要付多貴的容錯代價。</strong></p>
+<h2>這不是假想敵</h2>
+<p><strong>壞掉的感測器跟叛徒行為一模一樣。</strong> 它不需要有惡意，卡住的溫度計就是永不改口地回報同一個值。你的容錯機制分不出「壞掉」和「說謊」，也不必分。</p>
+<p><strong>GPS 詐騙</strong>是對整群餵同一個假座標。<strong>區塊鏈</strong>整套設計就是在回答同一個問題：一群互相不信任的節點，怎麼對「哪條鏈是真的」達成共識。</p>
+<p>如果你只帶走一條：<strong>別用平均。</strong> 幾乎不花成本就能換成中位數，換來的是「一個假值只能算一票」。</p>
+<h2>最後一課</h2>
+<p>前面十三課，群體都在<strong>決定</strong>：往哪飛、選哪個家、信哪個數字。</p>
+<p>最後一課換動手做：一群個體，在沒有任何人分派座位的情況下，怎麼把自己排成一個指定的形狀。</p>
+<hr>
+<p>源頭：Leslie Lamport, Robert Shostak &amp; Marshall Pease (1982)《The Byzantine Generals Problem》, <em>ACM Transactions on Programming Languages and Systems</em> 4(3): 382–401. <a href="https://doi.org/10.1145/357172.357176">DOI</a>　本課的強健統計（中位數／修剪平均）屬容錯共識的取值版本，界線與上述定理不同。</p>
+</section>
+    </div>
+  </main>
+
+  <script src="sketch.js"></script>
+  <script type="module">
+    import { mountNav } from '../../shared/site.js';
+    import { mountLesson } from '../../shared/lesson.js';
+    mountNav('../../', '13-byzantine');
+    mountLesson('lesson.md', '#lesson-notes');
+  </script>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第 14 課 · 自組裝隊形 — Swarm Lab 群飛智能教學</title>
+
+  <!-- SEO -->
+  <meta name="description" content="Kilobots 千機自組裝的簡化版：靠梯度傳播與邊緣跟隨兩條局部規則，沒有全域座標與中央分派，一群個體自己填成指定形狀。可換形狀、調通訊半徑與同時移動數。" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://aqua5230.github.io/drone-swarm-lab/lessons/14-self-assembly/" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="第 14 課 · 自組裝隊形 — Swarm Lab" />
+  <meta property="og:description" content="沒有藍圖分派、沒有全域座標，只靠梯度與邊緣跟隨兩條局部規則，一群個體自己長成指定形狀。" />
+  <meta property="og:url" content="https://aqua5230.github.io/drone-swarm-lab/lessons/14-self-assembly/" />
+  <meta property="og:site_name" content="Swarm Lab" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta property="og:image" content="https://aqua5230.github.io/drone-swarm-lab/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="模擬畫面：一群點沿著邊緣繞行，逐層填出一個星形" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="第 14 課 · 自組裝隊形 — Swarm Lab" />
+  <meta name="twitter:description" content="梯度加邊緣跟隨兩條規則，一群個體自己長成形狀。" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LearningResource",
+    "name": "第 14 課 · 自組裝隊形",
+    "description": "程式化自組裝：梯度傳播提供距離感、邊緣跟隨提供移動路徑、種子個體提供座標原點，三者合起來讓無全域座標的群體自行填滿指定形狀。",
+    "url": "https://aqua5230.github.io/drone-swarm-lab/lessons/14-self-assembly/",
+    "inLanguage": "zh-Hant",
+    "isAccessibleForFree": true,
+    "learningResourceType": "互動模擬",
+    "isPartOf": { "@type": "Course", "name": "群飛智能互動教學", "url": "https://aqua5230.github.io/drone-swarm-lab/" }
+  }
+  </script>
+
+  <!-- Space Grotesk：只載 Latin，中文字自動 fallback 到系統的 PingFang TC -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" />
+  <link rel="stylesheet" href="../../shared/style.css" />
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml" />
+
+  <!-- pangu：盤古之白，中文與英文/數字間自動補空隙 -->
+  <script src="https://cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+
+  <!-- p5.js：畫面引擎 -->
+  <script src="https://cdn.jsdelivr.net/npm/p5@1/lib/p5.min.js"></script>
+  <!-- Tweakpane v4 是 ES module：載入後掛回全域供 sketch.js 使用 -->
+  <script type="module">
+    import { Pane } from "https://cdn.jsdelivr.net/npm/tweakpane@4/dist/tweakpane.min.js";
+    window.Tweakpane = { Pane };
+  </script>
+</head>
+<body>
+  <nav id="site-nav"></nav>
+
+  <main>
+    <header>
+      <h1>第 14 課 · 一千個笨東西，長成一個形狀</h1>
+      <p class="lede">
+        沒有藍圖分派、沒有人知道自己該站哪一格。每個個體只會兩件事：
+        沿著已就位的邊緣繞，以及跟鄰居比一個數字。形狀就這樣自己長出來。
+      </p>
+    </header>
+
+    <div class="lesson-layout">
+      <div class="stage">
+        <div id="canvas-holder"></div>
+        <div id="controls-holder"></div>
+      </div>
+      <section id="lesson-notes" class="notes">
+<h2>一千個笨東西，排成一隻海星</h2>
+<p>2014 年，哈佛實驗室的桌上擺了 <strong>1024 個 Kilobot</strong>——每個大概一枚硬幣大，靠三根震動的腳挪動，看得到的範圍只有自己直徑的<strong>三倍</strong>左右。</p>
+<p>然後它們自己排成了一隻海星。接著是字母 K，接著是扳手。</p>
+<p>沒有人告訴任何一個「你站第 372 格」。沒有中央、沒有攝影機從天上看、沒有全域座標。每一個都只知道自己身邊那幾個鄰居在幹嘛。</p>
+<p>你眼前這個場，就是那件事的簡化版。看它長。</p>
+<h2>兩條規則，只有兩條</h2>
+<p><strong>第一條：梯度（gradient，離種子有幾跳）。</strong> 金色那四個是<strong>種子</strong>，牠們被寫死是第 0 層。其他每一個只做一件事：問身邊看得到的鄰居「你第幾層」，取最小的那個加一，就是自己的層數。</p>
+<p>層數就這樣一圈一圈往外傳。顏色就是層數——越青越靠種子，越紫離種子越多跳。<strong>這是整群唯一的距離感</strong>：沒有尺、沒有座標，只有「我離原點幾跳」。</p>
+<p><strong>第二條：邊緣跟隨（edge following，貼著已就位那群的外緣繞）。</strong> 還沒就位的（白色那幾個）不會直直插進去，牠們貼著已就位那群的外圈繞圈子，一路找位子。</p>
+<p>繞到哪裡停？<strong>人在形狀裡面、旁邊至少靠著兩個人、而且自己的層數已經不小於旁邊那隻</strong>——三個條件同時成立，就停下來、變成已就位的一員，換下一個進來。</p>
+<h2>形狀在哪裡？</h2>
+<p>這是最反直覺的一點：<strong>形狀不是藍圖，是一條判斷式。</strong></p>
+<p>每個個體身上都有同一段程式，內容只是「給我一個位置，我回答這裡算不算形狀裡面」。沒有座位表、沒有編號、沒有誰負責分派。</p>
+<p>不信就換一個形狀試試——<button class="try" data-preset='{"shape":"k"}'>換成字母Ｋ</button>　<button class="try" data-preset='{"shape":"arrow"}'>換成箭頭</button>　<button class="try" data-preset='{"shape":"star"}'>換回星形</button></p>
+<p>規則一個字都沒改。改的只有那句「這裡算不算數」。</p>
+<h2>種子為什麼不能少</h2>
+<p>把種子想成原點。沒有牠們，層數就沒有起算點，整群會各自宣稱自己是第 0 層，梯度直接塌掉——<strong>去中心化不等於什麼都不能固定</strong>，它只是要求：固定的那一點必須便宜、可替代，而且壞掉時不會帶著全群一起死。</p>
+<p>這跟第 2 課那個一斬就垮的指揮官不一樣：種子只提供一個座標原點，不下命令、不分派工作；死了一個，剩下三個照樣定義得出原點。</p>
+<h2>為什麼這麼慢</h2>
+<p>看那幾個白色的繞了多久才卡進去一格。<button class="try" data-preset='{"movers":12,"speed":5}'>讓我把速度和同時上場人數拉滿</button>——快多了，但也開始互相卡。</p>
+<p>嫌慢是對的，慢就是自組裝的真實代價。真實的 Kilobots 只能一個接一個排隊繞，1024 隻要排出一個形狀，是以<strong>小時</strong>計的工程。</p>
+<p>這裡有個很硬的取捨：<strong>局部規則買到的是「規模不受限」，賣掉的是「速度」。</strong> 中央調度可以一秒算出 1024 個座位、直接派過去；但那需要全域座標、需要每個個體聽得到中央、需要中央不能掛。自組裝什麼都不需要，代價是它得一格一格慢慢長。</p>
+<p>再調一個東西：把 <code>senseScale</code>（通訊半徑相對間距的倍數）拉大或縮小，看層數的粗細怎麼變。半徑越大，一跳走得越遠、層數越少越粗糙——<strong>距離感變模糊，形狀的邊緣就跟著糊掉。</strong></p>
+<h2>走完十四課，回頭看</h2>
+<p>你手上現在有一整套零件：湧現、去中心化、斷線、擴量、感知、共識、費洛蒙、韌性、人的位置、同步、少數帶多數、抗說謊，還有這一課的自己排隊形。</p>
+<p>它們全部在說同一句話的不同面向：</p>
+<blockquote>
+<p><strong>秩序不需要有人設計，它可以從一堆笨東西之間的簡單規則裡長出來——而你能不能看見它、預測它、守住它的邊界，取決於你懂不懂那幾條規則。</strong></p>
+</blockquote>
+<p>十四課到這裡結束。第 10 課那個沙盒還在，旋鈕全開，隨時回去玩。</p>
+<hr>
+<p>源頭：Michael Rubenstein, Alejandro Cornejo &amp; Radhika Nagpal (2014)《Programmable self-assembly in a thousand-robot swarm》, <em>Science</em> 345(6198): 795–799. <a href="https://doi.org/10.1126/science.1254295">DOI</a>　本課為教學簡化版：真實系統另有定位（trilateration）與碰撞回復機制，此處以「就位條件」代替。</p>
+</section>
+    </div>
+  </main>
+
+  <script src="sketch.js"></script>
+  <script type="module">
+    import { mountNav } from '../../shared/site.js';
+    import { mountLesson } from '../../shared/lesson.js';
+    mountNav('../../', '14-self-assembly');
+    mountLesson('lesson.md', '#lesson-notes');
+  </script>
+</body>
+</html>
