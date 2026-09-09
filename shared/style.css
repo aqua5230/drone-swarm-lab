@@ -6,7 +6,19 @@
   --ink-800: #0f172a;
   --ink-700: #1e293b;
   --ink-600: #334155;
-  --line:    #1e293b;
+
+  /* 邊框用半透明白，不用實色：同一個值疊在 ink-900／800／700 任何一層上都看得見。
+     原本 --line 跟 --ink-700 同為 #1e293b，卡片邊框等於畫在自己身上，整頁看起來扁平。
+     半透明邊框是 Vercel Geist（rgba(255,255,255,.145)）與 Radix 深色階的做法。 */
+  --line:        rgba(255, 255, 255, .085);
+  --line-strong: rgba(255, 255, 255, .16);
+
+  /* 卡片表面：比頁面底色亮一階，但不到 --ink-700 那麼跳，卡片才會像浮起來的一層 */
+  --surface: #141d31;
+
+  /* 表面反光：由上而下的極淡白色漸層，讓卡片像被上方光源照到、浮在底色之上 */
+  --sheen: linear-gradient(180deg, rgba(255, 255, 255, .05), rgba(255, 255, 255, .012));
+
   --text-1:  #e2e8f0;
   --text-2:  #94a3b8;
   --text-3:  #64748b;
@@ -14,8 +26,11 @@
   --accent-strong: #7dd3fc;
   --accent-deep:   #0284c7;
 
-  --font-display: "Space Grotesk", "PingFang TC", "Noto Sans TC", system-ui, sans-serif;
-  --font-body: system-ui, -apple-system, "PingFang TC", "Noto Sans TC", sans-serif;
+  --font-display: "Space Grotesk", system-ui, -apple-system, "Segoe UI", "PingFang TC",
+    "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  /* 西文字型排在中文前面：中文字型自帶一套字距很差的西文，排前面會把英數全接走 */
+  --font-body: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "PingFang TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
   --font-mono: ui-monospace, "SF Mono", Menlo, monospace;
 
   --space-1: .25rem;
@@ -32,6 +47,9 @@
   --radius-lg: 1rem;
 
   --shadow-canvas: 0 18px 48px rgba(2, 6, 23, .55);
+  --shadow-card:   0 1px 2px rgba(2, 6, 23, .4);
+  --shadow-lift:   0 12px 28px -8px rgba(2, 6, 23, .7);
+  --shadow-panel:  0 8px 24px -6px rgba(2, 6, 23, .6);
   --shadow-drawer: 16px 0 40px rgba(2, 6, 23, .5);
 
   --ease-out: cubic-bezier(.22, 1, .36, 1);
@@ -50,6 +68,22 @@ body {
   font-family: var(--font-body);
   line-height: 1.5;
 }
+
+/* 跨頁淡入淡出。同源導覽才生效，不支援的瀏覽器直接照舊切換。 */
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root) {
+  animation: 90ms cubic-bezier(.4, 0, 1, 1) both vt-fade-out;
+}
+
+::view-transition-new(root) {
+  animation: 210ms cubic-bezier(0, 0, .2, 1) 60ms both vt-fade-in;
+}
+
+@keyframes vt-fade-out { to { opacity: 0; } }
+@keyframes vt-fade-in { from { opacity: 0; } }
 
 /* 鍵盤操作者需要看得到焦點在哪；全站連結／按鈕統一一種焦點樣式 */
 a:focus-visible,
@@ -126,6 +160,10 @@ h1 {
   border: 1px solid var(--line);
   background: var(--ink-800);
   box-shadow: var(--shadow-canvas);
+
+  /* 各課 sketch.js 的 canvasSize() 都回傳 height: 540。畫布是 p5 載入後才插進來的，
+     不先把這 540px 佔起來，文章會在載入完成那一刻被往下推一大段。 */
+  min-height: 540px;
 }
 
 /* 課內頁：沙盤（畫布＋面板）與文章。面板疊在畫布右上角。 */
@@ -151,8 +189,10 @@ h1 {
      showPerception（113px）也放得下。 */
   --tp-blade-value-width: 118px;
 
-  /* Tweakpane：拉進 slate/sky，避免浮在畫布上的預設灰面板 */
-  --tp-base-background-color: color-mix(in srgb, var(--ink-700) 92%, transparent);
+  /* Tweakpane：拉進 slate/sky，避免浮在畫布上的預設灰面板。
+     底色壓到 72% 再配下面的 backdrop-filter，面板變成透得出群飛的毛玻璃，
+     不再是壓在模擬上的一塊灰磚。 */
+  --tp-base-background-color: color-mix(in srgb, var(--ink-800) 72%, transparent);
   --tp-base-shadow-color: color-mix(in srgb, var(--ink-900) 55%, transparent);
   --tp-button-background-color: var(--ink-600);
   --tp-button-background-color-hover: color-mix(in srgb, var(--accent) 28%, var(--ink-600));
@@ -164,7 +204,7 @@ h1 {
   --tp-container-background-color-focus: color-mix(in srgb, var(--ink-600) 68%, transparent);
   --tp-container-background-color-active: color-mix(in srgb, var(--ink-600) 78%, transparent);
   --tp-container-foreground-color: var(--text-2);
-  --tp-groove-foreground-color: color-mix(in srgb, var(--line) 85%, transparent);
+  --tp-groove-foreground-color: rgba(255, 255, 255, .14);
   --tp-input-background-color: color-mix(in srgb, var(--ink-800) 82%, transparent);
   --tp-input-background-color-hover: color-mix(in srgb, var(--ink-600) 48%, var(--ink-800));
   --tp-input-background-color-focus: color-mix(in srgb, var(--accent) 18%, var(--ink-800));
@@ -178,6 +218,14 @@ h1 {
 #controls-holder .tp-dfwv {
   width: 100%;
   max-width: 100%;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-panel);
+
+  /* 毛玻璃：面板疊在畫布上，讓底下的群飛透出來一點，才不會像貼了張貼紙 */
+  backdrop-filter: blur(14px) saturate(1.3);
+  -webkit-backdrop-filter: blur(14px) saturate(1.3);
 }
 
 /* 手機：畫布只有約 270px 寬，面板疊上去等於蓋掉整個模擬。
@@ -308,23 +356,58 @@ h1 {
   gap: var(--space-4);
   align-items: center;
   padding: var(--space-3) var(--space-5);
-  background: color-mix(in srgb, var(--ink-900) 88%, transparent);
-  backdrop-filter: blur(8px);
+  background: color-mix(in srgb, var(--ink-900) 78%, transparent);
+  backdrop-filter: blur(14px) saturate(1.4);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4);
   border-block-end: 1px solid var(--line);
   font-size: .85rem;
+}
+
+/* 課內頁閱讀進度：貼在導覽列底緣的一條細線，捲到底就滿。
+   animation-timeline 是純 CSS 的捲動驅動動畫，不支援的瀏覽器整條不顯示，不影響閱讀。 */
+.read-progress {
+  position: absolute;
+  inset-inline: 0;
+  bottom: -1px;
+  height: 2px;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  background: linear-gradient(90deg, var(--accent-deep), var(--accent));
+}
+
+@supports (animation-timeline: scroll()) {
+  .read-progress {
+    animation: read-progress auto linear;
+    animation-timeline: scroll();
+  }
+}
+
+@keyframes read-progress {
+  to { transform: scaleX(1); }
 }
 
 /* 左上唯一入口：品牌＋目錄鈕合一，點開抽屜 */
 .nav-menu {
   flex: 0 0 auto;
   font: inherit;
+  font-family: var(--font-display);
   font-weight: 700;
+  letter-spacing: .01em;
   cursor: pointer;
   color: var(--text-1);
   background: color-mix(in srgb, var(--text-1) 6%, transparent);
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
   padding: var(--space-1) var(--space-3);
+}
+
+/* 導覽列右側：目前這一課的名字，捲到哪都知道自己在哪 */
+.nav-here {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--text-2);
 }
 
 .nav-menu:hover {
@@ -452,7 +535,12 @@ h1 {
   color: var(--accent-strong);
 }
 
-/* 課內頁底部：上一課／下一課 */
+/* 課內頁底部：上一課／下一課。第 1 課與最後一課只有單邊鄰居，
+   那一格用空的 <span> 佔位，一樣分一半寬度，卡片才不會吃滿整列。 */
+.lesson-foot > span {
+  flex: 1 1 0;
+}
+
 .lesson-foot {
   display: flex;
   justify-content: space-between;
@@ -464,20 +552,37 @@ h1 {
 
 .lesson-foot a {
   flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
   padding: var(--space-4);
   border-radius: var(--radius-md);
-  background: var(--ink-700);
+  background: var(--sheen), var(--surface);
   border: 1px solid var(--line);
-  color: var(--text-2);
+  color: var(--text-1);
   text-decoration: none;
   transition: border-color var(--dur-base) var(--ease-out),
     color var(--dur-base) var(--ease-out),
+    transform var(--dur-base) var(--ease-out),
     background-color var(--dur-base) var(--ease-out);
 }
 
+/* 「上一課」「下一課」的方向標，讓兩顆按鈕不必靠箭頭猜 */
+.lesson-foot a .dir {
+  font-size: .75rem;
+  letter-spacing: .1em;
+  color: var(--text-2);
+  transition: color var(--dur-base) var(--ease-out);
+}
+
 .lesson-foot a:hover {
-  border-color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
   color: var(--text-1);
+  transform: translateY(-2px);
+}
+
+.lesson-foot a:hover .dir {
+  color: var(--accent);
 }
 
 .lesson-foot a:active {
@@ -498,24 +603,28 @@ h1 {
 }
 
 .lesson-card {
-  display: block;
-  padding: var(--space-4) var(--space-5);
-  background: var(--ink-700);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-5);
+  background: var(--sheen), var(--surface);
   border-radius: var(--radius-lg);
   text-decoration: none;
   color: inherit;
   border: 1px solid var(--line);
+  box-shadow: var(--shadow-card);
   transition: border-color var(--dur-base) var(--ease-out),
     transform var(--dur-base) var(--ease-out),
+    background-color var(--dur-base) var(--ease-out),
     box-shadow var(--dur-base) var(--ease-out);
 }
 
 a.lesson-card:hover,
 a.lesson-card:focus-visible {
   color: inherit;
-  border-color: var(--accent);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-canvas);
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lift);
 }
 
 a.lesson-card:active {
@@ -524,10 +633,27 @@ a.lesson-card:active {
   border-color: var(--accent-deep);
 }
 
+/* 課號抽出來當眉標，標題就只剩概念本身，一列掃過去看得到進度 */
+.lesson-card .num {
+  font-family: var(--font-display);
+  font-size: .75rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  color: var(--text-2);
+  transition: color var(--dur-base) var(--ease-out);
+}
+
+a.lesson-card:hover .num,
+a.lesson-card:focus-visible .num {
+  color: var(--accent);
+}
+
 .lesson-card h3 {
-  margin: 0 0 var(--space-1);
+  margin: 0;
   font-family: var(--font-display);
   font-size: 1.25rem;
+  line-height: 1.35;
+  letter-spacing: -.01em;
   overflow-wrap: anywhere;
   min-width: 0;
 }
@@ -535,24 +661,30 @@ a.lesson-card:active {
 .lesson-card p {
   margin: 0;
   color: var(--text-2);
+  font-size: .9375rem;
+  line-height: 1.7;
 }
 
 /* 規劃中：不可點，但不降到 4.5:1 以下。不用整卡 opacity，改降字色到 --text-2。 */
 .lesson-card.planned {
   cursor: default;
-  background: color-mix(in srgb, var(--ink-700) 78%, var(--ink-900));
+  background: color-mix(in srgb, var(--surface) 55%, var(--ink-900));
+  box-shadow: none;
 }
 
-.lesson-card.planned h2,
+.lesson-card.planned h3,
 .lesson-card.planned p,
 .lesson-card.planned .badge {
   color: var(--text-2);
 }
 
 .lesson-card .badge {
+  align-self: flex-start;
   font-size: .75rem;
   color: var(--text-2);
-  margin-inline-start: var(--space-2);
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--line);
+  border-radius: 999px;
 }
 
 @media (min-width: 64rem) {
@@ -587,10 +719,24 @@ a.lesson-card:active {
     transition-duration: 1ms !important;
     animation-duration: 1ms !important;
   }
+
+  /* ::view-transition-* 長在另一棵偽元素樹上，上面那條 * 打不到它，要另外關 */
+  @view-transition {
+    navigation: none;
+  }
+
+  /* 不能只是停住動畫：停住會變成一條永遠滿格的進度線，讀者會以為自己捲到底了 */
+  .read-progress {
+    display: none;
+  }
 }
 
 /* 篇名分隔（基礎篇／進階篇）：首頁卡片列與抽屜目錄共用 */
 .part-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
   font-family: var(--font-display);
   font-size: .8rem;
   font-weight: 700;
@@ -601,6 +747,12 @@ a.lesson-card:active {
   border-block-end: 1px solid var(--line);
 }
 
+.part-head .count {
+  font-weight: 500;
+  letter-spacing: .04em;
+  color: var(--text-2);
+}
+
 /* 首頁：讓標題自己佔滿一整列，卡片才會從下一列重新排 */
 .lesson-grid .part-head {
   grid-column: 1 / -1;
@@ -609,4 +761,62 @@ a.lesson-card:active {
 .lesson-grid .part-head:first-child,
 .nav-drawer-panel .part-head:first-of-type {
   margin-block-start: 0;
+}
+
+/* 首頁標題下的一行事實：先講清楚這是什麼規模的東西，再進課程列 */
+.hero-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-3);
+  margin-block: var(--space-5) 0;
+  padding: 0;
+  list-style: none;
+  font-size: .8125rem;
+  color: var(--text-2);
+}
+
+.hero-meta li {
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--text-1) 4%, transparent);
+}
+
+.hero-meta li b {
+  color: var(--text-1);
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+
+/* 全站頁尾 */
+.site-foot {
+  margin-block-start: var(--space-8);
+  border-block-start: 1px solid var(--line);
+  background: color-mix(in srgb, var(--surface) 55%, transparent);
+}
+
+.site-foot > div {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 72rem;
+  margin-inline: auto;
+  padding: var(--space-6) var(--space-5);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-5);
+  align-items: baseline;
+  justify-content: space-between;
+  font-size: .8125rem;
+  color: var(--text-2);
+}
+
+.site-foot b {
+  font-family: var(--font-display);
+  color: var(--text-1);
+}
+
+.site-foot nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
 }

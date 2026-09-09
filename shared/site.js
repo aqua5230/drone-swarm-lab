@@ -16,8 +16,11 @@ export function mountNav(base, current) {
 
   // 左上單一入口：品牌＝目錄鈕，點了開抽屜（避免「品牌」「目錄」兩顆功能重疊）
   const ready = LESSONS.filter((lesson) => lesson.status === 'ready');
+  const here = LESSONS.find((lesson) => lesson.id === current);
   host.innerHTML =
-    `<button class="nav-menu" aria-label="課程目錄" aria-expanded="false">☰ Swarm Lab</button>`;
+    `<button class="nav-menu" aria-label="課程目錄" aria-expanded="false">☰ Swarm Lab</button>` +
+    (here ? `<span class="nav-here">${here.title}</span>` : '') +
+    (here ? `<div class="read-progress" aria-hidden="true"></div>` : '');
 
   // 抽屜式課程目錄：平常收起，點按鈕才滑出
   const drawer = document.createElement('div');
@@ -94,8 +97,14 @@ function mountFootNav(base, current, ready) {
   foot.className = 'lesson-foot';
   foot.setAttribute('aria-label', '上一課／下一課');
   foot.innerHTML =
-    (prev ? `<a class="prev" href="${base}lessons/${prev.id}/">← ${prev.title}</a>` : '<span></span>') +
-    (next ? `<a class="next" href="${base}lessons/${next.id}/">${next.title} →</a>` : '<span></span>');
+    (prev
+      ? `<a class="prev" href="${base}lessons/${prev.id}/">` +
+        `<span class="dir">← 上一課</span><span>${prev.title}</span></a>`
+      : '<span></span>') +
+    (next
+      ? `<a class="next" href="${base}lessons/${next.id}/">` +
+        `<span class="dir">下一課 →</span><span>${next.title}</span></a>`
+      : '<span></span>');
   main.appendChild(foot);
 }
 
@@ -104,17 +113,42 @@ export function mountIndex(base) {
   const host = document.getElementById('lesson-grid');
   if (!host) return;
 
+  const countOf = (part) => LESSONS.filter((lesson) => lesson.part === part).length;
   host.innerHTML = withPartHeads(
     LESSONS,
-    (part) => `<h2 class="part-head">${part}</h2>`,
+    (part) => `<h2 class="part-head">${part}` +
+      `<span class="count">${countOf(part)} 課</span></h2>`,
     (lesson) => {
-      const inner = `<h3>${lesson.title}</h3><p>${lesson.blurb}</p>`;
+      // 課名長成「第 1 課 · Boids 三規則」；把課號拆出來當眉標，
+      // 標題就只剩概念本身，一整列掃過去讀得比較快。拆不出來就整串當標題。
+      const [num, name] = splitTitle(lesson.title);
+      const inner =
+        (num ? `<span class="num">${num}</span>` : '') +
+        `<h3>${name}</h3><p>${lesson.blurb}</p>`;
       if (lesson.status === 'ready') {
-        return `<a class="lesson-card" href="${base}lessons/${lesson.id}/">${inner}</a>`;
+        return `<a class="lesson-card" href="${base}lessons/${lesson.id}/" ` +
+          `aria-label="${lesson.title}">${inner}</a>`;
       }
       return `<div class="lesson-card planned">${inner}<span class="badge">規劃中</span></div>`;
     },
   );
+}
+
+// 「第 1 課 · Boids 三規則」→ ['第 1 課', 'Boids 三規則']。沒有分隔號就回傳 ['', 整串]。
+function splitTitle(title) {
+  const at = title.indexOf(' · ');
+  return at === -1 ? ['', title] : [title.slice(0, at), title.slice(at + 3)];
+}
+
+// 全站頁尾：每頁一份，說明這是什麼、授權、原始碼在哪。
+export function mountFoot(base) {
+  const foot = document.createElement('footer');
+  foot.className = 'site-foot';
+  foot.innerHTML =
+    `<div><span><b>Swarm Lab</b> · 群飛智能互動教學．MIT 授權、內容開源</span>` +
+    `<nav aria-label="頁尾"><a href="${base}">課程首頁</a>` +
+    `<a href="https://github.com/aqua5230/drone-swarm-lab">原始碼</a></nav></div>`;
+  document.body.appendChild(foot);
 }
 
 // 課程清單依 part 分篇：換篇時插一條標題，篇名相同的連續排在一起。

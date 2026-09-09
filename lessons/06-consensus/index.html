@@ -101,10 +101,11 @@
 
   <script src="sketch.js"></script>
   <script type="module">
-    import { mountNav } from '../../shared/site.js';
+    import { mountNav, mountFoot } from '../../shared/site.js';
     import { mountLesson } from '../../shared/lesson.js';
     mountNav('../../', '06-consensus');
     mountLesson('lesson.md', '#lesson-notes');
+    mountFoot('../../');
   </script>
 </body>
 </html>
