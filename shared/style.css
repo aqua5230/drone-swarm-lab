@@ -215,7 +215,8 @@ h1 {
   --tp-monitor-foreground-color: var(--text-2);
 }
 
-#controls-holder .tp-dfwv {
+/* 面板用 container 掛進來時，Tweakpane v4 的根元素是 .tp-rotv（不是浮動視窗的 .tp-dfwv） */
+#controls-holder > .tp-rotv {
   width: 100%;
   max-width: 100%;
   border: 1px solid var(--line-strong);
@@ -819,4 +820,57 @@ a.lesson-card:focus-visible .num {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-4);
+}
+
+/* 畫布下方的分享列：把調好的參數存進網址，複製給別人就是同一個場景。 */
+.share-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-3);
+  align-items: center;
+  justify-content: space-between;
+  margin-block: calc(var(--space-5) * -1 + var(--space-2)) var(--space-5);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+  font-size: .82rem;
+}
+
+.share-state {
+  color: var(--text-3);
+  font-family: var(--font-mono);
+  font-size: .78rem;
+}
+
+/* 有改過參數才亮起來——沒改的時候這條不該來搶注意力 */
+.share-bar.dirty .share-state {
+  color: var(--accent-strong);
+}
+
+.share-acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.share-bar button {
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-2);
+  font: inherit;
+  cursor: pointer;
+}
+
+.share-bar button:hover {
+  color: var(--text-1);
+  border-color: var(--accent);
+}
+
+.share-bar button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }

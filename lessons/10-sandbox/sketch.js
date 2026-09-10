@@ -175,6 +175,7 @@ function mousePressed() {
 }
 
 function setup() {
+  SwarmLink.init(params);   // 讀網址上的參數；要在 reset() 與面板之前
   const s = canvasSize();
   createCanvas(s.width, s.height).parent('canvas-holder').style('cursor', 'crosshair');
   reset();

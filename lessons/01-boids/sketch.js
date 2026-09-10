@@ -483,6 +483,7 @@ function drawHud() {
 }
 
 function setup() {
+  SwarmLink.init(params);   // 讀網址上的參數；要在 reset() 與面板之前
   const size = canvasSize();
   const canvas = createCanvas(size.width, size.height);
   canvas.parent('canvas-holder');
