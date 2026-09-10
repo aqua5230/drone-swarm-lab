@@ -6,8 +6,8 @@
   <title>Swarm Lab · 群飛智能互動教學｜Boids、去中心化、群體共識</title>
 
   <!-- SEO -->
-  <meta name="description" content="用瀏覽器就能玩的群飛智能（swarm intelligence）互動教學。一課一概念、可即時調參數、附一手出處——從 Boids 三規則到群體共識、抗毀韌性、人在環路，再到秩序參數與臨界密度，看懂去中心化群體與自主系統的底層原理。零安裝、開源。" />
-  <meta name="keywords" content="群飛智能,swarm intelligence,boids,湧現,去中心化,群體共識,蟻群,費洛蒙,自主系統,無人機群,p5.js,互動教學" />
+  <meta name="description" content="用瀏覽器就能玩的群飛智能（swarm intelligence）互動教學。一課一概念、可即時調參數、附一手出處——從 Boids 三規則到群體共識、抗毀韌性、人在環路，再到秩序參數、避碰、覆蓋控制與粒子群最佳化，看懂去中心化群體與自主系統的底層原理。零安裝、開源。" />
+  <meta name="keywords" content="群飛智能,swarm intelligence,boids,湧現,去中心化,群體共識,蟻群,費洛蒙,自主系統,無人機群,速度障礙,避碰,覆蓋控制,任務分配,粒子群最佳化,p5.js,互動教學" />
   <meta name="author" content="Swarm Lab" />
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://aqua5230.github.io/drone-swarm-lab/" />
@@ -52,7 +52,7 @@
       {
         "@type": "Course",
         "name": "群飛智能互動教學",
-        "description": "從 Boids 三規則到群體共識、抗毀韌性與人在環路，18 課演示去中心化群體與自主系統的底層原理，並用秩序參數與臨界密度說明它們何時突然失效。",
+        "description": "從 Boids 三規則到群體共識、抗毀韌性與人在環路，22 課演示去中心化群體與自主系統的底層原理，從秩序參數與臨界密度說明它們何時突然失效，再走到避碰、覆蓋、任務分配與粒子群最佳化這些工程做法。",
         "url": "https://aqua5230.github.io/drone-swarm-lab/",
         "inLanguage": "zh-Hant",
         "isAccessibleForFree": true,
@@ -60,7 +60,7 @@
         "hasCourseInstance": {
           "@type": "CourseInstance",
           "courseMode": "online",
-          "courseWorkload": "PT2H"
+          "courseWorkload": "PT3H"
         }
       },
       {
@@ -85,7 +85,11 @@
           { "@type": "ListItem", "position": 15, "name": "拓樸鄰居 vs 距離鄰居", "url": "https://aqua5230.github.io/drone-swarm-lab/lessons/15-topological/" },
           { "@type": "ListItem", "position": 16, "name": "秩序參數與臨界雜訊", "url": "https://aqua5230.github.io/drone-swarm-lab/lessons/16-order-parameter/" },
           { "@type": "ListItem", "position": 17, "name": "人流自己分出車道", "url": "https://aqua5230.github.io/drone-swarm-lab/lessons/17-lane-formation/" },
-          { "@type": "ListItem", "position": 18, "name": "蝗蟲的密度門檻", "url": "https://aqua5230.github.io/drone-swarm-lab/lessons/18-locust-phase/" }
+          { "@type": "ListItem", "position": 18, "name": "蝗蟲的密度門檻", "url": "https://aqua5230.github.io/drone-swarm-lab/lessons/18-locust-phase/" },
+          { "@type": "ListItem", "position": 19, "name": "速度障礙避碰", "url": "https://aqua5230.github.io/drone-swarm-lab/lessons/19-collision-avoidance/" },
+          { "@type": "ListItem", "position": 20, "name": "Voronoi 覆蓋控制", "url": "https://aqua5230.github.io/drone-swarm-lab/lessons/20-coverage-control/" },
+          { "@type": "ListItem", "position": 21, "name": "拍賣式任務分配", "url": "https://aqua5230.github.io/drone-swarm-lab/lessons/21-task-auction/" },
+          { "@type": "ListItem", "position": 22, "name": "粒子群最佳化", "url": "https://aqua5230.github.io/drone-swarm-lab/lessons/22-pso/" }
         ]
       }
     ]
@@ -103,7 +107,7 @@
         看懂群飛與自主原理——從「沒有指揮官的群體」開始。
       </p>
       <ul class="hero-meta">
-        <li><b>18</b> 課互動模擬</li>
+        <li><b>22</b> 課互動模擬</li>
         <li>參數即時可調</li>
         <li>每課附一手論文出處</li>
         <li>零安裝 · MIT 開源</li>

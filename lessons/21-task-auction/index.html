@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第 21 課 · 拍賣式任務分配 — Swarm Lab 群飛智能教學</title>
+
+  <!-- SEO -->
+  <meta name="description" content="市場機制多機器人任務分配的互動版：比較「各搶最近的」與「拍賣分配」的總飛行距離與閒置台數，看出價如何把遠處的任務也配出去，以及任務隨時新增時如何重跑拍賣。" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://aqua5230.github.io/drone-swarm-lab/lessons/21-task-auction/" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="第 21 課 · 拍賣式任務分配 — Swarm Lab" />
+  <meta property="og:description" content="分工不必靠分配，可以靠定價。一個數字就把距離、餘力、划不划算全部壓縮進去。" />
+  <meta property="og:url" content="https://aqua5230.github.io/drone-swarm-lab/lessons/21-task-auction/" />
+  <meta property="og:site_name" content="Swarm Lab" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta property="og:image" content="https://aqua5230.github.io/drone-swarm-lab/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="模擬畫面：六台無人機與待查看的訊號點之間連著指派線，兩台搶同一個點時連線變紅" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="第 21 課 · 拍賣式任務分配 — Swarm Lab" />
+  <meta name="twitter:description" content="拍賣演算法、市場機制分工、動態重拍賣——用搜救場景看懂。" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LearningResource",
+    "name": "第 21 課 · 拍賣式任務分配",
+    "description": "指派問題與拍賣演算法、貪婪拍賣與各搶最近的差異、動態任務下的重拍賣，以及共識式分散拍賣（CBBA）如何在情報不一致時仍收斂。",
+    "url": "https://aqua5230.github.io/drone-swarm-lab/lessons/21-task-auction/",
+    "inLanguage": "zh-Hant",
+    "isAccessibleForFree": true,
+    "learningResourceType": "互動模擬",
+    "isPartOf": { "@type": "Course", "name": "群飛智能互動教學", "url": "https://aqua5230.github.io/drone-swarm-lab/" }
+  }
+  </script>
+
+  <!-- Space Grotesk：只載 Latin，中文字自動 fallback 到系統的 PingFang TC -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" />
+  <link rel="stylesheet" href="../../shared/style.css" />
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml" />
+
+  <!-- pangu：盤古之白，中文與英文/數字間自動補空隙 -->
+  <script src="https://cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+
+  <!-- p5.js：畫面引擎 -->
+  <script src="https://cdn.jsdelivr.net/npm/p5@1/lib/p5.min.js"></script>
+  <!-- Tweakpane v4 是 ES module：載入後掛回全域供 sketch.js 使用 -->
+  <script type="module">
+    import { Pane } from "https://cdn.jsdelivr.net/npm/tweakpane@4/dist/tweakpane.min.js";
+    window.Tweakpane = { Pane };
+  </script>
+</head>
+<body>
+  <nav id="site-nav"></nav>
+
+  <main>
+    <header>
+      <h1>第 21 課 · 沒有指揮，用喊價分工</h1>
+      <p class="lede">
+        十四個求救訊號、六台機，誰去哪一個？各搶最近的會撞在一起；改成喊價，價格自己把人推到該去的地方。
+      </p>
+    </header>
+
+    <div class="lesson-layout">
+      <div class="stage">
+        <div id="canvas-holder"></div>
+        <div id="controls-holder"></div>
+      </div>
+      <section id="lesson-notes" class="notes">
+<h2>十四個求救訊號，六台機</h2>
+<p>畫面上散布的小圓點是<strong>待查看的求救訊號</strong>，灰色代表還沒人去。六台無人機在左邊待命。</p>
+<p>問題只有一個：<strong>誰去哪一個？</strong></p>
+<p>沒有指揮中心，沒有人手上有全局最佳解。先看最直覺的做法。</p>
+<p><button class="try" data-preset='{"rule":"nearest"}'>各搶最近的</button></p>
+<h2>各搶最近的，錯在哪</h2>
+<p>每一台都挑「離自己最近、還沒被查看」的點——這聽起來完全合理，而且完全不需要溝通。</p>
+<p>看畫面上的<strong>紅線</strong>。紅線代表兩台正在飛往同一個點。</p>
+<p>先到的那台完成，另一台白飛一趟，再重新挑一個。左上角的「總飛行距離」會被這些白飛撐大。</p>
+<p>左上角的「閒置中」偶爾跳出幾台——那是幾台同時盯上一個點，其中幾台什麼也做不了。</p>
+<p>實測跑完同一批十四個點：<strong>各搶最近的飛了約 6000 px，拍賣只飛約 3900 px，省下三分之一。</strong> 省下來的全是白飛。</p>
+<p><strong>問題不在每一台做錯決定，在於它們各自都做對了，合起來是錯的。</strong></p>
+<h2>用喊價把「合起來」算進去</h2>
+<p><button class="try" data-preset='{"rule":"auction"}'>拍賣分配</button></p>
+<p>換成拍賣，畫面上會先閃過一批細線——那是<strong>出價</strong>。</p>
+<p>規則：</p>
+<ul>
+<li>每一台對每一個還沒人接的點喊一個價。這裡的價就是 <code>-飛過去的距離</code>：<strong>近的喊得高，遠的喊得低。</strong></li>
+<li>找出全場最高的那一組（哪台、哪個點），成交，兩邊都劃掉。</li>
+<li>在剩下的裡面再找最高的，繼續，直到配完。</li>
+</ul>
+<p>一台一個點、一個點一台，紅線消失，總飛行距離掉下來。</p>
+<p>（<strong>注意它省的是距離，不是時間。</strong> 兩種做法完成全部任務的耗時差不多——拍賣甚至可能稍慢一點，因為它會派人去接遠的點而不是全部堆在近處。省油不等於省時間，這個取捨在真實任務裡要自己選。）</p>
+<p>關鍵在於這件事：<strong>近的喊得高，會自動把遠的人排開</strong>。右上角那個點雖然對所有人都遠，但總有一台是相對最近的，而那台在其他點上又搶不贏更近的人——於是它就去了右上角。</p>
+<p><strong>沒有人分配任務。是價格把人推到該去的地方。</strong></p>
+<h2>你其實看過這一招</h2>
+<p>這件事的正式名字叫<strong>拍賣演算法</strong>，1988 年 Bertsekas 提出來解「指派問題」（n 個人配 n 件事，總成本最小）。</p>
+<p>他的原版比這裡再精緻一點：出價的人如果搶輸了，會<strong>把價格往上加一點點再喊</strong>，一輪一輪加，直到沒有人想換。加價的幅度決定了它離最佳解多遠——<strong>加得越細，答案越好，但要跑越多輪。</strong></p>
+<p>這個模擬用的是簡化版：一輪定生死，出價最高的直接成交，不重新加價。所以它<strong>不保證是最佳解</strong>，只是比各搶各的好很多。</p>
+<h2>事情做到一半，又冒出新的訊號</h2>
+<p>真實搜救不會給你一張固定的清單。</p>
+<p><button class="try" data-preset='{"spawnRate":0.01,"rule":"nearest"}'>各搶最近的 ＋ 隨時冒新點</button>　<button class="try" data-preset='{"spawnRate":0.01,"rule":"auction"}'>拍賣 ＋ 隨時冒新點</button></p>
+<p>新的點一冒出來，就重跑一次拍賣，只重排還沒完成的部分。</p>
+<p>這裡看得到拍賣真正的優勢：<strong>它不是一次算完的計畫，是一個可以隨時重跑的規則。</strong> 計畫會過期，規則不會。</p>
+<p>把機數壓到 3 台、點數拉到 18 個再試一次——負載重的時候差距更明顯。</p>
+<p><button class="try" data-preset='{"drones":3,"tasks":18,"rule":"auction"}'>3 台對 18 個點</button></p>
+<h2>這招在真的系統裡怎麼跑</h2>
+<p>這個模擬有個作弊的地方：<strong>它假設有一個地方看得到所有出價。</strong> 真實的分散式系統沒有這種地方。</p>
+<p>2009 年 Choi、Brunet 與 How 那篇處理的就是這件事。他們的做法是：讓每一台自己出價、自己記一份「目前誰贏了什麼」的帳本，然後<strong>跟鄰居交換帳本</strong>，用共識機制把衝突磨掉——這正是第 6 課那套群體共識，接在拍賣後面當收尾。</p>
+<p>論文證明的兩件事很重要：<strong>一定會收斂到沒有人搶同一件事的分配</strong>，而且最差的情況有可證明的下限，不會爛到無法接受。</p>
+<p>值得注意的是它的健壯性來源：<strong>就算各台手上的情報不一致、通訊網路時斷時續，收斂性質還是成立。</strong> 這是把「市場」搬進機器人系統的真正理由——不是為了最佳，是為了<strong>在情報不完整時還能得到一個不打架的答案</strong>。</p>
+<h2>這一課要帶走的</h2>
+<blockquote>
+<p><strong>分工不必靠分配，可以靠定價。</strong></p>
+</blockquote>
+<p>價格是一種很省的溝通：一個數字就把「我離它多近、我還有多少餘力、這件事對我多划算」全部壓縮進去。旁邊的人不需要知道你的地圖、你的電量、你的內部狀態，<strong>只要比大小就好</strong>。</p>
+<p>這也是為什麼市場機制在多機器人領域活了三十年：它把一個需要全局資訊的難題，換成了一堆只需要比大小的簡單題。</p>
+<hr>
+<p>源頭：Dimitri P. Bertsekas (1988)《The auction algorithm: A distributed relaxation method for the assignment problem》, <em>Annals of Operations Research</em> 14: 105–123. <a href="https://doi.org/10.1007/BF02186476">DOI</a>　M. Bernardine Dias, Robert Zlot, Nidhi Kalra &amp; Anthony Stentz (2006)《Market-Based Multirobot Coordination: A Survey and Analysis》, <em>Proceedings of the IEEE</em> 94(7): 1257–1270. <a href="https://doi.org/10.1109/JPROC.2006.876939">DOI</a>　Han-Lim Choi, Luc Brunet &amp; Jonathan P. How (2009)《Consensus-Based Decentralized Auctions for Robust Task Allocation》, <em>IEEE Transactions on Robotics</em> 25(4): 912–926. <a href="https://doi.org/10.1109/TRO.2009.2022423">DOI</a>　本課為教學簡化版：出價只算距離、拍賣不做加價迭代、且假設出價集中在一處比較，與論文中的分散式版本不等價。</p>
+</section>
+    </div>
+  </main>
+
+  <script src="../../shared/permalink.js"></script>
+  <script src="./sketch.js"></script>
+  <script type="module">
+    import { mountNav, mountFoot } from '../../shared/site.js';
+    import { mountLesson } from '../../shared/lesson.js';
+    mountNav('../../', '21-task-auction');
+    mountFoot('../../');
+    mountLesson('lesson.md', '#lesson-notes');
+  </script>
+</body>
+</html>

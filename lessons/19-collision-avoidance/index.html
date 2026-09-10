@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第 19 課 · 速度障礙避碰 — Swarm Lab 群飛智能教學</title>
+
+  <!-- SEO -->
+  <meta name="description" content="速度障礙（VO）與互惠避碰（RVO/ORCA）的互動版：十二台無人機同時飛往對面，切換「不避讓／只有自己閃／各讓一半」，看震盪怎麼產生、又怎麼被一句「只閃一半」修好。附速度空間視覺化。" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://aqua5230.github.io/drone-swarm-lab/lessons/19-collision-avoidance/" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="第 19 課 · 速度障礙避碰 — Swarm Lab" />
+  <meta property="og:description" content="兩台都很有禮貌，反而卡在一起。修法是：每台只閃一半，剩下一半相信對方。" />
+  <meta property="og:url" content="https://aqua5230.github.io/drone-swarm-lab/lessons/19-collision-avoidance/" />
+  <meta property="og:site_name" content="Swarm Lab" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta property="og:image" content="https://aqua5230.github.io/drone-swarm-lab/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="模擬畫面：十二台無人機飛往對面，焦點那台身上張開紅色的速度障礙錐" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="第 19 課 · 速度障礙避碰 — Swarm Lab" />
+  <meta name="twitter:description" content="速度障礙、互惠避碰、往前看多久——用一張速度空間圖看懂。" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LearningResource",
+    "name": "第 19 課 · 速度障礙避碰",
+    "description": "速度障礙（velocity obstacle）的定義、只有自己閃為何會震盪、互惠避碰如何用「各讓一半」消除震盪，以及時間視野在保守與效率之間的取捨。",
+    "url": "https://aqua5230.github.io/drone-swarm-lab/lessons/19-collision-avoidance/",
+    "inLanguage": "zh-Hant",
+    "isAccessibleForFree": true,
+    "learningResourceType": "互動模擬",
+    "isPartOf": { "@type": "Course", "name": "群飛智能互動教學", "url": "https://aqua5230.github.io/drone-swarm-lab/" }
+  }
+  </script>
+
+  <!-- Space Grotesk：只載 Latin，中文字自動 fallback 到系統的 PingFang TC -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" />
+  <link rel="stylesheet" href="../../shared/style.css" />
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml" />
+
+  <!-- pangu：盤古之白，中文與英文/數字間自動補空隙 -->
+  <script src="https://cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+
+  <!-- p5.js：畫面引擎 -->
+  <script src="https://cdn.jsdelivr.net/npm/p5@1/lib/p5.min.js"></script>
+  <!-- Tweakpane v4 是 ES module：載入後掛回全域供 sketch.js 使用 -->
+  <script type="module">
+    import { Pane } from "https://cdn.jsdelivr.net/npm/tweakpane@4/dist/tweakpane.min.js";
+    window.Tweakpane = { Pane };
+  </script>
+</head>
+<body>
+  <nav id="site-nav"></nav>
+
+  <main>
+    <header>
+      <h1>第 19 課 · 把會撞的速度先劃掉</h1>
+      <p class="lede">
+        避碰不是「看到就閃」，是先問「我這樣飛下去會不會撞」，把會撞的速度事先全部劃掉——剩下的隨便挑都安全。
+      </p>
+    </header>
+
+    <div class="lesson-layout">
+      <div class="stage">
+        <div id="canvas-holder"></div>
+        <div id="controls-holder"></div>
+      </div>
+      <section id="lesson-notes" class="notes">
+<h2>十二台同時往對面飛</h2>
+<p>畫面上十二台無人機站成一圈，每一台的目標是<strong>正對面那一點</strong>。</p>
+<p>這是機器人領域拿來考避碰演算法的標準題目，難就難在它逼所有人同時經過同一個點：圓心。</p>
+<p>先把策略切到「不避讓」，看它們穿過彼此。</p>
+<p><button class="try" data-preset='{"rule":"none"}'>不避讓</button></p>
+<p>左上角的碰撞次數會一直跳。跑 900 幀量到 <strong>276 次</strong>。這是基準線——<strong>什麼都不做的代價</strong>。</p>
+<h2>避碰不是「看到就閃」</h2>
+<p>直覺會這樣寫：偵測到太近就往旁邊推一下。</p>
+<p>問題是<strong>太近的時候已經來不及了</strong>。飛行器有速度、有慣性，等距離報警才反應，那一下往往推不開。</p>
+<p>1998 年 Fiorini 與 Shiller 提出的想法把整件事翻了過來：不要問「現在會不會撞」，要問——</p>
+<blockquote>
+<p><strong>我如果一直用「這個速度」飛下去，未來會不會撞？</strong></p>
+</blockquote>
+<p>會撞的那些速度，事先全部劃掉。剩下的隨便挑一個，都是安全的。</p>
+<p>那些被劃掉的速度，在速度空間裡長成一個<strong>錐形</strong>，叫做<strong>速度障礙（velocity obstacle，簡稱 VO）</strong>。</p>
+<h2>左下角那張小圖才是重點</h2>
+<p>畫布左下角的圓，畫的不是位置，是<strong>速度</strong>。圓心代表「停住不動」，離圓心越遠代表飛得越快，方向就是飛行方向。</p>
+<ul>
+<li><strong>紅色區域</strong>：會撞上某台鄰居的速度，被劃掉了。</li>
+<li><strong>亮點</strong>：這一幀實際選中的速度。</li>
+</ul>
+<p>琥珀色那台是焦點，畫面上從它身上張開的紅色扇形，就是那些紅色區域在真實空間裡的樣子。</p>
+<p><strong>每一幀的決策就這麼一句話：在沒被塗紅的地方，挑一個最接近「我本來想飛的方向」的速度。</strong></p>
+<p><button class="try" data-preset='{"rule":"selfish"}'>只有自己閃</button></p>
+<h2>兩個人都很有禮貌，反而撞在一起</h2>
+<p>切到「只有自己閃」，你會看到一件很像人的事：<strong>它們開始左右搖擺。</strong></p>
+<p>原因是這個模式裡每一台都假設「鄰居會直直走，只有我要閃」。</p>
+<p>於是兩台相向而來時，兩台<strong>同時</strong>往同一邊閃。閃完發現還是對著，再同時往另一邊閃。走廊上兩個人互相讓路、卡住、笑一下再重來——是同一回事。</p>
+<p>2008 年 van den Berg 那篇論文就是為了修這個震盪。修法簡單到有點好笑：</p>
+<blockquote>
+<p><strong>每一台只閃一半。剩下一半相信對方會處理。</strong></p>
+</blockquote>
+<p><button class="try" data-preset='{"rule":"reciprocal"}'>各讓一半</button></p>
+<p>震盪立刻消失。同樣跑 900 幀、盯著焦點那台的左右方向變號次數：</p>
+<ul>
+<li>只有自己閃：<strong>變號 482 次</strong>（一直在左右改主意）</li>
+<li>各讓一半：<strong>變號 4 次</strong></li>
+</ul>
+<p>碰撞次數兩者都是 <strong>0</strong>——安全上沒差，差的是<strong>走得順不順</strong>。震盪要付的帳單在位移上：同樣 900 幀，只有自己閃平均只前進 94 px，各讓一半前進 115 px。<strong>多花的兩成路程，全部花在左右猶豫。</strong></p>
+<p>而且沒有人需要跟誰講話。<strong>這就是「互惠」（reciprocal）這兩個字的全部內容</strong>——不是溝通協議，是一個關於「對方也在算同一件事」的假設。</p>
+<h2>往前看多遠，決定你飛得多醜</h2>
+<p><code>timeHorizon</code> 是「往前看幾秒」。</p>
+<p><button class="try" data-preset='{"agents":12,"timeHorizon":0.8,"rule":"reciprocal"}'>只看 0.8 秒</button>　<button class="try" data-preset='{"agents":12,"timeHorizon":6,"rule":"reciprocal"}'>看 6 秒</button></p>
+<p><strong>看太短</strong>：紅色錐子很細，幾乎不擋路，路線筆直漂亮——然後撞。</p>
+<p>十二台的時候看不太出來（0.8 秒只多撞幾次）。<strong>把台數加到 24 再看一次，代價就爆給你看：</strong></p>
+<p><button class="try" data-preset='{"agents":24,"timeHorizon":3,"rule":"reciprocal"}'>24 台 · 看 3 秒</button>　<button class="try" data-preset='{"agents":24,"timeHorizon":0.8,"rule":"reciprocal"}'>24 台 · 看 0.8 秒</button></p>
+<p>900 幀量到的碰撞次數：<strong>看 3 秒是 8 次，看 0.8 秒是 1104 次。</strong></p>
+<p>不是差一倍，是差一百倍。<strong>前瞻不足的代價不隨密度線性成長，它是爆炸的</strong>——因為擠的時候每一台同時被好幾台威脅，反應窗口本來就短，再砍掉前瞻等於整個沒有。</p>
+<p>那看太長呢？</p>
+<p><button class="try" data-preset='{"agents":24,"timeHorizon":6,"rule":"reciprocal"}'>24 台 · 看 6 秒</button></p>
+<p>老實說，在這個場景裡幾乎沒有代價（碰撞 11 次、走的距離跟看 3 秒一樣）。因為每一幀有 24 個方向的候選速度可挑，錐子再胖也還找得到出路。</p>
+<p>但代價不是不存在，它藏在速度裡：24 台看 3 秒的時候，<strong>已經有 154 幀是整群跑在半速以下</strong>——那就是「大家都在讓，所以大家都慢下來」的樣子。空間再窄一點、候選速度再少一點，這條就會從「慢一點」變成「動不了」。</p>
+<p><strong>避碰參數不是「安全 vs 不安全」的旋鈕，是「保守 vs 效率」的旋鈕。</strong></p>
+<h2>為什麼工程上真的敢用</h2>
+<p>2011 年 van den Berg 那一版叫 <strong>ORCA</strong>，把「可以用的速度」從錐子改寫成<strong>幾個半平面的交集</strong>。</p>
+<p>差別在哪？錐子要靠取樣去試——這個模擬就是這樣做的，試三十幾個候選速度挑一個。半平面的交集是個標準的<strong>線性規劃</strong>問題，可以直接解出來，快得多，而且解得出來就保證不撞。</p>
+<p><strong>每台只需要看得到鄰居的位置與速度，不需要通訊、不需要協商、不需要編號。</strong> 這和第 1 課的 Boids 是同一種結構：局部規則，全域行為。</p>
+<h2>這一課要帶走的</h2>
+<blockquote>
+<p><strong>能保證的安全，來自「事先劃掉危險的選項」，不是「事後閃得快」。</strong></p>
+</blockquote>
+<p>這句話遠遠不只用在避碰。任何要對自主系統做安全保證的地方都是同一招：<strong>與其驗證「它做的每個決定都對」，不如先把不能做的事從選項裡刪掉。</strong> 前者要證明無限多種情況，後者只要證明那個集合算得對。</p>
+<p>回頭看第 9 課的人在環路——那條「不可逾越的線」，畫的其實就是一個速度障礙。</p>
+<hr>
+<p>源頭：Paolo Fiorini &amp; Zvi Shiller (1998)《Motion Planning in Dynamic Environments Using Velocity Obstacles》, <em>The International Journal of Robotics Research</em> 17(7): 760–772. <a href="https://doi.org/10.1177/027836499801700706">DOI</a>　Jur van den Berg, Ming Lin &amp; Dinesh Manocha (2008)《Reciprocal Velocity Obstacles for real-time multi-agent navigation》, <em>ICRA 2008</em>: 1928–1935. <a href="https://doi.org/10.1109/ROBOT.2008.4543489">DOI</a>　Jur van den Berg, Stephen J. Guy, Ming Lin &amp; Dinesh Manocha (2011)《Reciprocal n-Body Collision Avoidance》, <em>Springer Tracts in Advanced Robotics</em> 70: 3–19. <a href="https://doi.org/10.1007/978-3-642-19457-3_1">DOI</a>　本課為教學簡化版：真正的 ORCA 用線性規劃解半平面交集，這裡改用取樣候選速度，行為相近但不等價；時間視野以「幀」代替秒，數值不可直接與論文對照。</p>
+</section>
+    </div>
+  </main>
+
+  <script src="../../shared/permalink.js"></script>
+  <script src="./sketch.js"></script>
+  <script type="module">
+    import { mountNav, mountFoot } from '../../shared/site.js';
+    import { mountLesson } from '../../shared/lesson.js';
+    mountNav('../../', '19-collision-avoidance');
+    mountFoot('../../');
+    mountLesson('lesson.md', '#lesson-notes');
+  </script>
+</body>
+</html>

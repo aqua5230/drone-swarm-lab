@@ -72,20 +72,20 @@
       </div>
       <section id="lesson-notes" class="notes">
 <h2>一根旋鈕，兩個世界</h2>
-<p>畫面上是最素的群體模型：<strong>每個粒子只做一件事</strong> —— 看看半徑內的鄰居都往哪走，取平均，自己也往那走，然後手抖一下。</p>
+<p>畫面上是最素的群體模型：<strong>每個粒子只做一件事</strong>——看看半徑內的鄰居都往哪走，取平均，自己也往那走，然後手抖一下。</p>
 <p>沒有分離、沒有聚合、沒有避碰。只有「跟著平均走」加「手抖」。抖的幅度就是 <code>eta</code>。</p>
-<p>現在慢慢把 <code>eta</code> 往右轉。你會期待整群慢慢變亂 —— <strong>但它不是慢慢的。</strong></p>
-<p><button class="try" data-preset="{&quot;eta&quot;:0.4}">eta = 0.4</button>　<button class="try" data-preset="{&quot;eta&quot;:2.2}">eta = 2.2</button>　<button class="try" data-preset="{&quot;eta&quot;:3.4}">eta = 3.4</button></p>
+<p>現在慢慢把 <code>eta</code> 往右轉。你會期待整群慢慢變亂——<strong>但它不是慢慢的。</strong></p>
+<p><button class="try" data-preset='{"eta":0.4}'>eta = 0.4</button>　<button class="try" data-preset='{"eta":2.2}'>eta = 2.2</button>　<button class="try" data-preset='{"eta":3.4}'>eta = 3.4</button></p>
 <p>在某個位置，整群「啪」一下就散了。這件事有名字：<strong>相變（phase transition，物質狀態的突然改變）</strong>。跟水到 0 度結冰是同一類事情。</p>
 <h2>把「整不整齊」變成一個數字</h2>
 <p>眼睛看得出整不整齊，但眼睛沒辦法比較。所以要有一個數字。</p>
 <p><strong>秩序參數 va</strong>：把每個粒子的行進方向當成一支長度為 1 的箭頭，全部加起來，除以粒子數，取長度。</p>
 <ul>
 <li>全部同方向 → 箭頭疊加 → <strong>va = 1</strong></li>
-<li> 方向亂七八糟 → 互相抵消 → <strong>va ≈ 0</strong></li>
+<li>方向亂七八糟 → 互相抵消 → <strong>va ≈ 0</strong></li>
 </ul>
-<p>畫面下面那張折線圖畫的就是它。粒子的顏色也是方向 —— <strong>同顏色 = 同方向</strong>，所以有秩序的時候整片是同一個色，沒秩序的時候像打翻的顏料。</p>
-<p>這個「把一整群的狀態壓成一個數字」的動作，是整個統計物理的核心手法。你在第 11 課看過同步度、第 13 課看過偏離真值 —— <strong>都是同一件事的不同版本。</strong></p>
+<p>畫面下面那張折線圖畫的就是它。粒子的顏色也是方向——<strong>同顏色 = 同方向</strong>，所以有秩序的時候整片是同一個色，沒秩序的時候像打翻的顏料。</p>
+<p>這個「把一整群的狀態壓成一個數字」的動作，是整個統計物理的核心手法。你在第 11 課看過同步度、第 13 課看過偏離真值——<strong>都是同一件事的不同版本。</strong></p>
 <h2>那條陡降的曲線</h2>
 <p>按面板上的 <strong>「▶ 掃描雜訊 0 → 最大」</strong>。程式會自動把 <code>eta</code> 從 0 慢慢加上去，每個值等它穩定，把 (eta, va) 點出來。</p>
 <p>跑完你會看到一條曲線：前段是平的高原，接著<strong>一個陡降</strong>，然後貼地。</p>
@@ -93,21 +93,21 @@
 <p>指數這種東西為什麼重要？因為它<strong>跟細節無關</strong>。換一種粒子、換一種抖法，只要對稱性一樣，那個 0.45 還是 0.45。這是物理學家最愛的那種結論：<strong>一大堆看起來不同的系統，其實是同一個系統。</strong></p>
 <h2>密度也能扳動它</h2>
 <p>臨界點不是只有雜訊說了算。把 <code>boxScale</code> 縮小（等於把同樣多的粒子塞進更小的空間、密度變高），再跑一次掃描。</p>
-<p><button class="try" data-preset="{&quot;boxScale&quot;:0.6,&quot;eta&quot;:2.6}">擠密一點</button>　<button class="try" data-preset="{&quot;boxScale&quot;:1.8,&quot;eta&quot;:2.6}">攤稀一點</button></p>
+<p><button class="try" data-preset='{"boxScale":0.6,"eta":2.6}'>擠密一點</button>　<button class="try" data-preset='{"boxScale":1.8,"eta":2.6}'>攤稀一點</button></p>
 <p>密度高的時候，同樣的雜訊撐得住秩序；密度低的時候，一點雜訊就垮。</p>
-<p>道理不難：<strong>密度高＝鄰居多＝平均的樣本數多＝隨機誤差被平均掉</strong>。這跟第 13 課「叛徒佔比多少會被帶走」是同一條數學骨架 —— <strong>多數決的抗噪能力，取決於你數了多少人。</strong></p>
+<p>道理不難：<strong>密度高＝鄰居多＝平均的樣本數多＝隨機誤差被平均掉</strong>。這跟第 13 課「叛徒佔比多少會被帶走」是同一條數學骨架——<strong>多數決的抗噪能力，取決於你數了多少人。</strong></p>
 <h2>這個模型錯在哪（很重要）</h2>
-<p>1995 年那篇說這是<strong>連續</strong>相變：秩序像滑坡一樣降下去。後來大家把電腦換好一點、把場地開大一百倍，發現不對 ——</p>
+<p>1995 年那篇說這是<strong>連續</strong>相變：秩序像滑坡一樣降下去。後來大家把電腦換好一點、把場地開大一百倍，發現不對——</p>
 <p>在夠大的系統裡，這其實是<strong>不連續（一階）相變</strong>：臨界點附近會冒出一種東西叫<strong>行進帶（traveling band）</strong>，一條又密又整齊的隊伍在一片稀疏的亂流裡橫著跑，兩個相共存。</p>
-<p>Vicsek 當年沒看到，不是算錯，是<strong>場地太小</strong> —— 箱子比行進帶的波長還短，那個結構根本擠不進去。</p>
+<p>Vicsek 當年沒看到，不是算錯，是<strong>場地太小</strong>——箱子比行進帶的波長還短，那個結構根本擠不進去。</p>
 <p>你手上這個模擬也一樣小。所以請這樣理解眼前的畫面：<strong>它演示的是相變這回事，不是相變的最終定論。</strong> 有限的箱子會給你有限的真相，這句話在做模擬時值得刻在牆上。</p>
-<p><button class="try" data-preset="{&quot;count&quot;:1000,&quot;boxScale&quot;:1.6,&quot;eta&quot;:2.8,&quot;trails&quot;:true}">把粒子加到 1000、場開大、停在臨界點附近</button></p>
+<p><button class="try" data-preset='{"count":1000,"boxScale":1.6,"eta":2.8,"trails":true}'>把粒子加到 1000、場開大、停在臨界點附近</button></p>
 <p>這個設定下，運氣好的話你會看到密集的帶狀結構在畫面上遊走。那就是行進帶的影子。</p>
 <h2>這一課要帶走的</h2>
 <blockquote>
 <p><strong>群體的整齊度不是連續刻度，是有門檻的。門檻兩側是兩種東西，中間沒有折衷。</strong></p>
 </blockquote>
-<p>這代表：一個群體系統「表現正常」不保證它安全 —— <strong>它可能就站在臨界點旁邊，再一點雜訊就整個翻過去。</strong> 你要知道的不是「現在整不整齊」，是「離門檻還有多遠」。</p>
+<p>這代表：一個群體系統「表現正常」不保證它安全——<strong>它可能就站在臨界點旁邊，再一點雜訊就整個翻過去。</strong> 你要知道的不是「現在整不整齊」，是「離門檻還有多遠」。</p>
 <hr>
 <p>源頭：Tamás Vicsek, András Czirók, Eshel Ben-Jacob, Inon Cohen &amp; Ofer Shochet (1995)《Novel type of phase transition in a system of self-driven particles》, <em>Physical Review Letters</em> 75(6): 1226–1229. <a href="https://doi.org/10.1103/PhysRevLett.75.1226">DOI</a>　關於一階相變與行進帶的修正，見 Grégoire &amp; Chaté (2004)《Onset of collective and cohesive motion》, <em>PRL</em> 92: 025702. <a href="https://doi.org/10.1103/PhysRevLett.92.025702">DOI</a>　本課為教學簡化版：粒子速率與箱子尺度為求畫面可讀已重新換算，數值不可直接與論文對照。</p>
 </section>

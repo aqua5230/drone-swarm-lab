@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第 20 課 · Voronoi 覆蓋控制 — Swarm Lab 群飛智能教學</title>
+
+  <!-- SEO -->
+  <meta name="description" content="Voronoi 分區與 Lloyd 演算法的互動版：八台機器人自己把場地分完、走到各自責任區的重心，覆蓋成本一路下降到收斂。可切換重要性密度、隨機移除機器人看它重新分區。" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://aqua5230.github.io/drone-swarm-lab/lessons/20-coverage-control/" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="第 20 課 · Voronoi 覆蓋控制 — Swarm Lab" />
+  <meta property="og:description" content="分區規則只要互相吻合，分工就不需要有人分配。打掉三台，剩下的自己把洞補起來。" />
+  <meta property="og:url" content="https://aqua5230.github.io/drone-swarm-lab/lessons/20-coverage-control/" />
+  <meta property="og:site_name" content="Swarm Lab" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta property="og:image" content="https://aqua5230.github.io/drone-swarm-lab/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="模擬畫面：場地被分成彩色的 Voronoi 責任區，每台機器人與自己區塊的重心之間連著一條細線" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="第 20 課 · Voronoi 覆蓋控制 — Swarm Lab" />
+  <meta name="twitter:description" content="Voronoi 分區、Lloyd 迭代、覆蓋成本——看一群機器人自己站位。" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LearningResource",
+    "name": "第 20 課 · Voronoi 覆蓋控制",
+    "description": "Voronoi 分區作為免協調的分工規則、Lloyd 演算法作為覆蓋成本的梯度下降、重要性密度如何改變站位，以及收斂到局部最小值的限制。",
+    "url": "https://aqua5230.github.io/drone-swarm-lab/lessons/20-coverage-control/",
+    "inLanguage": "zh-Hant",
+    "isAccessibleForFree": true,
+    "learningResourceType": "互動模擬",
+    "isPartOf": { "@type": "Course", "name": "群飛智能互動教學", "url": "https://aqua5230.github.io/drone-swarm-lab/" }
+  }
+  </script>
+
+  <!-- Space Grotesk：只載 Latin，中文字自動 fallback 到系統的 PingFang TC -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" />
+  <link rel="stylesheet" href="../../shared/style.css" />
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml" />
+
+  <!-- pangu：盤古之白，中文與英文/數字間自動補空隙 -->
+  <script src="https://cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+
+  <!-- p5.js：畫面引擎 -->
+  <script src="https://cdn.jsdelivr.net/npm/p5@1/lib/p5.min.js"></script>
+  <!-- Tweakpane v4 是 ES module：載入後掛回全域供 sketch.js 使用 -->
+  <script type="module">
+    import { Pane } from "https://cdn.jsdelivr.net/npm/tweakpane@4/dist/tweakpane.min.js";
+    window.Tweakpane = { Pane };
+  </script>
+</head>
+<body>
+  <nav id="site-nav"></nav>
+
+  <main>
+    <header>
+      <h1>第 20 課 · 一群機器人怎麼把一片地分完</h1>
+      <p class="lede">
+        每個地方歸離它最近的那台管，每台往自己那塊地的重心走一小步。沒有人分配，站位自己就長出來了。
+      </p>
+    </header>
+
+    <div class="lesson-layout">
+      <div class="stage">
+        <div id="canvas-holder"></div>
+        <div id="controls-holder"></div>
+      </div>
+      <section id="lesson-notes" class="notes">
+<h2>八台機器人，一片地，沒有人分配</h2>
+<p>畫面上八台機器人擠在左下角。它們要做的事是：<strong>把整片場地守好</strong>，任何地方出事都有人在附近。</p>
+<p>沒有中央調度、沒有人拿地圖畫格子。每一台只知道兩件事：自己在哪，以及旁邊幾台在哪。</p>
+<p>按下播放看它們散開。</p>
+<h2>第一步：先定義「這塊歸誰」</h2>
+<p>規則只有一句：<strong>場上任何一點，歸離它最近的那台機器人管。</strong></p>
+<p>這樣切出來的分區有個名字叫 <strong>Voronoi 分區</strong>。畫面上不同顏色就是不同人的責任區。</p>
+<p>這條規則的好處是它<strong>不需要協調</strong>——每一台自己算，算出來的結果一定互相吻合，不會有兩台認為同一塊地歸自己，也不會有哪塊地沒人認領。</p>
+<h2>第二步：走到自己那塊地的重心</h2>
+<p>每一台看著自己的責任區，問一句：<strong>這塊地的重心在哪？</strong> 然後往那裡走一小步。</p>
+<p>畫面上的<strong>小十字</strong>就是重心，機器人和它之間有一條細線。線短了，代表它快到位了。</p>
+<p>走了之後，責任區會變；責任區變了，重心又跑掉；於是再走。<strong>一直重複，就是這一課的全部。</strong></p>
+<p>這個「分區 → 走向重心 → 再分區」的迴圈叫 <strong>Lloyd 演算法</strong>。它 1957 年就寫出來了，是貝爾實驗室內部的一份備忘錄，作者本人沒發表，一直到 <strong>1982 年才正式登在期刊上</strong>——中間二十五年，這個演算法在圈內靠影印本流傳。</p>
+<h2>它會停下來，而且知道自己停了</h2>
+<p>左上角的 <strong>H</strong> 是覆蓋成本：把每個點到負責它那台機器人的距離平方，全部加起來。</p>
+<p><strong>H 越低，代表整體的反應距離越短。</strong></p>
+<p>盯著下面那條曲線：它一路下降，然後打平。打平的時候左上角會出現綠色的「已收斂」。</p>
+<p>停下來的那個狀態有個名字：<strong>每一台都剛好站在自己責任區的重心上</strong>。到了這個狀態，誰都沒有動機再動——動了 H 就變大。</p>
+<p>2004 年 Cortés 等人證明的就是這件事：<strong>這個看起來只是「往重心走」的土辦法，其實是覆蓋成本的梯度下降。</strong> 每一台各自往自己那塊地的重心走，整群就在一起把 H 推下去，而且沒有人需要知道 H 是多少。</p>
+<h2>不是每個地方一樣重要</h2>
+<p>真實任務不會是「平均守好」。有的地方就是比較容易出事。</p>
+<p>面板上的「重要性」就是在說這件事。切成「一個熱區」，看它們怎麼重新站位。</p>
+<p><button class="try" data-preset='{"density":"uniform"}'>每處一樣重要</button>　<button class="try" data-preset='{"density":"single"}'>一個熱區</button>　<button class="try" data-preset='{"density":"double"}'>兩個熱區</button></p>
+<p>熱區那邊機器人擠得密、外圍站得疏。實際數一數：<strong>均勻時只有三台站在熱區附近，切成單熱區之後變成五台</strong>，整群到熱區的平均距離縮短了四分之一。</p>
+<p><strong>沒有人下令「你去熱區」</strong>——只是重心的算法裡把重要的地方算得重一點，站位自己就變了。</p>
+<p><button class="try" data-preset='{"density":"edge"}'>重要的在邊界</button></p>
+<p>這一個特別反直覺：重要的東西在外圈，於是它們整體往外挪。</p>
+<p>但注意——<strong>中間不會空掉。</strong> 外圈重要不代表中間不重要（那裡的重要性是 0.1，不是 0），而且站太外面會讓中間那塊地的反應距離變得很長，成本反而上升。於是它停在一個折衷的位置：比均勻時外面一點，但沒有貼著邊。</p>
+<p><strong>這就是「最佳」的長相——它幾乎從來不是極端。</strong> 你憑直覺想的「重要的在外面就全部站外面」，成本算下去是錯的。</p>
+<h2>打掉三台會怎樣</h2>
+<p>按面板上的「隨機移除 3 台」。</p>
+<p><button class="try" data-preset='{"robots":16,"density":"double"}'>先放 16 台</button></p>
+<p>剩下的機器人的責任區當場變大，重心跟著外移，於是它們自己走過去把洞補起來。<strong>沒有任何一行程式碼在處理「有人掛了」這件事</strong>——分區規則本來就只看「現在還在的人」。</p>
+<p>這跟第 8 課的抗毀韌性是同一個結構，但機制不同：第 8 課靠的是互斥與補位，這裡靠的是<strong>責任區的定義本身就會自動重畫</strong>。</p>
+<h2>老實說它的極限</h2>
+<p>把「移動幅度」調大再看一次。</p>
+<p><button class="try" data-preset='{"gain":0.3}'>走大步</button></p>
+<p>它還是會收斂，但收斂到的位置<strong>不一定是同一組</strong>。</p>
+<p>這是這個方法最該講清楚的一件事：<strong>它保證停在一個「誰都不想動」的狀態，但那不保證是最好的那一組站位。</strong> 換一個起始位置，可能停在另一組、H 比較高的解上。數學上叫局部最小值。</p>
+<p>所以工程上真的在用的時候，會另外做隨機重啟、或者讓它偶爾抖一下再看會不會掉到更低的地方。面板上的「擾動」就是給你試這個的。</p>
+<h2>這一課跟第 5 課差在哪</h2>
+<p>第 5 課的分散式感知在講<strong>掃描</strong>：每隻只看得到一點點，合起來把整片掃過一遍，重點是「不要漏」。</p>
+<p>這一課在講<strong>站位</strong>：假設事情隨時會發生，我該站在哪裡，才能讓「平均反應距離」最短。</p>
+<p>一個是動詞，一個是名詞。<strong>一個問「怎麼把地看完」，一個問「該站在哪等」。</strong></p>
+<h2>這一課要帶走的</h2>
+<blockquote>
+<p><strong>只要把「怎麼算我的責任」定義對，分工就不需要有人分配。</strong></p>
+</blockquote>
+<p>Voronoi 分區的厲害之處不在它多聰明，在於它<strong>互相吻合</strong>：每一台各自算，結果自動拼成完整的一片，不重疊、不遺漏、不需要對表。</p>
+<p><strong>設計群體系統時，找到這種「各自算就會自動一致」的規則，比設計一個好的調度器值錢得多。</strong></p>
+<hr>
+<p>源頭：Jorge Cortés, Sonia Martínez, Timur Karataş &amp; Francesco Bullo (2004)《Coverage Control for Mobile Sensing Networks》, <em>IEEE Transactions on Robotics and Automation</em> 20(2): 243–255. <a href="https://doi.org/10.1109/TRA.2004.824698">DOI</a>　Stuart P. Lloyd (1982)《Least squares quantization in PCM》, <em>IEEE Transactions on Information Theory</em> 28(2): 129–137（1957 年完成的貝爾實驗室內部備忘錄）. <a href="https://doi.org/10.1109/TIT.1982.1056489">DOI</a>　本課為教學簡化版：責任區用 8 像素的格點近似，不是真正的 Voronoi 幾何；重要性密度為虛構的示範函數，不對應任何真實資料。</p>
+</section>
+    </div>
+  </main>
+
+  <script src="../../shared/permalink.js"></script>
+  <script src="./sketch.js"></script>
+  <script type="module">
+    import { mountNav, mountFoot } from '../../shared/site.js';
+    import { mountLesson } from '../../shared/lesson.js';
+    mountNav('../../', '20-coverage-control');
+    mountFoot('../../');
+    mountLesson('lesson.md', '#lesson-notes');
+  </script>
+</body>
+</html>

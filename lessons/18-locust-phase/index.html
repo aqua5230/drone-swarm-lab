@@ -83,28 +83,28 @@
 <p>眼前這個環，就是那個跑道。</p>
 <h2>先看中間那一段</h2>
 <p><strong>中間那段才是這一課的主角。</strong> 按面板上的「一次加 20 隻」，或直接：</p>
-<p><button class="try" data-preset="{&quot;count&quot;:10}">10 隻</button>　<button class="try" data-preset="{&quot;count&quot;:25}">25 隻</button>　<button class="try" data-preset="{&quot;count&quot;:200}">200 隻</button></p>
+<p><button class="try" data-preset='{"count":10}'>10 隻</button>　<button class="try" data-preset='{"count":25}'>25 隻</button>　<button class="try" data-preset='{"count":200}'>200 隻</button></p>
 <p>盯著畫面下方那張時間圖。縱軸是 <strong>φ</strong>：+1 代表全群逆時針、−1 代表全群順時針、0 代表亂成一團。</p>
 <p>人少的時候，那條線在 0 附近抖。人多的時候，它貼在 +1 或 −1 不動。</p>
 <p><strong>而在中間那段密度</strong>，你會看到一件很怪的事：線穩穩地待在 +1，待了很久很久，然後<strong>啪</strong>一下翻到 −1，又穩穩待著。左上角那個「已翻轉 N 次」會慢慢往上跳。</p>
 <p>沒有東西驚動牠們。沒有外力。<strong>整群自己決定換邊。</strong></p>
 <h2>那一下是怎麼發生的</h2>
 <p>這叫<strong>自發對稱破缺後的隨機翻轉</strong>，機制不難懂：</p>
-<p>順時針跟逆時針，對這個系統來說是<strong>完全等價</strong>的兩個狀態 —— 就像一支立著的鉛筆，往哪邊倒都一樣合理。整群一旦倒向其中一邊，就會互相加強、卡在那裡。</p>
-<p>但每一隻都還在抖。抖是隨機的，大部分時候互相抵消；偶爾 —— 很偶爾 —— <strong>一小撮蟲同時抖向同一邊</strong>，撮出一個夠大的反向核心，其他人跟著被拉過去，整群就翻了。</p>
-<p>密度越高，抵消得越徹底，「一小撮同時抖對」的機率就越低。所以<strong>翻轉不是被關掉的，是被拖慢的</strong> —— 慢到你八小時的實驗裡看不到一次。</p>
+<p>順時針跟逆時針，對這個系統來說是<strong>完全等價</strong>的兩個狀態——就像一支立著的鉛筆，往哪邊倒都一樣合理。整群一旦倒向其中一邊，就會互相加強、卡在那裡。</p>
+<p>但每一隻都還在抖。抖是隨機的，大部分時候互相抵消；偶爾——很偶爾——<strong>一小撮蟲同時抖向同一邊</strong>，撮出一個夠大的反向核心，其他人跟著被拉過去，整群就翻了。</p>
+<p>密度越高，抵消得越徹底，「一小撮同時抖對」的機率就越低。所以<strong>翻轉不是被關掉的，是被拖慢的</strong>——慢到你八小時的實驗裡看不到一次。</p>
 <p>把 <code>noise</code> 加大試試，翻轉會變頻繁：</p>
-<p><button class="try" data-preset="{&quot;count&quot;:45,&quot;noise&quot;:1.6}">低雜訊</button>　<button class="try" data-preset="{&quot;count&quot;:45,&quot;noise&quot;:2.8}">高雜訊</button></p>
+<p><button class="try" data-preset='{"count":45,"noise":1.6}'>低雜訊</button>　<button class="try" data-preset='{"count":45,"noise":2.8}'>高雜訊</button></p>
 <h2>為什麼這件事很嚴重</h2>
 <p>因為在野外，這決定的是一片田還在不在。</p>
-<p>蝗災的行軍帶密度大約是 <strong>20 到 120 隻／平方公尺</strong> —— <strong>橫跨了整個臨界區間</strong>。也就是說，同一片蝗群，密度稍微一變，就會在「各走各的」和「同向行軍」之間切換。</p>
+<p>蝗災的行軍帶密度大約是 <strong>20 到 120 隻／平方公尺</strong>——<strong>橫跨了整個臨界區間</strong>。也就是說，同一片蝗群，密度稍微一變，就會在「各走各的」和「同向行軍」之間切換。</p>
 <p>而這是可操作的：<strong>你不需要殺光牠們，你只需要把密度壓到門檻以下。</strong> 一旦掉下去，行軍自己散掉。</p>
-<p>這是整個群體科學裡最實用的一種結論 —— <strong>臨界點是槓桿</strong>。找到它，你用很小的力氣就能扳動一個很大的系統；不知道它在哪，你就只能硬碰硬。</p>
+<p>這是整個群體科學裡最實用的一種結論——<strong>臨界點是槓桿</strong>。找到它，你用很小的力氣就能扳動一個很大的系統；不知道它在哪，你就只能硬碰硬。</p>
 <h2>跟上一課接起來</h2>
 <p>第 16 課那個 Vicsek 模型是紙上的粒子，這一課是真的蟲。牠們畫出同一條曲線。</p>
-<p>差別在方向：Vicsek 轉的是<strong>雜訊</strong>旋鈕，蝗蟲轉的是<strong>密度</strong>旋鈕。但兩邊都通往同一個結構 —— <strong>一個門檻，兩個世界，中間沒有折衷。</strong></p>
+<p>差別在方向：Vicsek 轉的是<strong>雜訊</strong>旋鈕，蝗蟲轉的是<strong>密度</strong>旋鈕。但兩邊都通往同一個結構——<strong>一個門檻，兩個世界，中間沒有折衷。</strong></p>
 <p>Buhl 那篇論文的價值也在這裡：它不是又寫了一個模型，而是<strong>把模型預測的門檻，在活的生物身上量了出來</strong>。</p>
-<p><button class="try" data-preset="{&quot;count&quot;:25,&quot;noise&quot;:2.2,&quot;radius&quot;:34}">調到最會翻的那個甜蜜點</button></p>
+<p><button class="try" data-preset='{"count":25,"noise":2.2,"radius":34}'>調到最會翻的那個甜蜜點</button></p>
 <p>放著讓它跑一陣子，看那條線自己翻。這是你在這個網站看到的、最接近「野外真的會發生」的畫面。</p>
 <h2>這一課要帶走的</h2>
 <blockquote>

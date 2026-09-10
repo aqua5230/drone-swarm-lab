@@ -20,6 +20,14 @@
 - [第 12 課 · 少數知情者領路](https://aqua5230.github.io/drone-swarm-lab/lessons/12-informed-few/)：群裡約 5% 的知情個體不需身分與號令就能把整群的航向誤差從一百多度壓到十幾度；知情者意見分歧角度小時群體折衷走中間，角度大時倒向其中一邊。
 - [第 13 課 · 群裡混進叛徒](https://aqua5230.github.io/drone-swarm-lab/lessons/13-byzantine/)：拜占庭節點與強健統計：平均值會被 3% 永不改口的節點完全帶走，中位數守到約三成五叛徒、四成五崩；但通訊半徑一小，局部鄰里過半就會傳染，兩成叛徒即可攻陷全網。
 - [第 14 課 · 自組裝隊形](https://aqua5230.github.io/drone-swarm-lab/lessons/14-self-assembly/)：梯度傳播加邊緣跟隨兩條局部規則，無全域座標、無中央分派，群體自行填成指定形狀（Kilobots）。
+- [第 15 課 · 鄰居是「幾隻」不是「幾公尺」](https://aqua5230.github.io/drone-swarm-lab/lessons/15-topological/)：椋鳥的互動對象是最近的六到七隻（拓樸鄰居），不是固定半徑內的全部；群體被拉稀時，距離鄰居會碎成孤島，拓樸鄰居不會。
+- [第 16 課 · 秩序參數與臨界雜訊](https://aqua5230.github.io/drone-swarm-lab/lessons/16-order-parameter/)：Vicsek 模型；把整群的整齊度壓成 0 到 1 的秩序參數，雜訊越過臨界值時秩序不是漸變而是突然崩潰（相變）。
+- [第 17 課 · 人流自己分出車道](https://aqua5230.github.io/drone-swarm-lab/lessons/17-lane-formation/)：兩股相向人流在密度夠高時自發分出行進車道，無人畫線、無人指揮，是對稱性自發破缺的日常版本。
+- [第 18 課 · 蝗蟲的密度門檻](https://aqua5230.github.io/drone-swarm-lab/lessons/18-locust-phase/)：個體規則不變、只是密度提高，群體就從隨機亂走轉成同向行軍；門檻兩側是兩種集體狀態。
+- [第 19 課 · 把會撞的速度先劃掉](https://aqua5230.github.io/drone-swarm-lab/lessons/19-collision-avoidance/)：速度障礙（VO）把「未來會相撞的速度」事先劃掉；每台只閃一半責任的互惠避碰（RVO/ORCA）消除了「兩台互讓」造成的震盪，且不需要通訊。
+- [第 20 課 · 一群機器人怎麼把一片地分完](https://aqua5230.github.io/drone-swarm-lab/lessons/20-coverage-control/)：Voronoi 分區作為免協調的分工規則，每台往自己責任區的加權重心移動（Lloyd 演算法），等價於覆蓋成本的梯度下降，收斂到重心式分區但只保證局部最小。
+- [第 21 課 · 沒有指揮，用喊價分工](https://aqua5230.github.io/drone-swarm-lab/lessons/21-task-auction/)：市場機制的任務分配；出價把距離與餘力壓縮成一個可比大小的數字，避免「各搶最近的」造成的重複前往與閒置，且任務動態新增時可重跑。
+- [第 22 課 · 群飛規則拿來解題](https://aqua5230.github.io/drone-swarm-lab/lessons/22-pso/)：粒子群最佳化由鳥群模擬去掉棲地而來；認知係數與社會係數是探索與利用的旋鈕，方法不需要梯度也不需要可微分，代價是無法自知是否找到全域最佳。
 
 ## 關鍵概念定義
 
@@ -32,6 +40,13 @@
 - 知情少數（informed minority）：群體中只有一小部分個體握有目標資訊，且無從辨識身分，整群仍被帶往目標；知情者不下命令，只是不完全從眾，偏差經由對齊規則擴散。
 - 拜占庭容錯（Byzantine fault tolerance）：部分節點可能任意說謊或故障時仍能達成正確共識的能力；取值型問題用中位數可撐到接近一半叛徒，但門檻取決於局部鄰里而非全體比例，口頭訊息下的拜占庭將軍問題則需 n > 3f。
 - 自組裝（self-assembly）：個體不靠全域座標與中央分派，只用梯度（離種子幾跳）與邊緣跟隨兩條局部規則，集體排成指定形狀。
+- 拓樸互動（topological interaction）：以「最近的 k 個鄰居」而非「半徑內全部」定義互動對象；好處是群體密度改變時資訊網路不會斷。
+- 秩序參數（order parameter）：把整群的集體狀態壓成一個純量（例如所有行進方向的平均向量長度），用來偵測相變與量測離門檻多遠。
+- 速度障礙（velocity obstacle）：在速度空間中，所有「維持下去會在時間視野內相撞」的速度所構成的集合；避碰的作法是先劃掉這個集合再選速度。
+- 互惠避碰（reciprocal collision avoidance）：每個個體只承擔一半的避讓責任、假設對方承擔另一半，藉此消除雙方同時全避所造成的震盪；不需要通訊或協商。
+- 覆蓋控制（coverage control）：以覆蓋成本（各點到負責它的個體的距離平方，依重要性加權）為目標，讓個體移動到各自責任區的重心；分區規則互相吻合，因此分工不需要分配者。
+- 市場機制分工（market-based coordination）：個體對任務出價、以價格解決衝突，把需要全局資訊的指派問題換成只需比大小的局部決策。
+- 探索與利用（exploration / exploitation）：搜尋類演算法的根本取捨——繼續在已知的好區域挖，或去沒看過的地方找；粒子群最佳化用認知與社會兩個係數控制它。
 
 ## 出處
 
@@ -42,3 +57,11 @@
 - [Couzin et al. 2005 · 動物群體的有效領導與決策 (Nature)](https://doi.org/10.1038/nature03236)
 - [Lamport, Shostak & Pease 1982 · 拜占庭將軍問題](https://doi.org/10.1145/357172.357176)
 - [Rubenstein, Cornejo & Nagpal 2014 · 千機自組裝 (Science)](https://doi.org/10.1126/science.1254295)
+- [Ballerini et al. 2008 · 拓樸而非距離的互動 (PNAS)](https://doi.org/10.1073/pnas.0711437105)
+- [Vicsek et al. 1995 · 自驅粒子的新型相變 (PRL)](https://doi.org/10.1103/PhysRevLett.75.1226)
+- [Fiorini & Shiller 1998 · 速度障礙 (IJRR)](https://doi.org/10.1177/027836499801700706)
+- [van den Berg et al. 2011 · 互惠 n 體避碰 (ORCA)](https://doi.org/10.1007/978-3-642-19457-3_1)
+- [Cortés et al. 2004 · 行動感測網路的覆蓋控制 (IEEE T-RA)](https://doi.org/10.1109/TRA.2004.824698)
+- [Bertsekas 1988 · 拍賣演算法](https://doi.org/10.1007/BF02186476)
+- [Choi, Brunet & How 2009 · 共識式分散拍賣 (IEEE T-RO)](https://doi.org/10.1109/TRO.2009.2022423)
+- [Kennedy & Eberhart 1995 · 粒子群最佳化](https://doi.org/10.1109/ICNN.1995.488968)

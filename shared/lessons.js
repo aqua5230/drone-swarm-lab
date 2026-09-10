@@ -128,4 +128,32 @@ export const LESSONS = [
     status: 'ready',
     part: '群體物理篇',
   },
+  {
+    id: '19-collision-avoidance',
+    title: '第 19 課 · 把會撞的速度先劃掉',
+    blurb: '避碰不是看到就閃——是先算出「哪些速度會撞」，全部劃掉，剩下的隨便挑都安全。',
+    status: 'ready',
+    part: '工程應用篇',
+  },
+  {
+    id: '20-coverage-control',
+    title: '第 20 課 · 一群機器人怎麼把一片地分完',
+    blurb: '每個地方歸最近的那台管，每台往自己那塊地的重心走——沒有人分配，站位自己長出來。',
+    status: 'ready',
+    part: '工程應用篇',
+  },
+  {
+    id: '21-task-auction',
+    title: '第 21 課 · 沒有指揮，用喊價分工',
+    blurb: '各搶最近的會撞在一起、還有人閒著。改成喊價，價格自己把人推到該去的地方。',
+    status: 'ready',
+    part: '工程應用篇',
+  },
+  {
+    id: '22-pso',
+    title: '第 22 課 · 群飛規則拿來解題',
+    blurb: '把鳥群模擬裡的棲地拿掉，改成「誰站的位置比較好就往那靠」——鳥群變成了搜尋器。',
+    status: 'ready',
+    part: '工程應用篇',
+  },
 ];
