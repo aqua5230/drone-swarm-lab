@@ -15,11 +15,15 @@
 
   /* 卡片表面：比頁面底色亮一階，但不到 --ink-700 那麼跳，卡片才會像浮起來的一層 */
   --surface: #141d31;
+  /* 再上一階：卡片被指到時抬升用。深色頁面的層級是「越上面越亮」，不是越暗 */
+  --surface-2: #1a2540;
 
   /* 表面反光：由上而下的極淡白色漸層，讓卡片像被上方光源照到、浮在底色之上 */
   --sheen: linear-gradient(180deg, rgba(255, 255, 255, .05), rgba(255, 255, 255, .012));
 
   --text-1:  #e2e8f0;
+  /* 長文正文：比標題與粗體暗一階，整段讀起來才有輕重 */
+  --text-read: #c3cfe0;
   --text-2:  #94a3b8;
   --text-3:  #64748b;
   --accent:        #38bdf8;
@@ -138,10 +142,10 @@ body:has(.lesson-grid) main {
 
 h1 {
   font-family: var(--font-display);
-  font-size: clamp(1.9rem, 1.2rem + 2.2vw, 2.6rem);
+  font-size: clamp(2.1rem, 1.25rem + 2.8vw, 3.25rem);
   font-weight: 700;
   margin-block-end: var(--space-4);
-  letter-spacing: -.02em;
+  letter-spacing: -.03em;
   line-height: 1.2;
   overflow-wrap: anywhere;
   min-width: 0;
@@ -149,8 +153,10 @@ h1 {
 
 .lede {
   color: var(--text-2);
-  max-width: 42rem;
-  font-size: 1rem;
+  max-width: 38rem;
+  font-size: 1.125rem;
+  line-height: 1.7;
+  text-wrap: pretty;
 }
 
 #canvas-holder {
@@ -254,6 +260,7 @@ h1 {
   max-width: 40rem;
   margin-inline: auto;
   padding-inline: var(--space-4);
+  color: var(--text-read);
   font-size: 1.0625rem;
   line-height: 1.85;
   hanging-punctuation: allow-end;
@@ -269,7 +276,9 @@ h1 {
 }
 
 .notes strong {
+  /* 內文是 --text-read，粗體亮到 --text-1 才跳得出來——靠色階做輕重，不是全部一樣亮 */
   color: var(--text-1);
+  font-weight: 600;
 }
 
 .notes hr {
@@ -598,9 +607,21 @@ h1 {
 /* 首頁目錄：每課一張卡片 */
 .lesson-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(19rem, 100%), 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-4);
-  margin-block: var(--space-5);
+  margin-block: var(--space-8) var(--space-5);
+}
+
+@media (min-width: 40rem) {
+  .lesson-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .lesson-card.lead { grid-column: span 2; }
+}
+
+@media (min-width: 64rem) {
+  .lesson-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-5) var(--space-4);
+  }
 }
 
 .lesson-card {
@@ -620,9 +641,29 @@ h1 {
     box-shadow var(--dur-base) var(--ease-out);
 }
 
+/* 每篇第一課：跨兩欄、字大一階。整片等寬卡片沒有輕重，讀者不知道從哪張開始 */
+.lesson-card.lead {
+  padding: var(--space-6);
+}
+
+.lesson-card.lead h3 {
+  font-size: 1.75rem;
+}
+
+.lesson-card.lead p {
+  font-size: 1.0625rem;
+  max-width: 44ch;
+}
+
+.lesson-card.lead .num {
+  font-size: 1rem;
+  letter-spacing: .06em;
+}
+
 a.lesson-card:hover,
 a.lesson-card:focus-visible {
   color: inherit;
+  background: var(--sheen), var(--surface-2);
   border-color: color-mix(in srgb, var(--accent) 55%, transparent);
   transform: translateY(-3px);
   box-shadow: var(--shadow-lift);
@@ -688,10 +729,10 @@ a.lesson-card:focus-visible .num {
   border-radius: 999px;
 }
 
-@media (min-width: 64rem) {
+@media (min-width: 90rem) {
   .lesson-layout {
     display: grid;
-    grid-template-columns: minmax(0, 1.1fr) minmax(24rem, 34rem);
+    grid-template-columns: minmax(0, 1.5fr) minmax(22rem, 27rem);
     gap: var(--space-6);
     align-items: start;
   }
@@ -743,9 +784,9 @@ a.lesson-card:focus-visible .num {
   font-weight: 700;
   letter-spacing: .16em;
   color: var(--text-2);
-  margin-block: var(--space-3) 0;
-  padding-block-end: var(--space-2);
-  border-block-end: 1px solid var(--line);
+  margin-block: var(--space-6) 0;
+  padding-block-end: var(--space-3);
+  border-block-end: 1px solid var(--line-strong);
 }
 
 .part-head .count {
@@ -754,9 +795,11 @@ a.lesson-card:focus-visible .num {
   color: var(--text-2);
 }
 
-/* 首頁：讓標題自己佔滿一整列，卡片才會從下一列重新排 */
+/* 首頁：讓標題自己佔滿一整列，卡片才會從下一列重新排。
+   首頁一篇就是一段路，留白給到 4rem；抽屜是清單，給 2rem 就夠。 */
 .lesson-grid .part-head {
   grid-column: 1 / -1;
+  margin-block-start: var(--space-8);
 }
 
 .lesson-grid .part-head:first-child,

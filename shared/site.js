@@ -118,18 +118,20 @@ export function mountIndex(base) {
     LESSONS,
     (part) => `<h2 class="part-head">${part}` +
       `<span class="count">${countOf(part)} 課</span></h2>`,
-    (lesson) => {
+    (lesson, isPartLead) => {
       // 課名長成「第 1 課 · Boids 三規則」；把課號拆出來當眉標，
       // 標題就只剩概念本身，一整列掃過去讀得比較快。拆不出來就整串當標題。
       const [num, name] = splitTitle(lesson.title);
       const inner =
         (num ? `<span class="num">${num}</span>` : '') +
         `<h3>${name}</h3><p>${lesson.blurb}</p>`;
+      // 每篇第一課排成跨兩欄的大卡片，一片等寬卡片才有輕重
+      const lead = isPartLead ? ' lead' : '';
       if (lesson.status === 'ready') {
-        return `<a class="lesson-card" href="${base}lessons/${lesson.id}/" ` +
+        return `<a class="lesson-card${lead}" href="${base}lessons/${lesson.id}/" ` +
           `aria-label="${lesson.title}">${inner}</a>`;
       }
-      return `<div class="lesson-card planned">${inner}<span class="badge">規劃中</span></div>`;
+      return `<div class="lesson-card planned${lead}">${inner}<span class="badge">規劃中</span></div>`;
     },
   );
 }
@@ -153,11 +155,13 @@ export function mountFoot(base) {
 
 // 課程清單依 part 分篇：換篇時插一條標題，篇名相同的連續排在一起。
 // 沒寫 part 的課就不插標題，加課忘了填也不會壞。
+// item 會收到第二個參數：這一課是不是所屬篇的第一課（首頁用它排大卡片）。
 function withPartHeads(lessons, head, item) {
   let seen = null;
   return lessons.map((lesson) => {
-    const lead = lesson.part && lesson.part !== seen ? head(lesson.part) : '';
+    const isPartLead = Boolean(lesson.part) && lesson.part !== seen;
+    const lead = isPartLead ? head(lesson.part) : '';
     if (lesson.part) seen = lesson.part;
-    return lead + item(lesson);
+    return lead + item(lesson, isPartLead);
   }).join('');
 }
