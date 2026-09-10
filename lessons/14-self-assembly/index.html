@@ -73,41 +73,40 @@
       </div>
       <section id="lesson-notes" class="notes">
 <h2>一千個笨東西，排成一隻海星</h2>
-<p>2014 年，哈佛實驗室的桌上擺了 <strong>1024 個 Kilobot</strong>——每個大概一枚硬幣大，靠三根震動的腳挪動，看得到的範圍只有自己直徑的<strong>三倍</strong>左右。</p>
+<p>2014 年，哈佛實驗室的桌上擺了 <strong>1024 個 Kilobot</strong>—— 每個大概一枚硬幣大，靠三根震動的腳挪動，看得到的範圍只有自己直徑的<strong>三倍</strong>左右。</p>
 <p>然後它們自己排成了一隻海星。接著是字母 K，接著是扳手。</p>
 <p>沒有人告訴任何一個「你站第 372 格」。沒有中央、沒有攝影機從天上看、沒有全域座標。每一個都只知道自己身邊那幾個鄰居在幹嘛。</p>
 <p>你眼前這個場，就是那件事的簡化版。看它長。</p>
 <h2>兩條規則，只有兩條</h2>
 <p><strong>第一條：梯度（gradient，離種子有幾跳）。</strong> 金色那四個是<strong>種子</strong>，牠們被寫死是第 0 層。其他每一個只做一件事：問身邊看得到的鄰居「你第幾層」，取最小的那個加一，就是自己的層數。</p>
-<p>層數就這樣一圈一圈往外傳。顏色就是層數——越青越靠種子，越紫離種子越多跳。<strong>這是整群唯一的距離感</strong>：沒有尺、沒有座標，只有「我離原點幾跳」。</p>
+<p>層數就這樣一圈一圈往外傳。顏色就是層數 —— 越青越靠種子，越紫離種子越多跳。<strong>這是整群唯一的距離感</strong>：沒有尺、沒有座標，只有「我離原點幾跳」。</p>
 <p><strong>第二條：邊緣跟隨（edge following，貼著已就位那群的外緣繞）。</strong> 還沒就位的（白色那幾個）不會直直插進去，牠們貼著已就位那群的外圈繞圈子，一路找位子。</p>
-<p>繞到哪裡停？<strong>人在形狀裡面、旁邊至少靠著兩個人、而且自己的層數已經不小於旁邊那隻</strong>——三個條件同時成立，就停下來、變成已就位的一員，換下一個進來。</p>
+<p>繞到哪裡停？<strong>人在形狀裡面、旁邊至少靠著兩個人、而且自己的層數已經不小於旁邊那隻</strong> —— 三個條件同時成立，就停下來、變成已就位的一員，換下一個進來。</p>
 <h2>形狀在哪裡？</h2>
 <p>這是最反直覺的一點：<strong>形狀不是藍圖，是一條判斷式。</strong></p>
 <p>每個個體身上都有同一段程式，內容只是「給我一個位置，我回答這裡算不算形狀裡面」。沒有座位表、沒有編號、沒有誰負責分派。</p>
-<p>不信就換一個形狀試試——<button class="try" data-preset='{"shape":"k"}'>換成字母Ｋ</button>　<button class="try" data-preset='{"shape":"arrow"}'>換成箭頭</button>　<button class="try" data-preset='{"shape":"star"}'>換回星形</button></p>
+<p>不信就換一個形狀試試 ——<button class="try" data-preset="{&quot;shape&quot;:&quot;k&quot;}"> 換成字母Ｋ</button>　<button class="try" data-preset="{&quot;shape&quot;:&quot;arrow&quot;}">換成箭頭</button>　<button class="try" data-preset="{&quot;shape&quot;:&quot;star&quot;}">換回星形</button></p>
 <p>規則一個字都沒改。改的只有那句「這裡算不算數」。</p>
 <h2>種子為什麼不能少</h2>
-<p>把種子想成原點。沒有牠們，層數就沒有起算點，整群會各自宣稱自己是第 0 層，梯度直接塌掉——<strong>去中心化不等於什麼都不能固定</strong>，它只是要求：固定的那一點必須便宜、可替代，而且壞掉時不會帶著全群一起死。</p>
+<p>把種子想成原點。沒有牠們，層數就沒有起算點，整群會各自宣稱自己是第 0 層，梯度直接塌掉 —— <strong>去中心化不等於什麼都不能固定</strong>，它只是要求：固定的那一點必須便宜、可替代，而且壞掉時不會帶著全群一起死。</p>
 <p>這跟第 2 課那個一斬就垮的指揮官不一樣：種子只提供一個座標原點，不下命令、不分派工作；死了一個，剩下三個照樣定義得出原點。</p>
 <h2>為什麼這麼慢</h2>
-<p>看那幾個白色的繞了多久才卡進去一格。<button class="try" data-preset='{"movers":12,"speed":5}'>讓我把速度和同時上場人數拉滿</button>——快多了，但也開始互相卡。</p>
+<p>看那幾個白色的繞了多久才卡進去一格。<button class="try" data-preset="{&quot;movers&quot;:12,&quot;speed&quot;:5}">讓我把速度和同時上場人數拉滿</button> —— 快多了，但也開始互相卡。</p>
 <p>嫌慢是對的，慢就是自組裝的真實代價。真實的 Kilobots 只能一個接一個排隊繞，1024 隻要排出一個形狀，是以<strong>小時</strong>計的工程。</p>
 <p>這裡有個很硬的取捨：<strong>局部規則買到的是「規模不受限」，賣掉的是「速度」。</strong> 中央調度可以一秒算出 1024 個座位、直接派過去；但那需要全域座標、需要每個個體聽得到中央、需要中央不能掛。自組裝什麼都不需要，代價是它得一格一格慢慢長。</p>
-<p>再調一個東西：把 <code>senseScale</code>（通訊半徑相對間距的倍數）拉大或縮小，看層數的粗細怎麼變。半徑越大，一跳走得越遠、層數越少越粗糙——<strong>距離感變模糊，形狀的邊緣就跟著糊掉。</strong></p>
-<h2>走完十四課，回頭看</h2>
-<p>你手上現在有一整套零件：湧現、去中心化、斷線、擴量、感知、共識、費洛蒙、韌性、人的位置、同步、少數帶多數、抗說謊，還有這一課的自己排隊形。</p>
-<p>它們全部在說同一句話的不同面向：</p>
-<blockquote>
-<p><strong>秩序不需要有人設計，它可以從一堆笨東西之間的簡單規則裡長出來——而你能不能看見它、預測它、守住它的邊界，取決於你懂不懂那幾條規則。</strong></p>
-</blockquote>
-<p>十四課到這裡結束。第 10 課那個沙盒還在，旋鈕全開，隨時回去玩。</p>
+<p>再調一個東西：把 <code>senseScale</code>（通訊半徑相對間距的倍數）拉大或縮小，看層數的粗細怎麼變。半徑越大，一跳走得越遠、層數越少越粗糙 —— <strong>距離感變模糊，形狀的邊緣就跟著糊掉。</strong></p>
+<h2>接下來</h2>
+<p>自組裝把前面十三課的零件收在一起：局部規則、沒有全域座標、可替代的固定點、韌性、還有慢。</p>
+<p>進階篇到這裡結束。<strong>下一篇換一個視角</strong> —— 前面十四課都在問「這群東西會做出什麼行為」，
+接下來四課要問的是另一種問題：<strong>這些行為什麼時候會出現、什麼時候會突然消失。</strong>
+那是物理學家看群體的方式，而且它會回頭修正你前面學到的好幾個結論。</p>
 <hr>
 <p>源頭：Michael Rubenstein, Alejandro Cornejo &amp; Radhika Nagpal (2014)《Programmable self-assembly in a thousand-robot swarm》, <em>Science</em> 345(6198): 795–799. <a href="https://doi.org/10.1126/science.1254295">DOI</a>　本課為教學簡化版：真實系統另有定位（trilateration）與碰撞回復機制，此處以「就位條件」代替。</p>
 </section>
     </div>
   </main>
 
+  <script src="../../shared/permalink.js"></script>
   <script src="sketch.js"></script>
   <script type="module">
     import { mountNav, mountFoot } from '../../shared/site.js';

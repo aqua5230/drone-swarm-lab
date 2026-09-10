@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://aqua5230.github.io/drone-swarm-lab/</loc><lastmod>2026-09-05</lastmod><priority>1.0</priority></url>
+  <url><loc>https://aqua5230.github.io/drone-swarm-lab/</loc><lastmod>2026-09-10</lastmod><priority>1.0</priority></url>
   <url><loc>https://aqua5230.github.io/drone-swarm-lab/lessons/01-boids/</loc><lastmod>2026-09-03</lastmod><priority>0.8</priority></url>
   <url><loc>https://aqua5230.github.io/drone-swarm-lab/lessons/02-decentralized/</loc><lastmod>2026-09-03</lastmod><priority>0.8</priority></url>
   <url><loc>https://aqua5230.github.io/drone-swarm-lab/lessons/03-broken-comms/</loc><lastmod>2026-09-03</lastmod><priority>0.8</priority></url>
@@ -14,5 +14,9 @@
   <url><loc>https://aqua5230.github.io/drone-swarm-lab/lessons/11-sync/</loc><lastmod>2026-09-05</lastmod><priority>0.8</priority></url>
   <url><loc>https://aqua5230.github.io/drone-swarm-lab/lessons/12-informed-few/</loc><lastmod>2026-09-05</lastmod><priority>0.8</priority></url>
   <url><loc>https://aqua5230.github.io/drone-swarm-lab/lessons/13-byzantine/</loc><lastmod>2026-09-05</lastmod><priority>0.8</priority></url>
-  <url><loc>https://aqua5230.github.io/drone-swarm-lab/lessons/14-self-assembly/</loc><lastmod>2026-09-05</lastmod><priority>0.8</priority></url>
+  <url><loc>https://aqua5230.github.io/drone-swarm-lab/lessons/14-self-assembly/</loc><lastmod>2026-09-10</lastmod><priority>0.8</priority></url>
+  <url><loc>https://aqua5230.github.io/drone-swarm-lab/lessons/15-topological/</loc><lastmod>2026-09-10</lastmod><priority>0.8</priority></url>
+  <url><loc>https://aqua5230.github.io/drone-swarm-lab/lessons/16-order-parameter/</loc><lastmod>2026-09-10</lastmod><priority>0.8</priority></url>
+  <url><loc>https://aqua5230.github.io/drone-swarm-lab/lessons/17-lane-formation/</loc><lastmod>2026-09-10</lastmod><priority>0.8</priority></url>
+  <url><loc>https://aqua5230.github.io/drone-swarm-lab/lessons/18-locust-phase/</loc><lastmod>2026-09-10</lastmod><priority>0.8</priority></url>
 </urlset>

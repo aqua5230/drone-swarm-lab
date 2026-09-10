@@ -100,4 +100,32 @@ export const LESSONS = [
     status: 'ready',
     part: '進階篇',
   },
+  {
+    id: '15-topological',
+    title: '第 15 課 · 鄰居是「幾隻」不是「幾公尺」',
+    blurb: '椋鳥只跟最近的六七隻互動——換一種鄰居定義，整群散不散的結局就反過來。',
+    status: 'ready',
+    part: '群體物理篇',
+  },
+  {
+    id: '16-order-parameter',
+    title: '第 16 課 · 秩序參數與臨界雜訊',
+    blurb: '把整群的整齊度壓成一個數字，再轉動雜訊旋鈕——它不是慢慢變亂，是啪一下垮掉。',
+    status: 'ready',
+    part: '群體物理篇',
+  },
+  {
+    id: '17-lane-formation',
+    title: '第 17 課 · 人流自己分出車道',
+    blurb: '兩股人相向而行，沒人畫線、沒人指揮，擠到一個程度車道自己浮出來。',
+    status: 'ready',
+    part: '群體物理篇',
+  },
+  {
+    id: '18-locust-phase',
+    title: '第 18 課 · 蝗蟲的密度門檻',
+    blurb: '每隻蝗蟲的規則從頭到尾沒變，只是擠得比較近——整群就從亂走變成同向行軍。',
+    status: 'ready',
+    part: '群體物理篇',
+  },
 ];

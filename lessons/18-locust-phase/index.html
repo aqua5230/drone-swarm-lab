@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第 18 課 · 蝗蟲的密度門檻 — Swarm Lab 群飛智能教學</title>
+
+  <!-- SEO -->
+  <meta name="description" content="沙漠蝗若蟲在環形跑道上的密度相變：低密度各走各的，中密度整齊但會自發集體掉頭，高密度鎖死方向不再翻轉。可調個體數、互動半徑與雜訊，時間序列圖記錄每一次翻轉。" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://aqua5230.github.io/drone-swarm-lab/lessons/18-locust-phase/" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="第 18 課 · 密度相變 — Swarm Lab" />
+  <meta property="og:description" content="每隻蝗蟲的規則從頭到尾沒變，只是擠得比較近——整群就從亂走變成同向行軍。" />
+  <meta property="og:url" content="https://aqua5230.github.io/drone-swarm-lab/lessons/18-locust-phase/" />
+  <meta property="og:site_name" content="Swarm Lab" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta property="og:image" content="https://aqua5230.github.io/drone-swarm-lab/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="模擬畫面：環形場中的個體同向繞行，下方時間序列圖顯示方向翻轉" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="第 18 課 · 密度相變 — Swarm Lab" />
+  <meta name="twitter:description" content="臨界密度是槓桿：把密度壓到門檻以下，行軍自己散掉。" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LearningResource",
+    "name": "第 18 課 · 蝗蟲的密度門檻",
+    "description": "蝗蟲若蟲的密度驅動相變：有號秩序參數、自發對稱破缺與隨機翻轉，以及臨界密度為何是防治上的槓桿。",
+    "url": "https://aqua5230.github.io/drone-swarm-lab/lessons/18-locust-phase/",
+    "inLanguage": "zh-Hant",
+    "isAccessibleForFree": true,
+    "learningResourceType": "互動模擬",
+    "isPartOf": { "@type": "Course", "name": "群飛智能互動教學", "url": "https://aqua5230.github.io/drone-swarm-lab/" }
+  }
+  </script>
+
+  <!-- Space Grotesk：只載 Latin，中文字自動 fallback 到系統的 PingFang TC -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" />
+  <link rel="stylesheet" href="../../shared/style.css" />
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml" />
+
+  <!-- pangu：盤古之白，中文與英文/數字間自動補空隙 -->
+  <script src="https://cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+
+  <!-- p5.js：畫面引擎 -->
+  <script src="https://cdn.jsdelivr.net/npm/p5@1/lib/p5.min.js"></script>
+  <!-- Tweakpane v4 是 ES module：載入後掛回全域供 sketch.js 使用 -->
+  <script type="module">
+    import { Pane } from "https://cdn.jsdelivr.net/npm/tweakpane@4/dist/tweakpane.min.js";
+    window.Tweakpane = { Pane };
+  </script>
+</head>
+<body>
+  <nav id="site-nav"></nav>
+
+  <main>
+    <header>
+      <h1>第 18 課 · 一個圓環，一群蟲，八小時</h1>
+      <p class="lede">
+        2006 年那個實驗只換一個變數：數量。5 隻到 120 隻，八小時連續錄影，結果分成乾淨的三段——各走各的、整齊但會突然掉頭、鎖死不再回頭。
+      </p>
+    </header>
+
+    <div class="lesson-layout">
+      <div class="stage">
+        <div id="canvas-holder"></div>
+        <div id="controls-holder"></div>
+      </div>
+      <section id="lesson-notes" class="notes">
+<h2>一個圓環，一群蟲，八小時</h2>
+<p>2006 年，一群研究者把沙漠蝗的若蟲（還不會飛的幼蟲）放進一個環形跑道，架上攝影機，一次拍<strong>八小時</strong>。每一輪換一個數量，從 5 隻試到 120 隻。</p>
+<p>他們想知道一件很單純的事：<strong>要多少隻，牠們才會一起走？</strong></p>
+<p>答案分成三段，乾淨得不像生物學：</p>
+<ul>
+<li><strong>2 到 7 隻</strong>：各走各的，幾乎從不對齊。</li>
+<li><strong>10 到 25 隻</strong>（約 24.6 至 61.5 隻／平方公尺）：大部分時間整齊，但<strong>會突然集體掉頭</strong>，一整天翻好幾次。</li>
+<li><strong>30 隻以上</strong>（約 73.8 隻／平方公尺）：幾乎一開始就對齊，然後<strong>再也沒有改變方向</strong>。</li>
+</ul>
+<p>眼前這個環，就是那個跑道。</p>
+<h2>先看中間那一段</h2>
+<p><strong>中間那段才是這一課的主角。</strong> 按面板上的「一次加 20 隻」，或直接：</p>
+<p><button class="try" data-preset="{&quot;count&quot;:10}">10 隻</button>　<button class="try" data-preset="{&quot;count&quot;:25}">25 隻</button>　<button class="try" data-preset="{&quot;count&quot;:200}">200 隻</button></p>
+<p>盯著畫面下方那張時間圖。縱軸是 <strong>φ</strong>：+1 代表全群逆時針、−1 代表全群順時針、0 代表亂成一團。</p>
+<p>人少的時候，那條線在 0 附近抖。人多的時候，它貼在 +1 或 −1 不動。</p>
+<p><strong>而在中間那段密度</strong>，你會看到一件很怪的事：線穩穩地待在 +1，待了很久很久，然後<strong>啪</strong>一下翻到 −1，又穩穩待著。左上角那個「已翻轉 N 次」會慢慢往上跳。</p>
+<p>沒有東西驚動牠們。沒有外力。<strong>整群自己決定換邊。</strong></p>
+<h2>那一下是怎麼發生的</h2>
+<p>這叫<strong>自發對稱破缺後的隨機翻轉</strong>，機制不難懂：</p>
+<p>順時針跟逆時針，對這個系統來說是<strong>完全等價</strong>的兩個狀態 —— 就像一支立著的鉛筆，往哪邊倒都一樣合理。整群一旦倒向其中一邊，就會互相加強、卡在那裡。</p>
+<p>但每一隻都還在抖。抖是隨機的，大部分時候互相抵消；偶爾 —— 很偶爾 —— <strong>一小撮蟲同時抖向同一邊</strong>，撮出一個夠大的反向核心，其他人跟著被拉過去，整群就翻了。</p>
+<p>密度越高，抵消得越徹底，「一小撮同時抖對」的機率就越低。所以<strong>翻轉不是被關掉的，是被拖慢的</strong> —— 慢到你八小時的實驗裡看不到一次。</p>
+<p>把 <code>noise</code> 加大試試，翻轉會變頻繁：</p>
+<p><button class="try" data-preset="{&quot;count&quot;:45,&quot;noise&quot;:1.6}">低雜訊</button>　<button class="try" data-preset="{&quot;count&quot;:45,&quot;noise&quot;:2.8}">高雜訊</button></p>
+<h2>為什麼這件事很嚴重</h2>
+<p>因為在野外，這決定的是一片田還在不在。</p>
+<p>蝗災的行軍帶密度大約是 <strong>20 到 120 隻／平方公尺</strong> —— <strong>橫跨了整個臨界區間</strong>。也就是說，同一片蝗群，密度稍微一變，就會在「各走各的」和「同向行軍」之間切換。</p>
+<p>而這是可操作的：<strong>你不需要殺光牠們，你只需要把密度壓到門檻以下。</strong> 一旦掉下去，行軍自己散掉。</p>
+<p>這是整個群體科學裡最實用的一種結論 —— <strong>臨界點是槓桿</strong>。找到它，你用很小的力氣就能扳動一個很大的系統；不知道它在哪，你就只能硬碰硬。</p>
+<h2>跟上一課接起來</h2>
+<p>第 16 課那個 Vicsek 模型是紙上的粒子，這一課是真的蟲。牠們畫出同一條曲線。</p>
+<p>差別在方向：Vicsek 轉的是<strong>雜訊</strong>旋鈕，蝗蟲轉的是<strong>密度</strong>旋鈕。但兩邊都通往同一個結構 —— <strong>一個門檻，兩個世界，中間沒有折衷。</strong></p>
+<p>Buhl 那篇論文的價值也在這裡：它不是又寫了一個模型，而是<strong>把模型預測的門檻，在活的生物身上量了出來</strong>。</p>
+<p><button class="try" data-preset="{&quot;count&quot;:25,&quot;noise&quot;:2.2,&quot;radius&quot;:34}">調到最會翻的那個甜蜜點</button></p>
+<p>放著讓它跑一陣子，看那條線自己翻。這是你在這個網站看到的、最接近「野外真的會發生」的畫面。</p>
+<h2>這一課要帶走的</h2>
+<blockquote>
+<p><strong>一個群體的行為，可能不取決於個體變了什麼，只取決於牠們擠得多近。</strong></p>
+</blockquote>
+<p>沒有人下令、沒有人改變主意、每一隻蝗蟲的規則從頭到尾一模一樣。變的只有密度。</p>
+<hr>
+<p>源頭：J. Buhl, D. J. T. Sumpter, I. D. Couzin, J. J. Hale, E. Despland, E. R. Miller &amp; S. J. Simpson (2006)《From Disorder to Order in Marching Locusts》, <em>Science</em> 312(5778): 1402–1406. <a href="https://doi.org/10.1126/science.1125142">DOI</a>　本課為教學簡化版：真實實驗是環形跑道上的活體若蟲、連續錄影八小時，此處以二維環形場與有號秩序參數重現定性行為，密度數值不可直接對照。</p>
+</section>
+    </div>
+  </main>
+
+  <script src="../../shared/permalink.js"></script>
+  <script src="sketch.js"></script>
+  <script type="module">
+    import { mountNav, mountFoot } from '../../shared/site.js';
+    import { mountLesson } from '../../shared/lesson.js';
+    mountNav('../../', '18-locust-phase');
+    mountLesson('lesson.md', '#lesson-notes');
+    mountFoot('../../');
+  </script>
+</body>
+</html>

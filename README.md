@@ -18,10 +18,11 @@ one concept per lesson, tweak it live, sourced. Open and play, zero install.
 通訊被干擾仍能協同、可低成本擴量——這些正是現代無人機自主作戰的核心議題。
 本專案教的是**底層的群飛科學與自主原理**，不是武器製造。
 
-## 課程（14 課，全可玩）
+## 課程（18 課，全可玩）
 
 **基礎篇** 1–10：從「沒有指揮官也能成群」一路走到綜合沙盒。
 **進階篇** 11–14：拆掉基礎篇沒說破的四個假設——同一個節拍、大家都知道要去哪、沒有人說謊、有人分派座位。
+**群體物理篇** 15–18：換成物理學家的問法——這些行為什麼時候出現、什麼時候突然消失。
 
 | # | 課 | 一句話概念 |
 |---|---|---|
@@ -39,6 +40,10 @@ one concept per lesson, tweak it live, sourced. Open and play, zero install.
 | 12 | 少數知情者領路 | 只有 5% 知道方向、沒人喊口令，整群卻走對；意見分裂時折衷或選邊 |
 | 13 | 群裡混進叛徒 | 平均被 3% 假值吃掉全網；中位數守到三成五，但半徑一小就從鄰里破 |
 | 14 | 自組裝隊形 | 梯度＋邊緣跟隨兩條規則，沒人分派座位也長出指定形狀 |
+| 15 | 鄰居是「幾隻」不是「幾公尺」 | 椋鳥只跟最近的六七隻互動；換鄰居定義，群體散不散就反過來 |
+| 16 | 秩序參數與臨界雜訊 | 把整齊度壓成一個數字，雜訊過臨界點整群啪一下垮掉 |
+| 17 | 人流自己分出車道 | 兩股人相向而行，沒人畫線，密度一高車道自己浮出來 |
+| 18 | 蝗蟲的密度門檻 | 規則沒變、只是擠得更近，整群就從亂走變成同向行軍 |
 
 每課都附一手學術出處（Reynolds、Seeley、Dorigo、Baran、Couzin、Lamport、Nagpal 等）。
 
@@ -99,6 +104,14 @@ python3 -m http.server 8000   # 然後開 http://localhost:8000
   ACM TOPLAS 4(3): 382–401 — 群裡有人說謊時的共識條件
 - Michael Rubenstein, Alejandro Cornejo & Radhika Nagpal (2014) *Programmable self-assembly in a
   thousand-robot swarm*, Science 345(6198): 795–799 — Kilobots 千機自組裝
+- Michele Ballerini et al. (2008) *Interaction ruling animal collective behavior depends on topological
+  rather than metric distance*, PNAS 105(4): 1232–1237 — 椋鳥的拓樸鄰居
+- Tamás Vicsek et al. (1995) *Novel type of phase transition in a system of self-driven particles*,
+  Phys. Rev. Lett. 75(6): 1226–1229 — 秩序參數與臨界雜訊
+- Dirk Helbing & Péter Molnár (1995) *Social force model for pedestrian dynamics*,
+  Phys. Rev. E 51(5): 4282–4286 — 人流自組織分道
+- Jérôme Buhl et al. (2006) *From Disorder to Order in Marching Locusts*,
+  Science 312(5778): 1402–1406 — 蝗蟲的密度相變
 - Daniel Shiffman, *The Nature of Code* — Autonomous Agents / Flocking 章
 
 ## 授權

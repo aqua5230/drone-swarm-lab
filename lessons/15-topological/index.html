@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第 15 課 · 鄰居是「幾隻」不是「幾公尺」 — Swarm Lab 群飛智能教學</title>
+
+  <!-- SEO -->
+  <meta name="description" content="椋鳥實測顯示，每隻鳥互動的是最近的六到七隻鄰居，而不是固定半徑內的所有鳥。切換兩種鄰居定義，把群體拉稀，看連通群數與抗掠食者能力怎麼分岔。" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://aqua5230.github.io/drone-swarm-lab/lessons/15-topological/" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="第 15 課 · 拓樸鄰居 — Swarm Lab" />
+  <meta property="og:description" content="把群體拉稀：用半徑當鄰居，整群碎成孤島；用最近七隻當鄰居，稀成什麼樣都還連著。" />
+  <meta property="og:url" content="https://aqua5230.github.io/drone-swarm-lab/lessons/15-topological/" />
+  <meta property="og:site_name" content="Swarm Lab" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta property="og:image" content="https://aqua5230.github.io/drone-swarm-lab/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="模擬畫面：兩種鄰居規則下，群體之間的連線長相截然不同" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="第 15 課 · 拓樸鄰居 — Swarm Lab" />
+  <meta name="twitter:description" content="換一種「誰算我的鄰居」，同一個場景的結局完全不同。" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LearningResource",
+    "name": "第 15 課 · 鄰居是「幾隻」不是「幾公尺」",
+    "description": "拓樸互動 vs 公制互動：鄰居定義如何決定群體在密度改變時是否碎裂，以及被掠食者衝散後能否重新聚合。",
+    "url": "https://aqua5230.github.io/drone-swarm-lab/lessons/15-topological/",
+    "inLanguage": "zh-Hant",
+    "isAccessibleForFree": true,
+    "learningResourceType": "互動模擬",
+    "isPartOf": { "@type": "Course", "name": "群飛智能互動教學", "url": "https://aqua5230.github.io/drone-swarm-lab/" }
+  }
+  </script>
+
+  <!-- Space Grotesk：只載 Latin，中文字自動 fallback 到系統的 PingFang TC -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" />
+  <link rel="stylesheet" href="../../shared/style.css" />
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml" />
+
+  <!-- pangu：盤古之白，中文與英文/數字間自動補空隙 -->
+  <script src="https://cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+
+  <!-- p5.js：畫面引擎 -->
+  <script src="https://cdn.jsdelivr.net/npm/p5@1/lib/p5.min.js"></script>
+  <!-- Tweakpane v4 是 ES module：載入後掛回全域供 sketch.js 使用 -->
+  <script type="module">
+    import { Pane } from "https://cdn.jsdelivr.net/npm/tweakpane@4/dist/tweakpane.min.js";
+    window.Tweakpane = { Pane };
+  </script>
+</head>
+<body>
+  <nav id="site-nav"></nav>
+
+  <main>
+    <header>
+      <h1>第 15 課 · 誰算你的鄰居</h1>
+      <p class="lede">
+        前十四課的「看得到的鄰居」都是半徑幾公尺以內。椋鳥不是這樣做的——牠們只跟最近的六七隻互動，不管那幾隻有多遠。
+      </p>
+    </header>
+
+    <div class="lesson-layout">
+      <div class="stage">
+        <div id="canvas-holder"></div>
+        <div id="controls-holder"></div>
+      </div>
+      <section id="lesson-notes" class="notes">
+<h2>一個很笨的問題：誰算你的鄰居？</h2>
+<p>前面十四課，只要講到「看得到的鄰居」，用的都是同一個定義：<strong>半徑幾公尺以內的都算</strong>。</p>
+<p>這個定義有道理、好寫、好算，而且 —— <strong>椋鳥不是這樣做的</strong>。</p>
+<p>2008 年羅馬那批物理學家，扛著三台同步相機爬上博物館屋頂，拍了幾個月的椋鳥群，把每一隻鳥的三維位置重建出來。他們想知道的就是這件事：一隻鳥到底在跟誰互動。</p>
+<p>答案是：<strong>跟最近的六到七隻</strong>。不管那六七隻離牠 0.7 公尺還是 1.5 公尺。</p>
+<h2>換一個開關，整件事就變了</h2>
+<p>面板上那個 <code>mode</code> 就是這一課的全部：</p>
+<ul>
+<li><strong>距離鄰居</strong>（metric）：<code>metricR</code> 公尺以內的全算。這是前十四課的做法。</li>
+<li><strong>拓樸鄰居</strong>（topological）：最近的 <code>k</code> 隻算，多遠都算。</li>
+</ul>
+<p>畫面上的細線畫的是<strong>實際被採用的那些鄰居</strong>。兩個模式切著看，線的長相完全不一樣。</p>
+<p>現在把 <code>spread</code> 這根滑桿往右拉 —— 它把整群拉稀。</p>
+<p><button class="try" data-preset="{&quot;mode&quot;:&quot;metric&quot;,&quot;spread&quot;:3,&quot;count&quot;:160,&quot;metricR&quot;:50}">距離鄰居 ＋ 拉稀</button>　<button class="try" data-preset="{&quot;mode&quot;:&quot;topological&quot;,&quot;spread&quot;:3,&quot;count&quot;:160,&quot;metricR&quot;:50}">拓樸鄰居 ＋ 拉稀</button></p>
+<p>距離鄰居那邊，群一稀就碎；碎了之後每一塊各走各的，再也黏不回來。拓樸鄰居那邊，稀成什麼樣子都還是七個鄰居，群體整片跟著走。</p>
+<p><strong>看左上角的「連通群數」。</strong> 那個數字從 1 變成 5、變成 12 的瞬間，就是「一群」變成「幾群」的瞬間。</p>
+<h2>為什麼這不是雞蛋裡挑骨頭</h2>
+<p>椋鳥群的密度差很多。同一批資料裡，最密的那群鳥距最近鄰只有 <strong>0.68 公尺</strong>，最疏的有 <strong>1.51 公尺</strong> —— <strong>同一個半徑畫下去，密的那群裡有 10 隻鳥，疏的那群裡只有 1 隻</strong>。</p>
+<p>如果鳥用的是半徑，牠在疏群裡就等於瞎了。</p>
+<p>論文用一個統計把兩種假說分開：如果鳥用的是拓樸鄰居，那「互動範圍換算成鄰居數」應該跟群的疏密<strong>沒關係</strong> —— 實測 $R^2 = 0.00021$、$P = 0.97$，是一條完全平的線。如果鳥用的是半徑，那半徑應該跟疏密<strong>成正比</strong> —— 那條線的 $R^2 = 0.78$。</p>
+<p><strong>兩個假說各有一個預測，資料只支持其中一個。</strong> 這就是全篇最漂亮的地方：不用問鳥，看牠們散開時發生什麼事就知道。</p>
+<h2>被嚇散之後，誰回得來</h2>
+<p>在畫面上<strong>按住滑鼠不放</strong>，就是一隻鷹。放開，看群體怎麼收拾。</p>
+<p><button class="try" data-preset="{&quot;mode&quot;:&quot;metric&quot;,&quot;spread&quot;:2.2,&quot;count&quot;:200,&quot;metricR&quot;:50}">用距離鄰居試一次</button>　<button class="try" data-preset="{&quot;mode&quot;:&quot;topological&quot;,&quot;spread&quot;:2.2,&quot;count&quot;:200,&quot;metricR&quot;:50}">用拓樸鄰居試一次</button></p>
+<p>原論文也做過這個數值實驗。被掠食者衝散之後，<strong>距離鄰居模型有 43% 的個體變成回不去的散兵，拓樸鄰居模型只有 5%</strong>。</p>
+<p>差別的來源很單純：被嚇開的那一刻，鄰居之間的距離拉大了。用半徑的，鄰居數當場歸零、失去所有資訊；用拓樸的，鄰居還是那七隻，只是變遠了 —— <strong>牠還聽得到，所以牠回得來</strong>。</p>
+<p>一句話：<strong>拓樸互動買到的是「密度改變時，資訊網路不會斷」。</strong></p>
+<h2>那為什麼是七</h2>
+<p>不是因為視線被擋住。幾何算下來，一隻鳥看得到的鄰居遠多於七隻。</p>
+<p>比較站得住的解釋是<strong>認知上限</strong>：大腦能同時穩定追蹤的物件數量就是這個量級。也就是說，這個 7 不是空氣動力學的數字，也不是光學的數字，<strong>是神經系統的數字</strong>。</p>
+<p>把 <code>k</code> 調小到 2、3 看看 —— 資訊網路變得又細又長，群體開始被拉成一條線。再調到 15—— 每隻都在平均一大票人的方向，群體變得又鈍又慢，轉彎轉不動。</p>
+<p><button class="try" data-preset="{&quot;k&quot;:2}">k = 2</button>　<button class="try" data-preset="{&quot;k&quot;:7}">k = 7</button>　<button class="try" data-preset="{&quot;k&quot;:16}">k = 16</button></p>
+<p><strong>七不是隨便挑的，是一個取捨的落點</strong>：夠多才穩，夠少才轉得動。</p>
+<h2>這一課要帶走的</h2>
+<p>回頭看第 3 課那個「斷通訊」—— 當時我們把通訊半徑剪短，群體就碎了。那結論沒錯，但它有個前提：<strong>你用的是半徑</strong>。</p>
+<p>換一種鄰居定義，同一個場景的結局完全不同。</p>
+<blockquote>
+<p><strong>設計群體系統的時候，「誰跟誰講話」這個決定，比「規則怎麼寫」更早、也更致命。</strong></p>
+</blockquote>
+<hr>
+<p>源頭：M. Ballerini, N. Cabibbo, R. Candelier, A. Cavagna, E. Cisbani, I. Giardina, V. Lecomte, A. Orlandi, G. Parisi, A. Procaccini, M. Viale &amp; V. Zdravkovic (2008)《Interaction ruling animal collective behavior depends on topological rather than metric distance: Evidence from a field study》, <em>PNAS</em> 105(4): 1232–1237. <a href="https://doi.org/10.1073/pnas.0711437105">DOI</a>　本課為二維教學簡化版：原研究是三維重建，且明講不涵蓋極稀疏群（那時拓樸互動仍會被視力極限截斷）與極密群。</p>
+</section>
+    </div>
+  </main>
+
+  <script src="../../shared/permalink.js"></script>
+  <script src="sketch.js"></script>
+  <script type="module">
+    import { mountNav, mountFoot } from '../../shared/site.js';
+    import { mountLesson } from '../../shared/lesson.js';
+    mountNav('../../', '15-topological');
+    mountLesson('lesson.md', '#lesson-notes');
+    mountFoot('../../');
+  </script>
+</body>
+</html>

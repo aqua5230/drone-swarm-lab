@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第 17 課 · 人流自己分出車道 — Swarm Lab 群飛智能教學</title>
+
+  <!-- SEO -->
+  <meta name="description" content="簡化版社會力模型：兩股行人相向而行，沒有標線也沒有指揮，密度一高就自己分成同向的車道。可調密度、排斥力、隨機擾動與靠邊習慣，並放障礙物看秩序怎麼被撕開。" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://aqua5230.github.io/drone-swarm-lab/lessons/17-lane-formation/" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="第 17 課 · 人流分道 — Swarm Lab" />
+  <meta property="og:description" content="兩股人相向而行，沒人畫線、沒人指揮，擠到一個程度車道自己浮出來。" />
+  <meta property="og:url" content="https://aqua5230.github.io/drone-swarm-lab/lessons/17-lane-formation/" />
+  <meta property="og:site_name" content="Swarm Lab" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta property="og:image" content="https://aqua5230.github.io/drone-swarm-lab/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="模擬畫面：藍色與橘色行人分成數條同向帶子，右側為橫斷面剖面圖" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="第 17 課 · 人流分道 — Swarm Lab" />
+  <meta name="twitter:description" content="沒有人要車道，車道還是出現了——最乾淨的湧現示範。" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LearningResource",
+    "name": "第 17 課 · 人流自己分出車道",
+    "description": "對向人流的自組織分道：社會力模型的力項、密度與雜訊對車道的影響，以及車道數與走廊寬度的線性關係。",
+    "url": "https://aqua5230.github.io/drone-swarm-lab/lessons/17-lane-formation/",
+    "inLanguage": "zh-Hant",
+    "isAccessibleForFree": true,
+    "learningResourceType": "互動模擬",
+    "isPartOf": { "@type": "Course", "name": "群飛智能互動教學", "url": "https://aqua5230.github.io/drone-swarm-lab/" }
+  }
+  </script>
+
+  <!-- Space Grotesk：只載 Latin，中文字自動 fallback 到系統的 PingFang TC -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" />
+  <link rel="stylesheet" href="../../shared/style.css" />
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml" />
+
+  <!-- pangu：盤古之白，中文與英文/數字間自動補空隙 -->
+  <script src="https://cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+
+  <!-- p5.js：畫面引擎 -->
+  <script src="https://cdn.jsdelivr.net/npm/p5@1/lib/p5.min.js"></script>
+  <!-- Tweakpane v4 是 ES module：載入後掛回全域供 sketch.js 使用 -->
+  <script type="module">
+    import { Pane } from "https://cdn.jsdelivr.net/npm/tweakpane@4/dist/tweakpane.min.js";
+    window.Tweakpane = { Pane };
+  </script>
+</head>
+<body>
+  <nav id="site-nav"></nav>
+
+  <main>
+    <header>
+      <h1>第 17 課 · 沒人畫線，線自己出現</h1>
+      <p class="lede">
+        規則只有一條半：想往前，還有別撞到人。人一多，畫面自己分層——一條藍的、一條橘的、一條藍的。
+      </p>
+    </header>
+
+    <div class="lesson-layout">
+      <div class="stage">
+        <div id="canvas-holder"></div>
+        <div id="controls-holder"></div>
+      </div>
+      <section id="lesson-notes" class="notes">
+<h2>沒人畫線，線自己出現</h2>
+<p>眼前這條走廊，藍色的往右、橘色的往左。<strong>沒有標線、沒有指揮、沒有人跟旁邊的人講過任何一句話。</strong></p>
+<p>放著看三十秒，畫面自己分層了：一條藍的、一條橘的、一條藍的…… 右邊那張剖面圖會直接把它畫給你看 —— 顏色分成一塊一塊的橫帶，那就是<strong>車道</strong>。</p>
+<p>換幾個人數看看，帶子都會長出來，只是條數與位置每次不同：</p>
+<p><button class="try" data-preset="{&quot;count&quot;:80}">80 人</button>　<button class="try" data-preset="{&quot;count&quot;:260}">260 人</button>　<button class="try" data-preset="{&quot;count&quot;:460}">460 人</button></p>
+<p>你在捷運通道、在演唱會散場的人流裡走過無數次的東西，就是這個。</p>
+<h2>為什麼會這樣</h2>
+<p>規則只有兩條半：<strong>想往前</strong>、<strong>閃迎面來的人</strong>、還有<strong>跟著同方向的人走</strong>。</p>
+<p>第二條有個關鍵細節：<strong>你只閃迎面來的</strong>。跟你同方向、速度也差不多的人，就算貼得很近，你也不需要躲 —— 因為你們的相對速度接近零，永遠不會撞上。程式裡這一項叫「靠近速度」：兩人正在拉近距離才推，同行的不推。</p>
+<p>第三條更軟：走在同向的人旁邊比較省力，於是你會微微往他那邊靠。</p>
+<p>後兩條合起來就是一個<strong>正回饋</strong>：你被迎面的人推開、被同向的人吸引，於是同方向的人越聚越近，帶子一有雛形就自己長得更明顯。</p>
+<p><strong>沒有人要車道，車道還是出現了。</strong> 這就是湧現（emergence）最乾淨的示範之一 —— 沒有人規劃、沒有標線、沒有溝通，只有幾個很自私的局部決定。</p>
+<p>面板上的 <code>跟隨同向的人</code> 就是第三條。把它拉到 0 試試：</p>
+<p><button class="try" data-preset="{&quot;count&quot;:320,&quot;follow&quot;:0}">關掉跟隨</button>　<button class="try" data-preset="{&quot;count&quot;:320,&quot;follow&quot;:4}">開回跟隨</button></p>
+<p>關掉之後，只剩排斥力 —— 人被推得均勻散開，藍橘混在一起，帶子怎麼樣都長不出來。<strong>只有排斥，做不出秩序；秩序需要一點把同類黏在一起的東西。</strong></p>
+<h2>一個很反直覺的量測</h2>
+<p>你可能以為分道會讓大家走得比較快。左上角的「平均前進速度」說：<strong>沒有。</strong></p>
+<p>把跟隨關掉、讓藍橘徹底混在一起，速度大約 51%；開到預設值、帶子清清楚楚，也才 56%。<strong>分道幾乎沒有讓走廊變快。</strong></p>
+<p>這值得停一下。自組織出來的秩序<strong>不保證更有效率</strong> —— 它只是這套規則在這個密度下會落到的樣子。看到漂亮的模式就假設它一定在解決什麼問題，是研究群體行為最常見的錯誤之一。</p>
+<p>（真實人流的實驗確實量到分道與流量的關係，但那是在比這條走廊長得多、也擠得多的場地。這個小畫面撐不起那個結論，所以這裡就不硬掰。）</p>
+<p>再試一件事：在畫面上<strong>點一下放一個站著不動的人</strong>（最多六個）。看那個人怎麼把一條好好的帶子撕開，後面排出一條尾巴。</p>
+<p><strong>一個不遵守隱形規則的個體，代價由整條走廊付。</strong></p>
+<h2>走廊多寬，就有幾條道</h2>
+<p>Helbing 和 Molnár 1995 年那篇 —— 就是「社會力模型」的原始論文 —— 量過一件很好玩的事：走廊裡自己長出來的<strong>車道數，跟走廊寬度成正比</strong>。</p>
+<p>他們擬合出來的式子是：</p>
+<p>$$N(W) = 0.36,\mathrm{m}^{-1} \cdot W + 0.59$$</p>
+<p>十公尺寬的走廊，平均長出約四條道。</p>
+<p>這種「線性關係」是自組織現象很典型的簽名：<strong>沒有人設計，但結果可以預測。</strong> 而可預測，就代表你可以拿它來做設計決策 —— 走廊要開多寬、樓梯口要留多少空間，不必等人潮實測。</p>
+<h2>靠右走這件事</h2>
+<p>面板上的 <code>rightBias</code> 是一個很小的側向偏好，模擬「大家習慣靠某一邊」。</p>
+<p><button class="try" data-preset="{&quot;count&quot;:320,&quot;rightBias&quot;:0}">沒有習慣</button>　<button class="try" data-preset="{&quot;count&quot;:320,&quot;rightBias&quot;:0.6}">大家都靠右</button></p>
+<p>沒有習慣的時候，車道照樣形成，但<strong>每次重來，層數與位置都不一樣</strong> —— 這是對稱性自發破缺，往哪邊倒純看運氣。</p>
+<p>給一點偏好，往哪邊倒就不再是運氣。</p>
+<p>一個小小的共同慣例，省掉整群「這次要往哪邊讓」的協商。<strong>這就是「文化」在群體系統裡的功能</strong>：它不改變物理，它只是幫大家挑掉一個對稱。</p>
+<h2>這一課要帶走的</h2>
+<blockquote>
+<p><strong>秩序可以不是被規劃出來的，而是被擠出來的。</strong></p>
+</blockquote>
+<p>而它有兩個明確的性質，都在你眼前的畫面上：<strong>它需要一點把同類黏在一起的力（關掉「跟隨」就什麼都不剩），而且一個不合作的個體就能把它撕開。</strong></p>
+<hr>
+<p>源頭：Dirk Helbing &amp; Péter Molnár (1995)《Social force model for pedestrian dynamics》, <em>Physical Review E</em> 51(5): 4282–4286. <a href="https://doi.org/10.1103/PhysRevE.51.4282">DOI</a>　真人實驗證據見 Jun Zhang, Wolfram Klingsch, Andreas Schadschneider &amp; Armin Seyfried (2012)《Ordering in bidirectional pedestrian flows and its influence on the fundamental diagram》, <em>J. Stat. Mech.</em> 2012: P02002. <a href="https://doi.org/10.1088/1742-5468/2012/02/P02002">DOI</a>　本課為教學簡化版：保留驅動力、人與人的指數排斥（含視野角 2φ = 200°、視野外權重 c = 0.5）、牆的排斥與隨機擾動，另把原模型中以橢圓等位線表達的「相對速度」效果改寫成比較好講的靠近速度倍率，並額外加了一項「跟隨同向的人」—— 後者不在 1995 年那篇裡，屬於本課為了讓帶子在小畫面上穩定成形所做的補強。</p>
+</section>
+    </div>
+  </main>
+
+  <script src="../../shared/permalink.js"></script>
+  <script src="sketch.js"></script>
+  <script type="module">
+    import { mountNav, mountFoot } from '../../shared/site.js';
+    import { mountLesson } from '../../shared/lesson.js';
+    mountNav('../../', '17-lane-formation');
+    mountLesson('lesson.md', '#lesson-notes');
+    mountFoot('../../');
+  </script>
+</body>
+</html>
