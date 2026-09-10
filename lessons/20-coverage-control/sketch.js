@@ -347,18 +347,31 @@ function drawRobots() {
   }
 }
 
+// 參數面板固定佔畫布右上角 264px。窄視窗下畫布只剩 590px 左右，
+// 第一行（含七位數的成本）會鑽到面板底下。超寬就按比例縮字級，寬畫布維持原本的 15/12。
+function fittedTextSize(message, preferredSize, maxWidth) {
+  textSize(preferredSize);
+  if (textWidth(message) <= maxWidth) return;
+  textSize(Math.max(9, preferredSize * maxWidth / Math.max(1, textWidth(message))));
+}
+
 function drawHud() {
   const converged = stillFrames >= CONVERGED_FRAMES;
+  const maxWidth = Math.max(1, width - 300);
+  const line1 = `機器人：${robots.length}　覆蓋成本 H：${(coverageCost / 1e6).toFixed(2)} 百萬（越低越好）`;
+  const line2 = `平均移動量：${Number.isFinite(averageMove) ? averageMove.toFixed(3) : '—'} px/幀　狀態：${converged ? '已收斂' : '移動中'}`;
+  const hint = '顏色＝各自的責任區；十字＝該區的重心，機器人正往那裡走';
   noStroke();
   fill(226, 232, 240);
   textAlign(LEFT, TOP);
-  textSize(15);
-  text(`機器人：${robots.length}　覆蓋成本 H：${(coverageCost / 1e6).toFixed(2)} 百萬（越低越好）`, 16, 14);
+  fittedTextSize(line1, 15, maxWidth);
+  text(line1, 16, 14);
   fill(converged ? 74 : 226, converged ? 222 : 232, converged ? 128 : 240);
-  text(`平均移動量：${Number.isFinite(averageMove) ? averageMove.toFixed(3) : '—'} px/幀　狀態：${converged ? '已收斂' : '移動中'}`, 16, 35);
+  fittedTextSize(line2, 15, maxWidth);
+  text(line2, 16, 35);
   fill(148, 163, 184);
-  textSize(12);
-  text('顏色＝各自的責任區；十字＝該區的重心，機器人正往那裡走', 16, 57);
+  fittedTextSize(hint, 12, maxWidth);
+  text(hint, 16, 57);
 }
 
 function drawCostChart() {
