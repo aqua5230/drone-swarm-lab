@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第 24 課 · 逃竄波與行為傳染 — Swarm Lab 群飛智能教學</title>
+
+  <!-- SEO -->
+  <meta name="description" content="魚群受驚連鎖的互動版：一隻魚彈開後，訊息靠「鄰居在視野裡佔多寬」往外傳。可切換成距離門檻當對照組，轉動靈敏度看波及規模從熄滅跳到掃過全群，並累積上百波的分布。" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://aqua5230.github.io/drone-swarm-lab/lessons/24-startle-cascade/" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="第 24 課 · 逃竄波與行為傳染 — Swarm Lab" />
+  <meta property="og:description" content="大部分的波只驚動兩三隻。可是靈敏度只要再上去一點，同一群就會整片跑掉。" />
+  <meta property="og:url" content="https://aqua5230.github.io/drone-swarm-lab/lessons/24-startle-cascade/" />
+  <meta property="og:site_name" content="Swarm Lab" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta property="og:image" content="https://aqua5230.github.io/drone-swarm-lab/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="模擬畫面：魚群中一隻轉紅彈開，黃色連線一層層往外接出去" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="第 24 課 · 逃竄波與行為傳染 — Swarm Lab" />
+  <meta name="twitter:description" content="逃竄波、行為傳染、分支過程——訊息在群體裡跑多快、傳多遠。" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LearningResource",
+    "name": "第 24 課 · 逃竄波",
+    "description": "Rosenthal 等人對金體美鳊受驚連鎖的發現：預測誰會跟著逃的是鄰居在視野中佔的角寬而非公尺距離，以及逃竄波如何遵循分支過程、在 R₀ 跨過 1 時從熄滅變成掃過全群。",
+    "url": "https://aqua5230.github.io/drone-swarm-lab/lessons/24-startle-cascade/",
+    "inLanguage": "zh-Hant",
+    "isAccessibleForFree": true,
+    "learningResourceType": "互動模擬",
+    "isPartOf": { "@type": "Course", "name": "群飛智能互動教學", "url": "https://aqua5230.github.io/drone-swarm-lab/" }
+  }
+  </script>
+
+  <!-- Space Grotesk：只載 Latin，中文字自動 fallback 到系統的 PingFang TC -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" />
+  <link rel="stylesheet" href="../../shared/style.css" />
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml" />
+
+  <!-- pangu：盤古之白，中文與英文/數字間自動補空隙 -->
+  <script src="https://cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+
+  <!-- p5.js：畫面引擎 -->
+  <script src="https://cdn.jsdelivr.net/npm/p5@1/lib/p5.min.js"></script>
+  <!-- Tweakpane v4 是 ES module：載入後掛回全域供 sketch.js 使用 -->
+  <script type="module">
+    import { Pane } from "https://cdn.jsdelivr.net/npm/tweakpane@4/dist/tweakpane.min.js";
+    window.Tweakpane = { Pane };
+  </script>
+</head>
+<body>
+  <nav id="site-nav"></nav>
+
+  <main>
+    <header>
+      <h1>第 24 課 · 一隻嚇到，整群跟著跑</h1>
+      <p class="lede">
+        一隻魚看到影子彈開。半秒後，兩百隻全部在跑——中間沒有任何一隻看到那個影子。
+      </p>
+    </header>
+
+    <div class="lesson-layout">
+      <div class="stage">
+        <div id="canvas-holder"></div>
+        <div id="controls-holder"></div>
+      </div>
+      <section id="lesson-notes" class="notes">
+<h2>中間沒有一隻看到那個影子</h2>
+<p>一群魚在水裡慢慢繞。一隻看到一個影子，猛地彈開。</p>
+<p>半秒後，兩百隻全部在跑。</p>
+<p>這裡有一件事很容易被跳過：<strong>除了第一隻，沒有任何一隻看到那個影子。</strong> 牠們看到的只是旁邊的魚在動。</p>
+<p>所以真正的問題不是「魚怕不怕影子」，是<strong>訊息怎麼在一群身體之間傳遞</strong>——誰會被誰帶起來、傳幾層會停、什麼時候會從幾隻變成整群。</p>
+<h2>畫面在看什麼</h2>
+<p>畫面上每一隻魚的顏色代表牠的狀態：</p>
+<ul>
+<li><strong>灰</strong>：還沒反應。</li>
+<li><strong>紅</strong>：正在逃。逃的時候速度快三倍，而且直線衝出去。</li>
+<li><strong>黃</strong>：這一波已經逃過了，不會再被帶起來第二次。</li>
+</ul>
+<p><strong>黃色的線</strong>是傳染的路徑：誰把誰帶起來的。這就是 Rosenthal 等人那篇論文標題裡的「隱藏的互動網路」——它在真實的魚群裡看不見，要靠重建才浮得出來。</p>
+<p>一波結束（沒有魚還在逃）就自動記一筆，隔一下開下一波。下方的長條圖累積每一波<strong>波及了全群的幾成</strong>，切成十格；最右邊那格是紅色的，代表「幾乎整群都跑了」。</p>
+<p>先說一句免得你等錯東西：<strong>預設值刻意放在臨界點上</strong>，所以你看到的多半是兩三隻抽動一下就沒了，開頭那種「整群消失」要等，而且不一定等得到。想先看戲劇性的版本，直接跳到<button class="try" data-preset='{"sensitivity":0.2}'>靈敏度 0.2</button>，看完再回來——<strong>預設值那個「不一定」才是這一課真正要講的東西。</strong></p>
+<h2>一隻魚憑什麼跟著跑</h2>
+<p>預設的規則叫<strong>視野佔多寬</strong>：我環顧一圈，正在逃的魚佔了我視野的幾分之幾，我就有多少機會跟著跑。</p>
+<p>關鍵在<strong>遮擋</strong>：程式由近而遠掃過所有鄰居，近的先把視野佔掉，<strong>被擋在後面的魚完全不算數</strong>。</p>
+<p>這跟「半徑內有幾隻在逃」是兩件很不一樣的事。一隻貼在你眼前的魚，可能佔掉你三十度的視野；一隻在二十公尺外的魚只佔一度，而且很可能被別人擋住。</p>
+<h2>R₀ 跨過 1 的那一刻</h2>
+<p>轉動<strong>靈敏度</strong>。HUD 第二行有一個數字叫「第一隻平均帶起 X 隻」——那是 <strong>R₀</strong>：第一隻魚平均引發幾隻二代反應。</p>
+<p>我在 200 隻的預設場景上，每個設定跑 50 波：</p>
+<table>
+<thead>
+<tr>
+<th>靈敏度</th>
+<th>R₀</th>
+<th>平均波及</th>
+<th>燒到八成以上</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0.02</td>
+<td>0.34</td>
+<td>0.7%</td>
+<td>0 次</td>
+</tr>
+<tr>
+<td>0.06</td>
+<td>0.90</td>
+<td>2%</td>
+<td>0 次</td>
+</tr>
+<tr>
+<td>0.09</td>
+<td>1.46</td>
+<td>22%</td>
+<td>0 次（但最大一波 79%）</td>
+</tr>
+<tr>
+<td>0.13</td>
+<td>2.56</td>
+<td>79%</td>
+<td>44 次</td>
+</tr>
+<tr>
+<td>0.20</td>
+<td>3.20</td>
+<td>89%</td>
+<td>47 次</td>
+</tr>
+</tbody></table>
+<p><button class="try" data-preset='{"sensitivity":0.04}'>靈敏度 0.04：R₀ 不到 1</button></p>
+<p>每一波都只驚動兩三隻就停了。長條圖全部堆在最左邊那格。</p>
+<p><button class="try" data-preset='{"sensitivity":0.2}'>靈敏度 0.2：R₀ 超過 3</button></p>
+<p>每一波都燒光。長條圖全部堆在最右邊那格。</p>
+<p><button class="try" data-preset='{"sensitivity":0.09}'>回到 0.09：剛好在臨界點上</button></p>
+<p>這一格最值得看。<strong>平均波及 22%，可是「平均」在這裡幾乎沒有意義</strong>：50 波裡有 27 波是熄掉的（不到 10%），剩下的散在各處，最大一波燒掉 79%。</p>
+<p>長條圖不會長成一個漂亮的鐘形。它是<strong>兩頭重、中間空</strong>：多數的波無關緊要，偶爾來一次幾乎整群都跑。</p>
+<p>這不是這個模擬的怪癖。任何「每一個帶起 R₀ 個」的傳播過程都是這樣：R₀ 小於 1 必然熄滅，大於 1 就有機會不熄——而**「有機會不熄」跟「一定燒光」是兩回事**，所以在臨界點附近，同樣的參數會給你完全不同的兩種結局。</p>
+<h2>換一個規則：數人頭</h2>
+<p>面板上可以把傳染規則換成<strong>距離門檻</strong>：不管誰擋住誰、也不管遠近，只數「半徑內有幾隻在逃」。</p>
+<p>這是最直覺的假設，也是本課的對照組。先把兩邊調到同一個起點——200 隻、R₀ 都在 1.5 上下（視野規則靈敏度 0.09 量到 1.52，數人頭規則 0.008 量到 1.73），然後<strong>只改魚的密度</strong>，從 80 隻加到 360 隻。每組 60 波：</p>
+<table>
+<thead>
+<tr>
+<th>魚數</th>
+<th>視野 R₀</th>
+<th>視野燒光</th>
+<th>數人頭 R₀</th>
+<th>數人頭燒光</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>80</td>
+<td>1.17</td>
+<td>0／60</td>
+<td>1.45</td>
+<td>0／60</td>
+</tr>
+<tr>
+<td>200</td>
+<td>1.52</td>
+<td>0／60</td>
+<td>1.73</td>
+<td>14／60</td>
+</tr>
+<tr>
+<td>360</td>
+<td>1.57</td>
+<td>0／60</td>
+<td>2.38</td>
+<td>21／60</td>
+</tr>
+</tbody></table>
+<p><button class="try" data-preset='{"rule":"metric","sensitivity":0.008,"count":360}'>數人頭規則，360 隻</button>　<button class="try" data-preset='{"rule":"visual","sensitivity":0.09,"count":360}'>視野規則，同樣 360 隻</button></p>
+<p><strong>魚數多四倍，數人頭規則的 R₀ 跟著漲，全群逃竄從沒發生過變成三次裡有一次；視野規則幾乎不動，一次都沒有。</strong></p>
+<p>原因就是遮擋。<strong>你的視野只有 360 度，塞再多魚進來也還是 360 度</strong>——新來的那些站在別人後面，看不到就不算數。數人頭沒有這個上限：多一隻就多一份。</p>
+<p>這件事在生物上很要緊。魚群的密度隨時在變，可是牠們的反應行為不會因為擠了一點就整天在逃。<strong>一個會隨密度暴衝的模型，養不出能活的魚。</strong></p>
+<h2>這一課要帶走的</h2>
+<blockquote>
+<p><strong>群體裡的訊息不是廣播出去的，是一層一層接出去的。而「接得出去」和「接不出去」之間，沒有中間地帶。</strong></p>
+</blockquote>
+<p>同一群魚、同一套規則，靈敏度差兩倍，一邊是「兩三隻抽動一下」，另一邊是「整群消失」。中間那段你調不出來——<strong>它不是慢慢變嚴重的，它是在某一格翻過去的。</strong></p>
+<p>這跟第 16 課的臨界雜訊、第 18 課的密度門檻是同一件事的第三張臉：<strong>群體行為的開關藏在一個連續的旋鈕裡，而旋鈕上沒有刻度告訴你開關在哪。</strong></p>
+<p>還有一個對做系統的人更實際的教訓：<strong>你的傳染規則裡有沒有「上限」，決定了這個系統在規模變大時會不會失控。</strong> 視野會飽和，所以魚群再密也不會整天炸鍋；數人頭不會飽和，所以一擠就爆。同樣的道理適用於任何靠鄰居互相觸發的東西——警報、重試、擴散式的協同。</p>
+<hr>
+<p>源頭：Sara Brin Rosenthal, Colin R. Twomey, Andrew T. Hartnett, Hai Shan Wu &amp; Iain D. Couzin (2015)《Revealing the hidden networks of interaction in mobile animal groups allows prediction of complex behavioral contagion》, <em>Proceedings of the National Academy of Sciences</em> 112(15): 4690–4695. <a href="https://doi.org/10.1073/pnas.1420068112">DOI</a>　該文以金體美鳊（golden shiner）的受驚連鎖為對象，發現預測「誰會跟著逃」最好的變數是鄰居在個體視野中所佔的比例（含遮擋），優於公尺距離或鄰居數，並以分支過程描述連鎖的傳播。本課為二維教學版：魚的巡游行為、逃跑持續時間與機率函數都是為了畫面可讀性重寫的，不對應該文的擬合參數。文中所有次數與比例都是在本課這個場景上重跑量到的，只說明現象的方向，不可當成真實魚群的數值。</p>
+</section>
+    </div>
+  </main>
+
+  <script src="../../shared/permalink.js"></script>
+  <script src="./sketch.js"></script>
+  <script type="module">
+    import { mountNav, mountFoot } from '../../shared/site.js';
+    import { mountLesson } from '../../shared/lesson.js';
+    mountNav('../../', '24-startle-cascade');
+    mountFoot('../../');
+    mountLesson('lesson.md', '#lesson-notes');
+  </script>
+</body>
+</html>

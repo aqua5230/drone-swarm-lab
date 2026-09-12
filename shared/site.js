@@ -2,7 +2,7 @@
 // base 參數 = 從目前這頁回到網站根目錄要走的相對路徑：
 //   首頁傳 ''；課內頁（lessons/01-boids/）傳 '../../'。
 // 這樣多頁之間的連結不會因為所在資料夾不同而失效。
-import { LESSONS } from './lessons.js';
+import { LESSONS, PART_INTROS } from './lessons.js';
 
 // 把導覽列塞進 #site-nav。current = 目前所在課的 id（首頁傳 null）。
 // 設計參考一流 explorable 站（Eloquent JavaScript、Book of Shaders）：頂部只放
@@ -32,7 +32,7 @@ export function mountNav(base, current) {
       `<div class="nav-drawer-head">` +
       `<a class="nav-drawer-home" href="${base}">課程首頁</a>` +
       `<button class="nav-drawer-close" aria-label="關閉">✕</button></div>` +
-      withPartHeads(ready, (part) => `<h2 class="part-head">${part}</h2>`, (lesson) => {
+      withPartHeads(ready, (part) => `<h2 class="part-head">${part}</h2>${partIntro(part)}`, (lesson) => {
         const cls = lesson.id === current ? ' class="current"' : '';
         return `<a href="${base}lessons/${lesson.id}/"${cls} aria-label="${lesson.title}">` +
           `<b>${lesson.title}</b><small aria-hidden="true">${lesson.blurb}</small></a>`;
@@ -60,6 +60,7 @@ export function mountNav(base, current) {
 
   if (current) {
     mountFootNav(base, current, ready);
+    mountArrowKeys(base, current, ready, drawer);
     labelControlPanel();
   }
 }
@@ -86,6 +87,23 @@ function labelControlPanel() {
   new MutationObserver(label).observe(holder, { childList: true, subtree: true });
 }
 
+// 左右方向鍵直接翻上一課／下一課，順著讀不用把手移到滑鼠。
+// 三種情況不接手：抽屜開著、焦點在輸入欄位（面板的滑桿與數字格都是 input）、
+// 或按著修飾鍵（那多半是瀏覽器自己的上一頁／下一頁）。
+function mountArrowKeys(base, current, ready, drawer) {
+  const idx = ready.findIndex((lesson) => lesson.id === current);
+  const go = { ArrowLeft: ready[idx - 1], ArrowRight: ready[idx + 1] };
+  document.addEventListener('keydown', (e) => {
+    const target = go[e.key];
+    if (!target) return;
+    if (!drawer.hidden) return;
+    if (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) return;
+    const el = document.activeElement;
+    if (el && (el.matches('input, select, textarea') || el.isContentEditable)) return;
+    location.href = `${base}lessons/${target.id}/`;
+  });
+}
+
 // 課內頁底部的「上一課／下一課」，順著讀不用回目錄
 function mountFootNav(base, current, ready) {
   const main = document.querySelector('main');
@@ -106,6 +124,11 @@ function mountFootNav(base, current, ready) {
         `<span class="dir">下一課 →</span><span>${next.title}</span></a>`
       : '<span></span>');
   main.appendChild(foot);
+  // 鍵盤也能翻頁，但不是每個人都會去試——在下面補一行小字說有這回事
+  const hint = document.createElement('p');
+  hint.className = 'lesson-foot-hint';
+  hint.textContent = '鍵盤 ← → 也可以翻上一課／下一課';
+  main.appendChild(hint);
 }
 
 // 首頁用：把每一課畫成一張卡片塞進 #lesson-grid。
@@ -117,7 +140,7 @@ export function mountIndex(base) {
   host.innerHTML = withPartHeads(
     LESSONS,
     (part) => `<h2 class="part-head">${part}` +
-      `<span class="count">${countOf(part)} 課</span></h2>`,
+      `<span class="count">${countOf(part)} 課</span></h2>${partIntro(part)}`,
     (lesson, isPartLead) => {
       // 課名長成「第 1 課 · Boids 三規則」；把課號拆出來當眉標，
       // 標題就只剩概念本身，一整列掃過去讀得比較快。拆不出來就整串當標題。
@@ -134,6 +157,12 @@ export function mountIndex(base) {
       return `<div class="lesson-card planned${lead}">${inner}<span class="badge">規劃中</span></div>`;
     },
   );
+}
+
+// 篇名底下那一行導言。清單裡沒有這一篇就回傳空字串，不佔位子。
+function partIntro(part) {
+  const text = PART_INTROS[part];
+  return text ? `<p class="part-intro">${text}</p>` : '';
 }
 
 // 「第 1 課 · Boids 三規則」→ ['第 1 課', 'Boids 三規則']。沒有分隔號就回傳 ['', 整串]。

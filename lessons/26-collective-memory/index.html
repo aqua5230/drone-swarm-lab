@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第 26 課 · 集體記憶與遲滯 — Swarm Lab 群飛智能教學</title>
+
+  <!-- SEO -->
+  <meta name="description" content="Couzin 三區模型的互動版：只調整「中圈」寬度，群體依序長出群集、環流、動態平行、高度平行四種形狀。來回掃描同一個參數會畫出遲滯迴圈——同一組參數對應兩種結果，取決於群體從哪裡來。" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://aqua5230.github.io/drone-swarm-lab/lessons/26-collective-memory/" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="第 26 課 · 集體記憶與遲滯 — Swarm Lab" />
+  <meta property="og:description" content="同一個數字，往上掃是環流，往下掃是平行隊形。群體記得自己的來歷。" />
+  <meta property="og:url" content="https://aqua5230.github.io/drone-swarm-lab/lessons/26-collective-memory/" />
+  <meta property="og:site_name" content="Swarm Lab" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta property="og:image" content="https://aqua5230.github.io/drone-swarm-lab/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="模擬畫面：一群三角形個體繞著中心旋轉成環流，畫面下方是來回掃描畫出的遲滯迴圈" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="第 26 課 · 集體記憶與遲滯 — Swarm Lab" />
+  <meta name="twitter:description" content="集體記憶、遲滯、環流——同一組參數為什麼會有兩種結局。" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LearningResource",
+    "name": "第 26 課 · 集體記憶與遲滯",
+    "description": "Couzin 等人 2002 的三區模型：排斥、轉向、吸引三圈如何只靠中圈寬度就長出四種群體形狀，以及來回掃描同一參數出現的遲滯——群體當下的結構取決於它的歷史。",
+    "url": "https://aqua5230.github.io/drone-swarm-lab/lessons/26-collective-memory/",
+    "inLanguage": "zh-Hant",
+    "isAccessibleForFree": true,
+    "learningResourceType": "互動模擬",
+    "isPartOf": { "@type": "Course", "name": "群飛智能互動教學", "url": "https://aqua5230.github.io/drone-swarm-lab/" }
+  }
+  </script>
+
+  <!-- Space Grotesk：只載 Latin，中文字自動 fallback 到系統的 PingFang TC -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" />
+  <link rel="stylesheet" href="../../shared/style.css" />
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml" />
+
+  <!-- pangu：盤古之白，中文與英文/數字間自動補空隙 -->
+  <script src="https://cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+
+  <!-- p5.js：畫面引擎 -->
+  <script src="https://cdn.jsdelivr.net/npm/p5@1/lib/p5.min.js"></script>
+  <!-- Tweakpane v4 是 ES module：載入後掛回全域供 sketch.js 使用 -->
+  <script type="module">
+    import { Pane } from "https://cdn.jsdelivr.net/npm/tweakpane@4/dist/tweakpane.min.js";
+    window.Tweakpane = { Pane };
+  </script>
+</head>
+<body>
+  <nav id="site-nav"></nav>
+
+  <main>
+    <header>
+      <h1>第 26 課 · 同樣的規則，群體記得自己來過哪</h1>
+      <p class="lede">
+        把同一個旋鈕往上轉，再往下轉回同一格。群體停在不同的形狀上——它記得自己是從哪邊來的。
+      </p>
+    </header>
+
+    <div class="lesson-layout">
+      <div class="stage">
+        <div id="canvas-holder"></div>
+        <div id="controls-holder"></div>
+      </div>
+      <section id="lesson-notes" class="notes">
+<h2>三個圈</h2>
+<p>這一課的每隻個體只看三件事，全部用距離分：</p>
+<ul>
+<li><strong>太近的（紅圈以內）</strong>：推開。這條最優先，其他一律不看。</li>
+<li><strong>中圈裡的（藍圈）</strong>：跟著牠們的方向轉。</li>
+<li><strong>外圈裡的（灰圈）</strong>：往牠們靠過去。</li>
+</ul>
+<p>打開「顯示三圈」，畫面上黃色那隻就畫著自己的三個圈。</p>
+<p>紅圈和外圈的寬度是固定的。<strong>整課只轉一個旋鈕：中圈有多寬（Δρ）。</strong></p>
+<p>換句話說，我們只調整一件事：<strong>一隻個體要在多大的範圍內「跟著別人轉」。</strong></p>
+<h2>四種形狀</h2>
+<p>Δρ 從小轉到大，群體會依序長出四種完全不同的樣子。HUD 第一行會告訴你現在判成哪一種，第二行的兩個數字是判斷依據：</p>
+<ul>
+<li><strong>極化度</strong>：所有行進方向加起來的長度除以隻數。1 是整群同向，0 是一團亂。</li>
+<li><strong>角動量</strong>：每隻相對群心的方位和牠行進方向的叉積平均。1 是整群繞著群心轉。</li>
+</ul>
+<p><button class="try" data-preset='{"dro":3}'>Δρ = 3：群集</button></p>
+<p>一團擠在一起的東西，方向亂七八糟。兩個數字都接近 0。這就是蚊蚋那種嗡嗡繞在一起、但沒有去哪裡的樣子。</p>
+<p><button class="try" data-preset='{"dro":12}'>Δρ = 12：環流</button></p>
+<p><strong>整群開始繞圈</strong>，中間空出一個洞。極化度還是很低（大家方向不同），但角動量衝到 0.7 以上——這是一個群體在原地旋轉。</p>
+<p>魚群的「魚旋風」、行軍蟻的死亡螺旋，都是這個狀態。它值得停一下看：<strong>沒有任何一隻想繞圈，也沒有任何一隻知道中間有個洞。</strong></p>
+<p><button class="try" data-preset='{"dro":70}'>Δρ = 70：動態平行</button></p>
+<p>環散開了，整群往同一個方向移動，但隊形鬆、會扭動。極化度爬到 0.7 上下。</p>
+<p><button class="try" data-preset='{"dro":150}'>Δρ = 150：高度平行</button></p>
+<p>一個緊密的箭頭，所有個體幾乎完全同向。極化度接近 1，角動量掉到 0。</p>
+<p><strong>同一套規則、同一群個體，只改一個數字，長出四種在生物學上有各自名字的隊形。</strong></p>
+<h2>然後把旋鈕轉回來</h2>
+<p>這才是這一課真正的題目。</p>
+<p>按「由小往大掃 Δρ」，等它跑完（大約 12 秒，Δρ 從 0 爬到 160），再按「由大往小掃 Δρ」。下方會畫出兩組曲線：<strong>實線是往上掃，虛線是往下掃</strong>；藍色是極化度，黃色是角動量。</p>
+<p>兩條線不重疊。</p>
+<p>我量到的（每 40 幀記一點）：</p>
+<table>
+<thead>
+<tr>
+<th>Δρ</th>
+<th>由小往大</th>
+<th>由大往小</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>18</td>
+<td>環流（極化 0.09／角動量 0.71）</td>
+<td>動態平行（0.74／0.09）</td>
+</tr>
+<tr>
+<td>44</td>
+<td>環流（0.17／0.66）</td>
+<td>動態平行（0.69／0.03）</td>
+</tr>
+<tr>
+<td>71</td>
+<td>環流（0.15／0.64）</td>
+<td>動態平行（0.80／0.04）</td>
+</tr>
+<tr>
+<td>106</td>
+<td>動態平行（0.52／0.38）</td>
+<td>高度平行（0.94／0.00）</td>
+</tr>
+<tr>
+<td>150</td>
+<td>動態平行（0.84／0.09）</td>
+<td>高度平行（0.95／0.01）</td>
+</tr>
+</tbody></table>
+<p>由小往大掃，<strong>環流一路撐到 Δρ ≈ 71 才放棄</strong>。由大往小掃，平行隊形<strong>一路撐到 Δρ ≈ 1 都沒有變回環流</strong>。</p>
+<p>在 Δρ = 18 到 70 這整段裡，<strong>同一個參數值對應兩種完全不同的群體</strong>。要知道你看到的是哪一種，光看參數不夠——<strong>你必須知道它是從哪邊來的。</strong></p>
+<p>這個現象叫<strong>遲滯</strong>（hysteresis）：系統現在的狀態不只取決於現在的條件，還取決於它走過的路。</p>
+<h2>為什麼這叫「記憶」</h2>
+<p>一般講到記憶，會想到某個地方存了東西。</p>
+<p>這裡沒有。每隻個體只記得自己上一刻的方向，沒有人存過「我們剛才是環流」這件事。個體之間也沒有傳遞任何訊息。</p>
+<p><strong>記憶存在隊形本身裡。</strong> 一個已經在繞圈的群體，它的幾何結構（大家的相對位置和方向）會讓繞圈這件事繼續成立；一個已經排成平行隊形的群體，它的幾何結構會讓平行繼續成立。兩種結構都自己撐住自己，所以中間那段參數，兩種都活得下去。</p>
+<p>這也解釋了為什麼「同一群動物在同一個環境裡，有時候繞圈有時候直行」——不需要環境變了，也不需要牠們改變主意。<strong>只要牠們先前的經歷不同就夠了。</strong></p>
+<p>要提醒一句：這個現象的強弱跟<strong>掃得多快</strong>有關。本課的掃描速度是每幀 Δρ 走 0.22，整趟約 12 秒。掃得更慢，群體有更多時間重組，兩條曲線會靠近一些；但只要掃描比群體重組快，遲滯就存在——而現實世界的環境變化從來不會等群體準備好。</p>
+<h2>這一課要帶走的</h2>
+<blockquote>
+<p><strong>給定規則和參數，你還是算不出群體會長成什麼樣——因為答案裡有一項是它的歷史。</strong></p>
+</blockquote>
+<p>這件事對做模擬、做預測的人是個壞消息：<strong>你不能只掃參數空間。</strong> 同一格會給你兩個答案，取決於你從哪裡掃過來的。第 16 課教的那套「轉動旋鈕、找臨界點」的方法，在這裡會漏掉一半的圖。</p>
+<p>對做控制的人則是個機會：<strong>你可以用一段暫時的操作，把群體推進一個它自己會維持下去的狀態。</strong> 把 Δρ 推高再放回來，群體就從環流變成平行隊形，而且不會自己變回去——你不需要一直花力氣維持它。這跟第 23 課牧羊犬那種「一直站著推」是完全不同的控制策略。</p>
+<hr>
+<p>源頭：Iain D. Couzin, Jens Krause, Richard James, Graeme D. Ruxton &amp; Nigel R. Franks (2002)《Collective Memory and Spatial Sorting in Animal Groups》, <em>Journal of Theoretical Biology</em> 218(1): 1–11. <a href="https://doi.org/10.1006/jtbi.2002.3065">DOI</a>　該文提出排斥／轉向／吸引三區模型，指出只改變轉向區寬度即可產生群集、環流、動態平行、高度平行四種集體狀態，並在往上與往下掃描時觀察到遲滯，稱之為集體記憶。本課為二維教學版（原文為三維），身後死角、轉向速率上限與雜訊都保留，但各半徑與速度是配合畫面尺寸重新標定的，不對應原文的單位。文中的數值與轉折位置都是在本課這個場景上重跑量到的，只說明現象的方向，不可外推成原模型的相圖。</p>
+</section>
+    </div>
+  </main>
+
+  <script src="../../shared/permalink.js"></script>
+  <script src="./sketch.js"></script>
+  <script type="module">
+    import { mountNav, mountFoot } from '../../shared/site.js';
+    import { mountLesson } from '../../shared/lesson.js';
+    mountNav('../../', '26-collective-memory');
+    mountFoot('../../');
+    mountLesson('lesson.md', '#lesson-notes');
+  </script>
+</body>
+</html>

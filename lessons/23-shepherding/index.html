@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第 23 課 · 牧羊問題與群體驅趕 — Swarm Lab 群飛智能教學</title>
+
+  <!-- SEO -->
+  <meta name="description" content="牧羊問題的互動版：一隻牧羊犬只有「收攏」與「驅趕」兩條規則，靠一個門檻切換，就能把一整群會互相排斥、互相靠攏的羊推進羊圈。可調羊數、感測半徑與收攏開關，看這套啟發式在什麼條件下失效。" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://aqua5230.github.io/drone-swarm-lab/lessons/23-shepherding/" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="第 23 課 · 牧羊問題與群體驅趕 — Swarm Lab" />
+  <meta property="og:description" content="把收攏關掉，牧羊犬只會推——羊群被推成一條線，然後從兩側漏光。" />
+  <meta property="og:url" content="https://aqua5230.github.io/drone-swarm-lab/lessons/23-shepherding/" />
+  <meta property="og:site_name" content="Swarm Lab" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta property="og:image" content="https://aqua5230.github.io/drone-swarm-lab/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="模擬畫面：紅點牧羊犬在羊群後方繞行，把藍色羊群推向左上角虛線畫的羊圈" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="第 23 課 · 牧羊問題與群體驅趕 — Swarm Lab" />
+  <meta name="twitter:description" content="牧羊問題、收攏與驅趕、啟發式控制——一隻怎麼推得動一群。" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LearningResource",
+    "name": "第 23 課 · 牧羊問題",
+    "description": "Strömbom 等人的牧羊啟發式：收攏與驅趕兩條規則、ra·N^(2/3) 的切換門檻、羊的感測半徑如何決定推得動與推不動，以及這套規則在羊數變多時的失效方式。",
+    "url": "https://aqua5230.github.io/drone-swarm-lab/lessons/23-shepherding/",
+    "inLanguage": "zh-Hant",
+    "isAccessibleForFree": true,
+    "learningResourceType": "互動模擬",
+    "isPartOf": { "@type": "Course", "name": "群飛智能互動教學", "url": "https://aqua5230.github.io/drone-swarm-lab/" }
+  }
+  </script>
+
+  <!-- Space Grotesk：只載 Latin，中文字自動 fallback 到系統的 PingFang TC -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" />
+  <link rel="stylesheet" href="../../shared/style.css" />
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml" />
+
+  <!-- pangu：盤古之白，中文與英文/數字間自動補空隙 -->
+  <script src="https://cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+
+  <!-- p5.js：畫面引擎 -->
+  <script src="https://cdn.jsdelivr.net/npm/p5@1/lib/p5.min.js"></script>
+  <!-- Tweakpane v4 是 ES module：載入後掛回全域供 sketch.js 使用 -->
+  <script type="module">
+    import { Pane } from "https://cdn.jsdelivr.net/npm/tweakpane@4/dist/tweakpane.min.js";
+    window.Tweakpane = { Pane };
+  </script>
+</head>
+<body>
+  <nav id="site-nav"></nav>
+
+  <main>
+    <header>
+      <h1>第 23 課 · 一隻怎麼推得動一群</h1>
+      <p class="lede">
+        牧羊犬沒有全域地圖、不會分配任務，它只有兩條規則和一個切換條件——然後一整群羊就被它推進了羊圈。
+      </p>
+    </header>
+
+    <div class="lesson-layout">
+      <div class="stage">
+        <div id="canvas-holder"></div>
+        <div id="controls-holder"></div>
+      </div>
+      <section id="lesson-notes" class="notes">
+<h2>一隻，對上一整群</h2>
+<p>前面幾課的群體都是自己管自己：沒有指揮官，秩序從個體之間長出來。</p>
+<p>這一課換一個問題：<strong>外面有一個人，他要那群東西往他指定的地方去。</strong></p>
+<p>牧羊犬每天在做這件事。牠沒有全域地圖、不會分配任務、也不能跟羊講話。牠能做的只有一件事：<strong>站到某個位置，讓羊自己走開。</strong></p>
+<p>而且羊不是被動的：牠們會互相排斥、互相靠攏、看到狗就跑。你推左邊，右邊會凸出來。</p>
+<h2>牧羊犬只有兩條規則</h2>
+<p>看畫面右上角的 HUD，第一行寫著現在是哪個模式。</p>
+<ol>
+<li><strong>驅趕</strong>：羊群夠緊的時候，狗站到「羊圈 → 群心」的延長線上，整團往羊圈推。</li>
+<li><strong>收攏</strong>：羊群散開的時候，狗改去追<strong>離群心最遠的那一隻</strong>，繞到牠外面，把牠趕回群裡。</li>
+</ol>
+<p>切換的條件只有一個數字：<strong>最遠的羊離群心多遠。</strong> 超過門檻就收攏，沒超過就驅趕。畫面下方那條曲線就是這個數字，虛線是門檻——曲線在虛線上方的時候，狗在收攏。</p>
+<p>還有一條看不見的規則：<strong>狗身邊有羊的時候，牠原地不動。</strong> 靠太近會把羊炸散，所以牠寧可停下來等。</p>
+<p>就這樣。沒有路徑規劃、沒有把羊編號分組、沒有預測羊會往哪跑。</p>
+<p>預設這一場（40 隻羊）我重跑了 10 次，<strong>10 次全部把羊趕進圈</strong>，最快 18 秒、最慢 89 秒，平均 35 秒。</p>
+<h2>把收攏關掉</h2>
+<p><button class="try" data-preset='{"collect":false}'>只驅趕，不收攏</button></p>
+<p>現在狗永遠站在群心後面推。</p>
+<p>結果：<strong>8 次全部失敗。</strong> 羊群被推成一條橫的長線，然後從兩側漏光——狗在中間推，兩邊的羊被擠出去之後就再也沒人管它們了。</p>
+<p>這就是為什麼收攏那條規則非有不可。<strong>驅趕會把群體撕開，而撕開的群體沒辦法被驅趕。</strong> 兩條規則不是分工，是互相補洞。</p>
+<p><button class="try" data-preset='{"collect":true}'>把收攏開回來</button></p>
+<h2>羊看不到你，你就推不動</h2>
+<p>羊只有在<strong>感測半徑</strong>內才看得到狗。畫面上狗周圍那圈淡紅色就是它，圈內的羊會染成藍色。</p>
+<p><button class="try" data-preset='{"detect":45}'>把感測半徑縮到 45</button></p>
+<p>結果：<strong>8 次全部失敗，而且一隻羊都沒進圈。</strong></p>
+<p>原因很直接：狗在驅趕時要站在群心後面 ra·√N 的位置——40 隻羊的話大約 50 px。感測半徑只有 45 px 的時候，狗站到定位，羊已經看不到牠了。<strong>狗在推一個感覺不到牠的東西。</strong></p>
+<p>這不是把狗調快就能解決的。它是幾何問題：<strong>你的影響範圍必須大於你為了施力而必須拉開的距離。</strong></p>
+<h2>羊多了會怎樣</h2>
+<p><button class="try" data-preset='{"count":100,"neighbors":20}'>100 隻羊，其他不動</button></p>
+<p>結果：<strong>6 次全部失敗。</strong> 而且失敗的樣子很特別——羊群裂成好幾坨，狗在幾坨之間來回跑，永遠脫離不了收攏模式。</p>
+<p>直覺會說：羊太多，狗忙不過來。<strong>這個直覺是錯的。</strong></p>
+<p>真正壞掉的地方在羊身上。面板上有一個參數叫「往幾隻靠」——每隻羊是往<strong>最近的 n 隻</strong>的重心靠，不是往整群的重心靠。n 預設 20。40 隻的時候，20 個鄰居幾乎涵蓋大半個群，所以群體是一坨；100 隻的時候，20 個鄰居只是它旁邊那一小撮，於是每一撮各自抱團，整群裂開。</p>
+<p><button class="try" data-preset='{"count":100,"neighbors":60}'>一樣 100 隻，鄰居數調到 60</button></p>
+<p>結果：<strong>6 次全部成功</strong>，14 到 41 秒。</p>
+<p><strong>同一隻狗、同一套規則、同樣的羊數，只改了羊彼此看多少個鄰居，從全敗變成全勝。</strong></p>
+<p>這件事值得停一下。我們在調的是<strong>被控制的那一方</strong>的參數，不是控制者的。這套牧羊法能不能用，一半以上取決於羊群本身有多黏——而那不是牧羊犬能決定的。</p>
+<h2>兩道牆，各自要付錢</h2>
+<p>再往上推：<button class="try" data-preset='{"count":200,"neighbors":100,"detect":130}'>200 隻、鄰居 100</button></p>
+<p><strong>4 次全部失敗。</strong> 這次鄰居數已經拉到 100 了，羊群也沒有裂開——卡住的是另一件事：群體變大了，外圈的羊離狗超過 130 px，根本看不到牠。狗推得動靠近牠的那一半，另一半站著吃草。</p>
+<p><button class="try" data-preset='{"count":200,"neighbors":100,"detect":300}'>同樣 200 隻，感測半徑拉到 300</button></p>
+<p><strong>4 次全部成功</strong>，17 到 61 秒。</p>
+<p>所以這套啟發式有兩道獨立的牆，而且<strong>兩道都跟羊群的大小綁在一起</strong>：</p>
+<ul>
+<li>羊要彼此看到夠多鄰居，群體才不會裂。</li>
+<li>羊要看得到狗，狗才推得動。</li>
+</ul>
+<p>群體變大，兩個數字都得跟著變大。<strong>一隻牧羊犬能管多少羊，不是牠自己的能力問題。</strong></p>
+<h2>這一課要帶走的</h2>
+<blockquote>
+<p><strong>控制一個群體，不是對每個成員下令，是改變他們的處境，讓他們自己走到你要的地方。</strong></p>
+</blockquote>
+<p>牧羊犬的兩條規則加起來不到十行程式，卻能把一整群會互相推擠、會逃跑、沒有編號的東西送進指定位置。它做的不是「指揮」，是<strong>站位</strong>。</p>
+<p>這也是為什麼這套方法被搬進無人機驅離、群體疏散引導、細胞操控這些題目：<strong>當個體數量多到不可能一一下令的時候，能被設計的只剩下環境和位置。</strong></p>
+<p>代價也很清楚：你必須知道被控制的那一方是怎麼互動的。第 3 課到第 8 課那些「群體自己怎麼運作」的知識，在這裡不是背景，是控制器的一部分。</p>
+<hr>
+<p>源頭：Daniel Strömbom, Richard P. Mann, Alan M. Wilson, Stephen Hailes, A. Jennifer Morton, David J. T. Sumpter &amp; Andrew J. King (2014)《Solving the shepherding problem: heuristics for herding autonomous, interacting agents》, <em>Journal of the Royal Society Interface</em> 11(100): 20140719. <a href="https://doi.org/10.1098/rsif.2014.0719">DOI</a>　本課為二維教學版：羊的三條規則、收攏與驅趕的站位公式（門檻 ra·N^(2/3)、驅趕站位 ra·√N）取自該文，其餘數值為配合畫面尺寸重新標定，不對應論文中的單位。文中的成功率與秒數都是在本課這個場景上重跑量到的（每組 4 到 10 次），只用來說明現象的方向，不可外推成這套啟發式的一般效能。</p>
+</section>
+    </div>
+  </main>
+
+  <script src="../../shared/permalink.js"></script>
+  <script src="./sketch.js"></script>
+  <script type="module">
+    import { mountNav, mountFoot } from '../../shared/site.js';
+    import { mountLesson } from '../../shared/lesson.js';
+    mountNav('../../', '23-shepherding');
+    mountFoot('../../');
+    mountLesson('lesson.md', '#lesson-notes');
+  </script>
+</body>
+</html>

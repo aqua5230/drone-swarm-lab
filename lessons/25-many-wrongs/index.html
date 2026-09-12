@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第 25 課 · 多錯得正與群體導航 — Swarm Lab 群飛智能教學</title>
+
+  <!-- SEO -->
+  <meta name="description" content="「多錯得正」的互動版：每個個體的羅盤都歪，但只要彼此對齊，群體航向的誤差會縮成 1/√N。可掃描群體大小畫出誤差曲線，也可以加入系統偏差，看平均為什麼一下就失效。" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://aqua5230.github.io/drone-swarm-lab/lessons/25-many-wrongs/" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="第 25 課 · 多錯得正與群體導航 — Swarm Lab" />
+  <meta property="og:description" content="群體平均掉的是隨機誤差。只要誤差有共同的偏向，人再多也一樣歪。" />
+  <meta property="og:url" content="https://aqua5230.github.io/drone-swarm-lab/lessons/25-many-wrongs/" />
+  <meta property="og:site_name" content="Swarm Lab" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta property="og:image" content="https://aqua5230.github.io/drone-swarm-lab/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="模擬畫面：一群三角形個體朝右移動，每隻拉出一條指向不同的細線代表自己的羅盤" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="第 25 課 · 多錯得正與群體導航 — Swarm Lab" />
+  <meta name="twitter:description" content="多錯得正、1/√N、系統偏差——一群不準的個體怎麼合成一個準的方向。" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LearningResource",
+    "name": "第 25 課 · 多錯得正",
+    "description": "Grünbaum 與 Simons 的「多錯得正」論點：個體導航誤差在群體中被平均掉、誤差隨 1/√N 下降的來歷與前提，以及系統偏差為何完全不受群體大小影響。",
+    "url": "https://aqua5230.github.io/drone-swarm-lab/lessons/25-many-wrongs/",
+    "inLanguage": "zh-Hant",
+    "isAccessibleForFree": true,
+    "learningResourceType": "互動模擬",
+    "isPartOf": { "@type": "Course", "name": "群飛智能互動教學", "url": "https://aqua5230.github.io/drone-swarm-lab/" }
+  }
+  </script>
+
+  <!-- Space Grotesk：只載 Latin，中文字自動 fallback 到系統的 PingFang TC -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" />
+  <link rel="stylesheet" href="../../shared/style.css" />
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml" />
+
+  <!-- pangu：盤古之白，中文與英文/數字間自動補空隙 -->
+  <script src="https://cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+
+  <!-- p5.js：畫面引擎 -->
+  <script src="https://cdn.jsdelivr.net/npm/p5@1/lib/p5.min.js"></script>
+  <!-- Tweakpane v4 是 ES module：載入後掛回全域供 sketch.js 使用 -->
+  <script type="module">
+    import { Pane } from "https://cdn.jsdelivr.net/npm/tweakpane@4/dist/tweakpane.min.js";
+    window.Tweakpane = { Pane };
+  </script>
+</head>
+<body>
+  <nav id="site-nav"></nav>
+
+  <main>
+    <header>
+      <h1>第 25 課 · 一群爛導航員，平均起來很準</h1>
+      <p class="lede">
+        每一隻的羅盤都歪，而且歪得不少。可是牠們合起來走出來的那條線，比任何一隻都準。
+      </p>
+    </header>
+
+    <div class="lesson-layout">
+      <div class="stage">
+        <div id="canvas-holder"></div>
+        <div id="controls-holder"></div>
+      </div>
+      <section id="lesson-notes" class="notes">
+<h2>每一隻都不準</h2>
+<p>打開「顯示每隻的羅盤」，畫面上每一隻都拉出一條細線——那是牠自己認定的「該走的方向」。</p>
+<p>看一下那些線。它們指得到處都是。HUD 第一行寫著<strong>個體羅盤平均歪 42 度</strong>——四十二度是什麼概念：你要往東走，牠指東北偏北。</p>
+<p>然後看畫面中間那支粗箭頭：<strong>群體實際在走的方向</strong>。它幾乎正對著右邊那個綠色的「真方向」。HUD 上這個誤差通常在 6 度以內。</p>
+<p><strong>沒有任何一隻知道正確答案。牠們合起來卻知道。</strong></p>
+<p>這個現象有一個很直白的名字：<strong>many wrongs</strong>——很多個錯，加起來是對的。</p>
+<h2>它為什麼會準</h2>
+<p>原理只有一行：<strong>誤差如果是隨機的，把 N 個平均起來，誤差會縮成原來的 1/√N。</strong></p>
+<p>不是縮成 1/N。是 1/√N——<strong>要準一倍，人數要變四倍。</strong></p>
+<p>按「掃描群體大小」看一次。程式會對 1、2、4、8……512 隻各重抽 400 次羅盤，量它們平均起來離真方向多遠，畫成藍色的曲線；灰色虛線是理論值。</p>
+<p>我量到的：</p>
+<table>
+<thead>
+<tr>
+<th>群體大小</th>
+<th>航向誤差</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1 隻</td>
+<td>41.8°</td>
+</tr>
+<tr>
+<td>4 隻</td>
+<td>24.8°</td>
+</tr>
+<tr>
+<td>16 隻</td>
+<td>11.2°</td>
+</tr>
+<tr>
+<td>64 隻</td>
+<td>5.7°</td>
+</tr>
+<tr>
+<td>256 隻</td>
+<td>3.0°</td>
+</tr>
+<tr>
+<td>512 隻</td>
+<td>2.3°</td>
+</tr>
+</tbody></table>
+<p>每往下四倍，誤差差不多砍一半。從 1 隻到 512 隻，誤差少了 94%，可是<strong>中間那一段的報酬掉得非常快</strong>：前 16 隻買掉了 30 度，後面的 496 隻只再買掉 9 度。</p>
+<p>黃色空心圈是現在畫面上這一群的即時誤差。它會在曲線附近上下跳——單次抽樣有運氣成分，但拉長看它落在曲線上。</p>
+<h2>一個容易誤會的地方</h2>
+<p>直覺會說：牠們之所以準，是因為「互相商量」。把社交力道關掉試試。</p>
+<p><button class="try" data-preset='{"social":0}'>社交力道歸零</button></p>
+<p>HUD 上的群體航向誤差……<strong>幾乎沒變。</strong></p>
+<p>我量了 12 次，60 隻：社交力道 0 是 5.79°，社交力道 0.85 是 5.74°。一模一樣。</p>
+<p><strong>這不是 bug，這是這一課最容易被講錯的地方。</strong></p>
+<p>「把大家的方向平均起來」這件事，數學上不需要任何人互相溝通——你拿一支筆把 60 個方向加起來就得到它了。平均一直都在。</p>
+<p>那對齊到底買到了什麼？看 HUD 第二行的<strong>隊形一致度</strong>（所有行進方向加起來的長度除以隻數，1 代表完全同向）：</p>
+<ul>
+<li>社交力道 0：一致度 <strong>0.66</strong></li>
+<li>社交力道 0.85：一致度 <strong>0.97</strong></li>
+</ul>
+<p><button class="try" data-preset='{"social":0.85}'>把社交力道開回來</button></p>
+<p>看畫面：社交關掉的時候，每隻魚照自己歪掉的羅盤各走各的，群體會散開；打開之後，牠們鎖成同一個方向。</p>
+<p><strong>對齊買到的不是「準」，是「一起」。</strong> 那個平均方向，在沒有對齊的時候只是一個統計量——沒有任何一隻真的在走它。要讓它變成一條群體真的走得到的路，成員必須實際朝同一個方向移動。</p>
+<p>一群各走各的動物，就算牠們的平均方向完美無誤，最後也會抵達六十個不同的地方。</p>
+<h2>有一種歪，平均不掉</h2>
+<p>現在做一件事：給每一隻的羅盤加上<strong>同一個方向的偏差</strong>。</p>
+<p><button class="try" data-preset='{"bias":20,"sigma":55}'>所有羅盤都往同一邊偏 20 度</button></p>
+<p>再按一次「掃描群體大小」。</p>
+<p>曲線變了：它往下掉一點點，然後<strong>卡在 20 度，再也不動</strong>。我量到的是 16 隻之後就已經停在 20 度上下，512 隻還是 20 度。實際跑模擬也一樣：60 隻 19.1°，200 隻 19.3°。</p>
+<p><strong>人多了完全沒有用。</strong></p>
+<p>道理其實顯而易見，但很少有人在需要的時候想起來：平均消掉的是<strong>隨機的誤差</strong>——有人偏左、有人偏右，才會互相抵銷。如果所有人都偏同一邊，平均之後那個偏差<strong>一分不少地留在答案裡</strong>。</p>
+<p>這件事和第 13 課是同一枚硬幣的兩面。第 13 課說「平均很脆弱，三個叛徒就能把整群帶走」；這一課說「平均很強大，能把四十二度的雜訊壓到六度」。兩句話都對，差別只在<strong>誤差有沒有共同的方向</strong>：</p>
+<ul>
+<li>誤差各自獨立、沒有偏向 → 平均是你最好的朋友，而且不用付什麼代價。</li>
+<li>誤差有共同的偏向（不管是系統性的校準錯誤，還是有人刻意推同一個方向）→ 平均一點忙都幫不上，而且<strong>它會讓你更有信心</strong>，因為數字看起來很穩定。</li>
+</ul>
+<p>第二種情況才是危險的，因為它<strong>長得跟第一種一模一樣</strong>：畫面上一樣是一群整齊的箭頭，HUD 上一樣是一個很小的離散度。你沒有辦法從群體內部看出來。</p>
+<h2>這一課要帶走的</h2>
+<blockquote>
+<p><strong>群體能把「不準」平均掉，但沒辦法把「一起錯」平均掉。而群體本身分不出這兩種。</strong></p>
+</blockquote>
+<p>這是所有「集體智慧」說法的邊界條件，也是它最常被誤用的地方。把更多感測器、更多節點、更多人加進來，只在誤差彼此獨立的時候有效——而現實裡讓誤差不獨立的原因多得很：同一批出廠的元件、同一份訓練資料、同一個上游來源、同一句大家都聽過的話。</p>
+<p>所以真正該問的從來不是「樣本夠不夠多」，是：<strong>這些錯，會不會都往同一邊錯。</strong></p>
+<hr>
+<p>源頭：Daniel Grünbaum (1998)《Schooling as a strategy for taxis in a noisy environment》, <em>Evolutionary Ecology</em> 12(5): 503–522. <a href="https://doi.org/10.1023/A:1006574607845">DOI</a>　Andrew M. Simons (2004)《Many wrongs: the advantage of group navigation》, <em>Trends in Ecology &amp; Evolution</em> 19(9): 453–455. <a href="https://doi.org/10.1016/j.tree.2004.07.001">DOI</a>　Grünbaum 的模型說明群聚如何讓個體在梯度雜訊下仍能趨向目標，Simons 把「多錯得正」整理成群體導航的一般論點，並指出它成立的前提是個體誤差彼此獨立。本課為二維教學版：個體羅盤誤差設成一次抽定的固定值（現實中誤差多半隨時間變動），對齊規則與感知半徑都是為了畫面可讀性簡化的。文中的角度與一致度都是在本課這個場景上重跑量到的（掃描每點 400 次重抽，實跑每組 12 次），只用來說明現象的方向。</p>
+</section>
+    </div>
+  </main>
+
+  <script src="../../shared/permalink.js"></script>
+  <script src="./sketch.js"></script>
+  <script type="module">
+    import { mountNav, mountFoot } from '../../shared/site.js';
+    import { mountLesson } from '../../shared/lesson.js';
+    mountNav('../../', '25-many-wrongs');
+    mountFoot('../../');
+    mountLesson('lesson.md', '#lesson-notes');
+  </script>
+</body>
+</html>

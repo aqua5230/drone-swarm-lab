@@ -18,12 +18,13 @@ one concept per lesson, tweak it live, sourced. Open and play, zero install.
 通訊被干擾仍能協同、可低成本擴量——這些正是現代無人機自主作戰的核心議題。
 本專案教的是**底層的群飛科學與自主原理**，不是武器製造。
 
-## 課程（22 課，全可玩）
+## 課程（26 課，全可玩）
 
 **基礎篇** 1–10：從「沒有指揮官也能成群」一路走到綜合沙盒。
 **進階篇** 11–14：拆掉基礎篇沒說破的四個假設——同一個節拍、大家都知道要去哪、沒有人說謊、有人分派座位。
 **群體物理篇** 15–18：換成物理學家的問法——這些行為什麼時候出現、什麼時候突然消失。
-**工程應用篇** 19–22：把前面的原理接到真的在用的做法——避碰、站位、分工、解題。
+**工程應用篇** 19–23：把前面的原理接到真的在用的做法——避碰、站位、分工、解題，以及從外面推動一整群。
+**群體認知篇** 24–26：群體怎麼傳訊息、怎麼把誤差平均掉、怎麼記住自己來過哪。
 
 | # | 課 | 一句話概念 |
 |---|---|---|
@@ -49,8 +50,12 @@ one concept per lesson, tweak it live, sourced. Open and play, zero install.
 | 20 | 一群機器人怎麼把一片地分完 | Voronoi 分區＋往重心走，覆蓋成本自己降到收斂 |
 | 21 | 沒有指揮，用喊價分工 | 各搶最近的會撞在一起；拍賣讓價格把人推到該去的地方 |
 | 22 | 群飛規則拿來解題 | 拿掉棲地換成「往最好的位置靠」，鳥群變成最佳化演算法 |
+| 23 | 一隻怎麼推得動一群 | 牧羊犬只有收攏與驅趕兩條規則；推不推得動，取決於羊看得到多少 |
+| 24 | 一隻嚇到，整群跟著跑 | 逃竄波靠視野佔比一層層接出去；R₀ 過 1 就從熄滅跳成全群 |
+| 25 | 一群爛導航員，平均起來很準 | 誤差獨立時 1/√N 收斂；一起往同一邊錯的話，人再多也沒用 |
+| 26 | 同樣的規則，群體記得自己來過哪 | 只調中圈寬度長出四種隊形；來回掃同一格會停在不同形狀 |
 
-每課都附一手學術出處（Reynolds、Seeley、Dorigo、Baran、Couzin、Lamport、Nagpal、Vicsek、van den Berg、Cortés、Bertsekas、Kennedy 等）。
+每課都附一手學術出處（Reynolds、Seeley、Dorigo、Baran、Couzin、Lamport、Nagpal、Vicsek、van den Berg、Cortés、Bertsekas、Kennedy、Strömbom、Rosenthal、Simons 等）。
 
 ## 技術組合
 
@@ -117,6 +122,14 @@ python3 -m http.server 8000   # 然後開 http://localhost:8000
   Phys. Rev. E 51(5): 4282–4286 — 人流自組織分道
 - Jérôme Buhl et al. (2006) *From Disorder to Order in Marching Locusts*,
   Science 312(5778): 1402–1406 — 蝗蟲的密度相變
+- Daniel Strömbom et al. (2014) *Solving the shepherding problem: heuristics for herding autonomous,
+  interacting agents*, J. R. Soc. Interface 11(100): 20140719 — 牧羊犬的兩條規則
+- Sara Brin Rosenthal et al. (2015) *Revealing the hidden networks of interaction in mobile animal
+  groups allows prediction of complex behavioral contagion*, PNAS 112(15): 4690–4695 — 逃竄波與視野規則
+- Andrew M. Simons (2004) *Many wrongs: the advantage of group navigation*,
+  Trends Ecol. Evol. 19(9): 453–455 — 多錯得正
+- Iain D. Couzin et al. (2002) *Collective Memory and Spatial Sorting in Animal Groups*,
+  J. Theor. Biol. 218(1): 1–11 — 三區模型與遲滯
 - Daniel Shiffman, *The Nature of Code* — Autonomous Agents / Flocking 章
 
 ## 授權
