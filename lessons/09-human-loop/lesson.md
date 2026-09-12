@@ -49,4 +49,4 @@
 
 ---
 
-源頭：自主武器與「有意義的人類控制」的討論見聯合國 CCW GGE on LAWS 歷年報告;概念綜述見 Article 36 (2016)《Key elements of meaningful human control》。[Article 36](https://article36.org/)
+源頭：自主武器與「有意義的人類控制」的討論見聯合國 CCW GGE on LAWS 歷年報告；概念綜述見 Article 36 (2016)《Key elements of meaningful human control》。[Article 36](https://article36.org/)

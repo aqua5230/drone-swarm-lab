@@ -42,4 +42,4 @@
 
 ---
 
-源頭：群體覆蓋與自我修復的形式化見 Cortés et al. (2004)《Coverage Control for Mobile Sensing Networks》, IEEE T-RA;韌性作為 swarm engineering 的核心性質見 Brambilla et al. (2013)。
+源頭：群體覆蓋與自我修復的形式化見 Cortés et al. (2004)《Coverage Control for Mobile Sensing Networks》, IEEE T-RA；韌性作為 swarm engineering 的核心性質見 Brambilla et al. (2013)。

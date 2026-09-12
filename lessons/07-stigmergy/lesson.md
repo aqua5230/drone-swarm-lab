@@ -39,4 +39,4 @@
 
 ---
 
-源頭：stigmergy 一詞來自 Pierre-Paul Grassé (1959) 研究白蟻築巢;蟻群最佳化見 Dorigo & Stützle《Ant Colony Optimization》(2004)。[ACO 概覽](http://www.aco-metaheuristic.org/)
+源頭：stigmergy 一詞來自 Pierre-Paul Grassé (1959) 研究白蟻築巢；蟻群最佳化見 Dorigo & Stützle《Ant Colony Optimization》(2004)。[ACO 概覽](http://www.aco-metaheuristic.org/)

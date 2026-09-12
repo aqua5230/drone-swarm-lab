@@ -42,4 +42,4 @@
 
 ---
 
-源頭：群體覆蓋與搜尋的行為基礎見 Şahin (2005)《Swarm Robotics: From Sources of Inspiration to Domains of Application》;「往未探區域走」屬於 frontier-based exploration，源自 Yamauchi (1997)。
+源頭：群體覆蓋與搜尋的行為基礎見 Şahin (2005)《Swarm Robotics: From Sources of Inspiration to Domains of Application》；「往未探區域走」屬於 frontier-based exploration，源自 Yamauchi (1997)。

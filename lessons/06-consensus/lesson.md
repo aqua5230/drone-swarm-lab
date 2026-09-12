@@ -45,4 +45,4 @@
 
 ---
 
-源頭：Thomas D. Seeley《Honeybee Democracy》(2010);交叉抑制打破僵局的數學模型見 Seeley et al. (2012)《Stop Signals Provide Cross Inhibition in Collective Decision-Making by Honeybee Swarms》, Science 335. [DOI](https://doi.org/10.1126/science.1210361)
+源頭：Thomas D. Seeley《Honeybee Democracy》(2010)；交叉抑制打破僵局的數學模型見 Seeley et al. (2012)《Stop Signals Provide Cross Inhibition in Collective Decision-Making by Honeybee Swarms》, Science 335. [DOI](https://doi.org/10.1126/science.1210361)
