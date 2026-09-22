@@ -152,11 +152,11 @@ function canvasSize() {
 function createControls() {
   const container = document.getElementById('controls-holder');
   pane = new Tweakpane.Pane({ title: '領路參數', container });
-  pane.addBinding(params, 'count', { min: 40, max: 400, step: 10 }).on('change', reset);
-  pane.addBinding(params, 'informedPct', { min: 0, max: 40, step: 1 }).on('change', assignInformed);
-  pane.addBinding(params, 'weight', { min: 0, max: 2, step: 0.05 });
-  pane.addBinding(params, 'conflict', { min: 0, max: 180, step: 5 }).on('change', updateGoals);
-  pane.addBinding(params, 'perception', { min: 30, max: 120, step: 2 });
+  pane.addBinding(params, 'count', { min: 40, max: 400, step: 10, label: '個體數 count' }).on('change', reset);
+  pane.addBinding(params, 'informedPct', { min: 0, max: 40, step: 1, label: '知情者比例' }).on('change', assignInformed);
+  pane.addBinding(params, 'weight', { min: 0, max: 2, step: 0.05, label: '固執程度 weight' });
+  pane.addBinding(params, 'conflict', { min: 0, max: 180, step: 5, label: '意見夾角' }).on('change', updateGoals);
+  pane.addBinding(params, 'perception', { min: 30, max: 120, step: 2, label: '感知範圍' });
   pane.addButton({ title: '重置' }).on('click', reset);
 }
 

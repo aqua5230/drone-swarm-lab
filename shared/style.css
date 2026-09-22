@@ -785,6 +785,22 @@ a.lesson-card:focus-visible .num {
   border-radius: 999px;
 }
 
+/* 已讀卡片只留一點記號，方便回來時略過，不搶課名的注意力。 */
+.lesson-card.visited {
+  border-color: color-mix(in srgb, var(--accent) 30%, var(--line));
+}
+
+.read-badge {
+  align-self: flex-start;
+  margin-block-start: auto;
+  padding: .08rem var(--space-2);
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  border-radius: 999px;
+  color: var(--accent-strong);
+  font-size: .7rem;
+  line-height: 1.4;
+}
+
 @media (min-width: 90rem) {
   .lesson-layout {
     display: grid;
@@ -883,6 +899,62 @@ a.lesson-card:focus-visible .num {
 .lesson-grid .part-head:first-child,
 .nav-drawer-panel .part-head:first-of-type {
   margin-block-start: 0;
+}
+
+/* 首頁首屏：畫布在最底，深色漸層保住文字對比。 */
+.hero {
+  position: relative;
+  isolation: isolate;
+  min-width: 0;
+  overflow: hidden;
+  padding: var(--space-7);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+
+.hero::after {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  content: '';
+  background: linear-gradient(105deg, rgba(11, 17, 32, .82) 0%, rgba(11, 17, 32, .5) 50%, rgba(11, 17, 32, .12) 100%);
+}
+
+.hero-canvas {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.hero > :not(.hero-canvas) {
+  position: relative;
+  z-index: 2;
+}
+
+.hero-continue {
+  display: inline-flex;
+  margin-block-start: var(--space-4);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  color: var(--accent-strong);
+  font-size: .875rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.hero-continue:hover {
+  color: var(--text-1);
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+@media (max-width: 39.999rem) {
+  .hero { padding: var(--space-5); }
 }
 
 /* 首頁標題下的一行事實：先講清楚這是什麼規模的東西，再進課程列 */

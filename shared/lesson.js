@@ -33,7 +33,16 @@ function wirePresetButtons(target) {
     const apply = window.applyLessonPreset || window.applyBoidsPreset;
     if (!button || typeof apply !== 'function') return;
     try {
+      if (typeof isLooping === 'function' && !isLooping()) loop();
       apply(JSON.parse(button.dataset.preset));
+      const stage = document.querySelector('.stage');
+      if (!stage) return;
+      const rect = stage.getBoundingClientRect();
+      const visible = Math.max(0, Math.min(rect.bottom, innerHeight) - Math.max(rect.top, 0));
+      if (visible < rect.height / 2) {
+        const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+        stage.scrollIntoView({ block: 'start', behavior: reduce ? 'auto' : 'smooth' });
+      }
     } catch (err) {
       console.error('preset 解析失敗：', err);
     }

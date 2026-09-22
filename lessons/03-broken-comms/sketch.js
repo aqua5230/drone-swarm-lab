@@ -131,11 +131,11 @@ function canvasSize() {
 function createControls() {
   const container = document.getElementById('controls-holder');
   pane = new Tweakpane.Pane({ title: '通訊參數', container });
-  pane.addBinding(params, 'count', { min: 30, max: 220, step: 1 }).on('change', reset);
-  pane.addBinding(params, 'commsRadius', { min: 20, max: 220, step: 1 });
-  pane.addBinding(params, 'packetLoss', { min: 0, max: 0.9, step: 0.01 });
-  pane.addBinding(params, 'maxSpeed', { min: 1, max: 6, step: 0.1 });
-  pane.addBinding(params, 'showLinks');
+  pane.addBinding(params, 'count', { min: 30, max: 220, step: 1, label: '個體數 count' }).on('change', reset);
+  pane.addBinding(params, 'commsRadius', { min: 20, max: 220, step: 1, label: '通訊半徑' });
+  pane.addBinding(params, 'packetLoss', { min: 0, max: 0.9, step: 0.01, label: '封包遺失率' });
+  pane.addBinding(params, 'maxSpeed', { min: 1, max: 6, step: 0.1, label: '最高速度' });
+  pane.addBinding(params, 'showLinks', { label: '顯示通訊線' });
   pane.addButton({ title: '重置' }).on('click', reset);
 }
 

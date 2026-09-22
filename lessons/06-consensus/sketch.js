@@ -102,12 +102,12 @@ function canvasSize() {
 function createControls() {
   const container = document.getElementById('controls-holder');
   pane = new Tweakpane.Pane({ title: '共識參數', container });
-  pane.addBinding(params, 'count', { min: 50, max: 400, step: 10 }).on('change', reset);
-  pane.addBinding(params, 'qualityA', { min: 0.1, max: 1, step: 0.05 }).on('change', setupSites);
-  pane.addBinding(params, 'qualityB', { min: 0.1, max: 1, step: 0.05 }).on('change', setupSites);
-  pane.addBinding(params, 'qualityC', { min: 0.1, max: 1, step: 0.05 }).on('change', setupSites);
-  pane.addBinding(params, 'recruit', { min: 0, max: 2, step: 0.05 });
-  pane.addBinding(params, 'inhibit', { min: 0, max: 2, step: 0.05 });
+  pane.addBinding(params, 'count', { min: 50, max: 400, step: 10, label: '蜜蜂數 count' }).on('change', reset);
+  pane.addBinding(params, 'qualityA', { min: 0.1, max: 1, step: 0.05, label: '地點 A 品質' }).on('change', setupSites);
+  pane.addBinding(params, 'qualityB', { min: 0.1, max: 1, step: 0.05, label: '地點 B 品質' }).on('change', setupSites);
+  pane.addBinding(params, 'qualityC', { min: 0.1, max: 1, step: 0.05, label: '地點 C 品質' }).on('change', setupSites);
+  pane.addBinding(params, 'recruit', { min: 0, max: 2, step: 0.05, label: '拉票力道 recruit' });
+  pane.addBinding(params, 'inhibit', { min: 0, max: 2, step: 0.05, label: '交叉抑制 inhibit' });
   pane.addButton({ title: '重新表決' }).on('click', reset);
 }
 

@@ -11,6 +11,18 @@ export function mountNav(base, current) {
   const host = document.getElementById('site-nav');
   if (!host) return;
 
+  if (current) {
+    try {
+      const saved = JSON.parse(localStorage.getItem('swarmlab.visited') || '[]');
+      const visited = Array.isArray(saved) ? saved.filter((id) => typeof id === 'string') : [];
+      if (!visited.includes(current)) visited.push(current);
+      localStorage.setItem('swarmlab.visited', JSON.stringify([...new Set(visited)]));
+      localStorage.setItem('swarmlab.last', current);
+    } catch {
+      // 私密瀏覽或儲存空間滿了也不影響課程。
+    }
+  }
+
   // 一頁上有兩個 <nav>（頂部與課末），各給一個名字才分得出來
   host.setAttribute('aria-label', '網站導覽');
 
@@ -136,6 +148,28 @@ export function mountIndex(base) {
   const host = document.getElementById('lesson-grid');
   if (!host) return;
 
+  let visited = [];
+  let last = null;
+  try {
+    const saved = JSON.parse(localStorage.getItem('swarmlab.visited') || '[]');
+    visited = Array.isArray(saved) ? saved.filter((id) => typeof id === 'string') : [];
+    last = localStorage.getItem('swarmlab.last');
+  } catch {
+    // 讀不到就當成第一次來，不擋首頁。
+  }
+
+  const resume = document.querySelector('.hero-meta');
+  const lastLesson = LESSONS.find((lesson) => lesson.id === last);
+  const firstLesson = LESSONS.find((lesson) => lesson.status === 'ready');
+  if (resume && firstLesson) {
+    const link = document.createElement('a');
+    link.className = 'hero-continue';
+    const lesson = lastLesson || firstLesson;
+    link.href = `${base}lessons/${lesson.id}/`;
+    link.textContent = lastLesson ? `繼續：${lesson.title} →` : '從第 1 課開始 →';
+    resume.insertAdjacentElement('afterend', link);
+  }
+
   const countOf = (part) => LESSONS.filter((lesson) => lesson.part === part).length;
   host.innerHTML = withPartHeads(
     LESSONS,
@@ -145,14 +179,16 @@ export function mountIndex(base) {
       // 課名長成「第 1 課 · Boids 三規則」；把課號拆出來當眉標，
       // 標題就只剩概念本身，一整列掃過去讀得比較快。拆不出來就整串當標題。
       const [num, name] = splitTitle(lesson.title);
+      const read = visited.includes(lesson.id);
       const inner =
         (num ? `<span class="num">${num}</span>` : '') +
-        `<h3>${name}</h3><p>${lesson.blurb}</p>`;
+        `<h3>${name}</h3><p>${lesson.blurb}</p>` +
+        (read ? '<span class="read-badge">已讀</span>' : '');
       // 每篇第一課排成跨兩欄的大卡片，一片等寬卡片才有輕重
       const lead = isPartLead ? ' lead' : '';
       if (lesson.status === 'ready') {
-        return `<a class="lesson-card${lead}" href="${base}lessons/${lesson.id}/" ` +
-          `aria-label="${lesson.title}">${inner}</a>`;
+        return `<a class="lesson-card${lead}${read ? ' visited' : ''}" href="${base}lessons/${lesson.id}/" ` +
+          `aria-label="${lesson.title}${read ? '，已讀' : ''}">${inner}</a>`;
       }
       return `<div class="lesson-card planned${lead}">${inner}<span class="badge">規劃中</span></div>`;
     },

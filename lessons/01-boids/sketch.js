@@ -326,14 +326,14 @@ function createControls() {
     ? new Tweakpane.Pane({ title: 'Boids 參數', container })
     : new Tweakpane.Pane({ title: 'Boids 參數' });
 
-  pane.addBinding(params, 'count', { min: 10, max: 400, step: 1 }).on('change', resetFlock);
-  pane.addBinding(params, 'perception', { min: 10, max: 160, step: 1 });
-  pane.addBinding(params, 'maxSpeed', { min: 0.5, max: 8, step: 0.1 });
-  pane.addBinding(params, 'maxForce', { min: 0.01, max: 0.3, step: 0.01 });
-  pane.addBinding(params, 'separation', { min: 0, max: 4, step: 0.1 });
-  pane.addBinding(params, 'alignment', { min: 0, max: 4, step: 0.1 });
-  pane.addBinding(params, 'cohesion', { min: 0, max: 4, step: 0.1 });
-  pane.addBinding(params, 'showPerception');
+  pane.addBinding(params, 'count', { min: 10, max: 400, step: 1, label: '個體數 count' }).on('change', resetFlock);
+  pane.addBinding(params, 'perception', { min: 10, max: 160, step: 1, label: '感知範圍' });
+  pane.addBinding(params, 'maxSpeed', { min: 0.5, max: 8, step: 0.1, label: '最高速度' });
+  pane.addBinding(params, 'maxForce', { min: 0.01, max: 0.3, step: 0.01, label: '最大推力' });
+  pane.addBinding(params, 'separation', { min: 0, max: 4, step: 0.1, label: '分離 separation' });
+  pane.addBinding(params, 'alignment', { min: 0, max: 4, step: 0.1, label: '對齊 alignment' });
+  pane.addBinding(params, 'cohesion', { min: 0, max: 4, step: 0.1, label: '聚合 cohesion' });
+  pane.addBinding(params, 'showPerception', { label: '顯示感知範圍' });
   pane.addButton({ title: '重置群體' }).on('click', resetCommanderDemo);
 
   paneElement = pane.element;

@@ -261,11 +261,12 @@ function createControls() {
   pane = new Tweakpane.Pane({ title: '自組裝參數', container });
   pane.addBinding(params, 'shape', {
     options: { '星形': 'star', '字母Ｋ': 'k', '箭頭': 'arrow' },
+    label: '形狀 shape',
   }).on('change', reset);
-  pane.addBinding(params, 'count', { min: 40, max: 260, step: 10 }).on('change', reset);
-  pane.addBinding(params, 'movers', { min: 1, max: 12, step: 1 });
-  pane.addBinding(params, 'speed', { min: 1, max: 6, step: 0.2 });
-  pane.addBinding(params, 'senseScale', { min: 1.2, max: 2.4, step: 0.1 }).on('change', reset);
+  pane.addBinding(params, 'count', { min: 40, max: 260, step: 10, label: '個體數 count' }).on('change', reset);
+  pane.addBinding(params, 'movers', { min: 1, max: 12, step: 1, label: '同時移動數' });
+  pane.addBinding(params, 'speed', { min: 1, max: 6, step: 0.2, label: '移動速度 speed' });
+  pane.addBinding(params, 'senseScale', { min: 1.2, max: 2.4, step: 0.1, label: '通訊半徑倍數' }).on('change', reset);
   pane.addButton({ title: '↻ 重新組裝' }).on('click', reset);
 }
 

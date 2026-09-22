@@ -103,10 +103,10 @@ function canvasSize() {
 function createControls() {
   const container = document.getElementById('controls-holder');
   pane = new Tweakpane.Pane({ title: '韌性參數', container });
-  pane.addBinding(params, 'count', { min: 30, max: 320, step: 10 }).on('change', reset);
-  pane.addBinding(params, 'spacing', { min: 30, max: 110, step: 1 });
-  pane.addBinding(params, 'coverRadius', { min: 24, max: 80, step: 1 });
-  pane.addBinding(params, 'blastRadius', { min: 30, max: 140, step: 5 });
+  pane.addBinding(params, 'count', { min: 30, max: 320, step: 10, label: '個體數 count' }).on('change', reset);
+  pane.addBinding(params, 'spacing', { min: 30, max: 110, step: 1, label: '間距 spacing' });
+  pane.addBinding(params, 'coverRadius', { min: 24, max: 80, step: 1, label: '覆蓋半徑' });
+  pane.addBinding(params, 'blastRadius', { min: 30, max: 140, step: 5, label: '影響範圍' });
   pane.addButton({ title: '☠ 打掉 30%' }).on('click', () => attrition(0.3));
   pane.addButton({ title: '☠ 打掉 60%' }).on('click', () => attrition(0.6));
   pane.addButton({ title: '重置' }).on('click', reset);

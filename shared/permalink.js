@@ -64,13 +64,21 @@ window.SwarmLink = (function () {
     bar.innerHTML =
       '<span class="share-state" aria-live="polite">目前是預設場景</span>' +
       '<span class="share-acts">' +
+      '<button type="button" class="share-pause" aria-pressed="false">⏸ 暫停</button>' +
       '<button type="button" class="share-copy">🔗 複製這個場景的連結</button>' +
       '<button type="button" class="share-reset">↺ 回到預設</button>' +
       '</span>';
     stage.appendChild(bar);
 
     const state = bar.querySelector('.share-state');
+    const pauseBtn = bar.querySelector('.share-pause');
     const copyBtn = bar.querySelector('.share-copy');
+
+    const updatePause = () => {
+      const paused = typeof isLooping === 'function' && !isLooping();
+      pauseBtn.textContent = paused ? '▶ 繼續' : '⏸ 暫停';
+      pauseBtn.setAttribute('aria-pressed', String(paused));
+    };
 
     // 每半秒看一次參數有沒有變：Tweakpane 的旋鈕、課文裡的按鈕、畫布上的點擊
     // 都會改到 params，與其每個入口各掛一次通知，不如在這裡統一盯著。
@@ -78,9 +86,17 @@ window.SwarmLink = (function () {
       const n = toHash() ? toHash().split('&').length : 0;
       state.textContent = n === 0 ? '目前是預設場景' : `已改動 ${n} 個參數`;
       bar.classList.toggle('dirty', n > 0);
+      updatePause();
     };
     refresh();
     setInterval(refresh, 500);
+
+    pauseBtn.addEventListener('click', () => {
+      if (typeof isLooping !== 'function') return;
+      if (isLooping()) noLoop();
+      else loop();
+      updatePause();
+    });
 
     copyBtn.addEventListener('click', async () => {
       const url = currentUrl();
@@ -98,6 +114,7 @@ window.SwarmLink = (function () {
     bar.querySelector('.share-reset').addEventListener('click', () => {
       const apply = window.applyLessonPreset || window.applyBoidsPreset;
       history.replaceState(null, '', location.pathname + location.search);
+      if (typeof loop === 'function') loop();
       if (typeof apply === 'function') apply(structuredClone(defaults));
       refresh();
     });

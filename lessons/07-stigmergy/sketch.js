@@ -118,10 +118,10 @@ function canvasSize() {
 function createControls() {
   const container = document.getElementById('controls-holder');
   pane = new Tweakpane.Pane({ title: '蟻群參數', container });
-  pane.addBinding(params, 'antCount', { min: 40, max: 500, step: 10 }).on('change', reset);
-  pane.addBinding(params, 'evaporation', { min: 0.002, max: 0.05, step: 0.002 });
-  pane.addBinding(params, 'sensorAngle', { min: 0.2, max: 1.2, step: 0.05 });
-  pane.addBinding(params, 'wander', { min: 0, max: 0.8, step: 0.05 });
+  pane.addBinding(params, 'antCount', { min: 40, max: 500, step: 10, label: '螞蟻數 antCount' }).on('change', reset);
+  pane.addBinding(params, 'evaporation', { min: 0.002, max: 0.05, step: 0.002, label: '蒸發 evaporation' });
+  pane.addBinding(params, 'sensorAngle', { min: 0.2, max: 1.2, step: 0.05, label: '感測角度' });
+  pane.addBinding(params, 'wander', { min: 0, max: 0.8, step: 0.05, label: '游走 wander' });
   pane.addBinding(params, 'wall', { label: '中間隔牆' }).on('change', reset);
   pane.addButton({ title: '重置' }).on('click', reset);
 }

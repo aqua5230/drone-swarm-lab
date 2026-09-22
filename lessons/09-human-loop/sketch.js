@@ -79,6 +79,7 @@ function createControls() {
   pane = new Tweakpane.Pane({ title: '介入模式', container });
   pane.addBinding(params, 'mode', {
     options: { '人在環內（每個都要批准）': 'in', '人在環上（可否決）': 'on', '全自動（沒有人）': 'out' },
+    label: '介入模式 mode',
   });
   pane.addBinding(params, 'vetoWindow', { min: 0.4, max: 4, step: 0.1, label: '否決窗口秒' });
   pane.addBinding(params, 'spawnRate', { min: 0.004, max: 0.04, step: 0.002, label: '任務頻率' });

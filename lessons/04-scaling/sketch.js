@@ -113,9 +113,9 @@ function canvasSize() {
 function createControls() {
   const container = document.getElementById('controls-holder');
   pane = new Tweakpane.Pane({ title: '擴量參數', container });
-  pane.addBinding(params, 'count', { min: 10, max: 2000, step: 10 }).on('change', reset);
-  pane.addBinding(params, 'perception', { min: 12, max: 80, step: 1 });
-  pane.addBinding(params, 'maxSpeed', { min: 1, max: 6, step: 0.1 });
+  pane.addBinding(params, 'count', { min: 10, max: 2000, step: 10, label: '數量 count' }).on('change', reset);
+  pane.addBinding(params, 'perception', { min: 12, max: 80, step: 1, label: '感知範圍' });
+  pane.addBinding(params, 'maxSpeed', { min: 1, max: 6, step: 0.1, label: '最高速度' });
   pane.addBinding(params, 'useGrid', { label: '用空間網格' });
   pane.addButton({ title: '重置' }).on('click', reset);
 }

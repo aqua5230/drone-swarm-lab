@@ -134,13 +134,14 @@ function createControls() {
   pane = new Tweakpane.Pane({ title: '共識參數', container });
   pane.addBinding(params, 'rule', {
     options: { '平均 mean': 'mean', '中位數 median': 'median', '修剪平均 trimmed': 'trimmed' },
+    label: '聚合規則 rule',
   });
-  pane.addBinding(params, 'byzantinePct', { min: 0, max: 70, step: 1 }).on('change', assignBad);
-  pane.addBinding(params, 'trim', { min: 0, max: 45, step: 5 });
-  pane.addBinding(params, 'lie', { min: 0, max: 1, step: 0.01 }).on('change', seedValues);
-  pane.addBinding(params, 'noise', { min: 0, max: 0.2, step: 0.01 }).on('change', seedValues);
-  pane.addBinding(params, 'radius', { min: 60, max: 700, step: 20 });
-  pane.addBinding(params, 'count', { min: 40, max: 260, step: 10 }).on('change', reset);
+  pane.addBinding(params, 'byzantinePct', { min: 0, max: 70, step: 1, label: '叛徒比例' }).on('change', assignBad);
+  pane.addBinding(params, 'trim', { min: 0, max: 45, step: 5, label: '修剪比例 trim' });
+  pane.addBinding(params, 'lie', { min: 0, max: 1, step: 0.01, label: '謊言強度 lie' }).on('change', seedValues);
+  pane.addBinding(params, 'noise', { min: 0, max: 0.2, step: 0.01, label: '量測雜訊 noise' }).on('change', seedValues);
+  pane.addBinding(params, 'radius', { min: 60, max: 700, step: 20, label: '通訊半徑 radius' });
+  pane.addBinding(params, 'count', { min: 40, max: 260, step: 10, label: '個體數 count' }).on('change', reset);
   pane.addBinding(params, 'showLiars', { label: '顯示叛徒' });
   pane.addButton({ title: '↻ 重新量測' }).on('click', seedValues);
   pane.addButton({ title: '重置' }).on('click', reset);

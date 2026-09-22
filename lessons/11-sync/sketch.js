@@ -119,14 +119,14 @@ function canvasSize() {
 function createControls() {
   const container = document.getElementById('controls-holder');
   pane = new Tweakpane.Pane({ title: '同步參數', container });
-  pane.addBinding(params, 'count', { min: 40, max: 400, step: 10 }).on('change', reset);
-  pane.addBinding(params, 'coupling', { min: 0, max: 0.3, step: 0.005 });
-  pane.addBinding(params, 'radius', { min: 40, max: 700, step: 10 });
-  pane.addBinding(params, 'period', { min: 40, max: 200, step: 5 })
+  pane.addBinding(params, 'count', { min: 40, max: 400, step: 10, label: '螢火蟲數 count' }).on('change', reset);
+  pane.addBinding(params, 'coupling', { min: 0, max: 0.3, step: 0.005, label: '耦合強度' });
+  pane.addBinding(params, 'radius', { min: 40, max: 700, step: 10, label: '互動半徑 radius' });
+  pane.addBinding(params, 'period', { min: 40, max: 200, step: 5, label: '閃光週期 period' })
     .on('change', () => { for (const b of bugs) b.rollRate(); });
-  pane.addBinding(params, 'spread', { min: 0, max: 0.4, step: 0.01 })
+  pane.addBinding(params, 'spread', { min: 0, max: 0.4, step: 0.01, label: '週期差 spread' })
     .on('change', () => { for (const b of bugs) b.rollRate(); });
-  pane.addBinding(params, 'drift', { min: 0, max: 2, step: 0.1 });
+  pane.addBinding(params, 'drift', { min: 0, max: 2, step: 0.1, label: '漂移 drift' });
   pane.addButton({ title: '↯ 打散相位' }).on('click', scramble);
   pane.addButton({ title: '重置' }).on('click', reset);
 }

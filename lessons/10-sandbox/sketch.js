@@ -157,12 +157,12 @@ function canvasSize() {
 function createControls() {
   const container = document.getElementById('controls-holder');
   pane = new Tweakpane.Pane({ title: '沙盒參數', container });
-  pane.addBinding(params, 'count', { min: 20, max: 800, step: 10 }).on('change', reset);
-  pane.addBinding(params, 'perception', { min: 16, max: 90, step: 1 });
-  pane.addBinding(params, 'separation', { min: 0, max: 4, step: 0.1 });
-  pane.addBinding(params, 'alignment', { min: 0, max: 4, step: 0.1 });
-  pane.addBinding(params, 'cohesion', { min: 0, max: 4, step: 0.1 });
-  pane.addBinding(params, 'maxSpeed', { min: 1, max: 7, step: 0.1 });
+  pane.addBinding(params, 'count', { min: 20, max: 800, step: 10, label: '個體數 count' }).on('change', reset);
+  pane.addBinding(params, 'perception', { min: 16, max: 90, step: 1, label: '感知範圍' });
+  pane.addBinding(params, 'separation', { min: 0, max: 4, step: 0.1, label: '分離 separation' });
+  pane.addBinding(params, 'alignment', { min: 0, max: 4, step: 0.1, label: '對齊 alignment' });
+  pane.addBinding(params, 'cohesion', { min: 0, max: 4, step: 0.1, label: '聚合 cohesion' });
+  pane.addBinding(params, 'maxSpeed', { min: 1, max: 7, step: 0.1, label: '最高速度' });
   pane.addBinding(params, 'predator', { label: '掠食者' });
   pane.addBinding(params, 'fearRadius', { min: 30, max: 180, step: 5, label: '恐懼半徑' });
   pane.addButton({ title: '清空障礙' }).on('click', () => (obstacles = []));

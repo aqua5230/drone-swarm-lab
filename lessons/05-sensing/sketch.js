@@ -103,10 +103,10 @@ function canvasSize() {
 function createControls() {
   const container = document.getElementById('controls-holder');
   pane = new Tweakpane.Pane({ title: '感測參數', container });
-  pane.addBinding(params, 'count', { min: 1, max: 120, step: 1 }).on('change', reset);
-  pane.addBinding(params, 'sensRadius', { min: 12, max: 70, step: 1 });
-  pane.addBinding(params, 'separation', { min: 0, max: 3, step: 0.1 });
-  pane.addBinding(params, 'maxSpeed', { min: 1, max: 5, step: 0.1 });
+  pane.addBinding(params, 'count', { min: 1, max: 120, step: 1, label: '兵力 count' }).on('change', reset);
+  pane.addBinding(params, 'sensRadius', { min: 12, max: 70, step: 1, label: '感測半徑' });
+  pane.addBinding(params, 'separation', { min: 0, max: 3, step: 0.1, label: '分離 separation' });
+  pane.addBinding(params, 'maxSpeed', { min: 1, max: 5, step: 0.1, label: '最高速度' });
   pane.addButton({ title: '重新撒一片新迷霧' }).on('click', reset);
 }
 
