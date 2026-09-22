@@ -180,10 +180,17 @@ export function mountIndex(base) {
       // 標題就只剩概念本身，一整列掃過去讀得比較快。拆不出來就整串當標題。
       const [num, name] = splitTitle(lesson.title);
       const read = visited.includes(lesson.id);
-      const inner =
+      // 縮圖由 tools/thumbs.py 截模擬畫面產生；卡片本身已有 aria-label，圖只是裝飾
+      const thumb = lesson.status === 'ready'
+        ? `<img class="thumb" src="${base}lessons/${lesson.id}/thumb.webp" alt="" ` +
+          `width="640" height="400" loading="lazy" decoding="async">`
+        : '';
+      const inner = thumb +
+        '<div class="card-body">' +
         (num ? `<span class="num">${num}</span>` : '') +
         `<h3>${name}</h3><p>${lesson.blurb}</p>` +
-        (read ? '<span class="read-badge">已讀</span>' : '');
+        (read ? '<span class="read-badge">已讀</span>' : '') +
+        '</div>';
       // 每篇第一課排成跨兩欄的大卡片，一片等寬卡片才有輕重
       const lead = isPartLead ? ' lead' : '';
       if (lesson.status === 'ready') {

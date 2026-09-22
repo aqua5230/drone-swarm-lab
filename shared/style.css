@@ -683,8 +683,7 @@ h1 {
 .lesson-card {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
-  padding: var(--space-5);
+  overflow: hidden;
   background: var(--sheen), var(--surface);
   border-radius: var(--radius-lg);
   text-decoration: none;
@@ -697,9 +696,48 @@ h1 {
     box-shadow var(--dur-base) var(--ease-out);
 }
 
+/* 卡片上半是模擬截圖，一眼看出這課在玩什麼；字放在下面的 .card-body */
+.lesson-card .thumb {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border-bottom: 1px solid var(--line);
+  background: var(--ink-800);
+  filter: saturate(.85) brightness(.9);
+  transition: filter var(--dur-base) var(--ease-out);
+}
+
+a.lesson-card:hover .thumb,
+a.lesson-card:focus-visible .thumb {
+  filter: none;
+}
+
+.card-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-5);
+}
+
 /* 每篇第一課：跨兩欄、字大一階。整片等寬卡片沒有輕重，讀者不知道從哪張開始 */
-.lesson-card.lead {
+.lesson-card.lead .card-body {
   padding: var(--space-6);
+}
+
+/* 寬到能並排時，大卡改成左字右圖，免得一張圖橫跨兩欄高得嚇人 */
+@media (min-width: 40rem) {
+  .lesson-card.lead {
+    flex-direction: row-reverse;
+  }
+
+  .lesson-card.lead .thumb {
+    width: 50%;
+    border-bottom: 0;
+    border-left: 1px solid var(--line);
+  }
 }
 
 .lesson-card.lead h3 {
