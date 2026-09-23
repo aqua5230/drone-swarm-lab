@@ -44,7 +44,7 @@ export function mountNav(base, current) {
       `<div class="nav-drawer-head">` +
       `<a class="nav-drawer-home" href="${base}">課程首頁</a>` +
       `<button class="nav-drawer-close" aria-label="關閉">✕</button></div>` +
-      withPartHeads(ready, (part) => `<h2 class="part-head">${part}</h2>${partIntro(part)}`, (lesson) => {
+      withPartHeads(ready, (part) => `<h2 class="part-head">${part}</h2>${partIntro(part, ready.filter((lesson) => lesson.part === part).length)}`, (lesson) => {
         const cls = lesson.id === current ? ' class="current"' : '';
         return `<a href="${base}lessons/${lesson.id}/"${cls} aria-label="${lesson.title}">` +
           `<b>${lesson.title}</b><small aria-hidden="true">${lesson.blurb}</small></a>`;
@@ -173,8 +173,7 @@ export function mountIndex(base) {
   const countOf = (part) => LESSONS.filter((lesson) => lesson.part === part).length;
   host.innerHTML = withPartHeads(
     LESSONS,
-    (part) => `<h2 class="part-head">${part}` +
-      `<span class="count">${countOf(part)} 課</span></h2>${partIntro(part)}`,
+    (part) => `<h2 class="part-head">${part}</h2>${partIntro(part, countOf(part))}`,
     (lesson, isPartLead) => {
       // 課名長成「第 1 課 · Boids 三規則」；把課號拆出來當眉標，
       // 標題就只剩概念本身，一整列掃過去讀得比較快。拆不出來就整串當標題。
@@ -203,9 +202,11 @@ export function mountIndex(base) {
 }
 
 // 篇名底下那一行導言。清單裡沒有這一篇就回傳空字串，不佔位子。
-function partIntro(part) {
+function partIntro(part, count) {
   const text = PART_INTROS[part];
-  return text ? `<p class="part-intro">${text}</p>` : '';
+  if (!text && !count) return '';
+  return `<p class="part-intro">${text || ''}` +
+    (count ? ` <span class="part-count">共 ${count} 課</span>` : '') + '</p>';
 }
 
 // 「第 1 課 · Boids 三規則」→ ['第 1 課', 'Boids 三規則']。沒有分隔號就回傳 ['', 整串]。

@@ -8,6 +8,7 @@
   canvas.setAttribute('aria-hidden', 'true');
   hero.prepend(canvas);
   const ctx = canvas.getContext('2d');
+  const boidInk = getComputedStyle(hero).getPropertyValue('--hero-ink').trim();
   const reduce = matchMedia('(prefers-reduced-motion: reduce)');
   let boids = [];
   let width = 0;
@@ -68,7 +69,7 @@
       const angle = Math.atan2(boid.vy, boid.vx);
       ctx.save();
       ctx.translate(boid.x, boid.y); ctx.rotate(angle);
-      ctx.fillStyle = `hsla(${195 + (angle + Math.PI) * 11}, 88%, 70%, .62)`;
+      ctx.fillStyle = boidInk;
       ctx.beginPath(); ctx.moveTo(8, 0); ctx.lineTo(-5, 4); ctx.lineTo(-2, 0); ctx.lineTo(-5, -4); ctx.fill();
       ctx.restore();
     }

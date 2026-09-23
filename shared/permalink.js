@@ -65,7 +65,7 @@ window.SwarmLink = (function () {
       '<span class="share-state" aria-live="polite">目前是預設場景</span>' +
       '<span class="share-acts">' +
       '<button type="button" class="share-pause" aria-pressed="false">⏸ 暫停</button>' +
-      '<button type="button" class="share-copy">🔗 複製這個場景的連結</button>' +
+      '<button type="button" class="share-copy">複製這個場景的連結</button>' +
       '<button type="button" class="share-reset">↺ 回到預設</button>' +
       '</span>';
     stage.appendChild(bar);
@@ -108,7 +108,7 @@ window.SwarmLink = (function () {
         // 沒開剪貼簿權限（或不是 https）時退而求其次：網址列已經更新，請他自己複製
         copyBtn.textContent = '✓ 網址已更新，複製網址列即可';
       }
-      setTimeout(() => { copyBtn.textContent = '🔗 複製這個場景的連結'; }, 2600);
+      setTimeout(() => { copyBtn.textContent = '複製這個場景的連結'; }, 2600);
     });
 
     bar.querySelector('.share-reset').addEventListener('click', () => {
