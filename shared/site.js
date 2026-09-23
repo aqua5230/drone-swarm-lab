@@ -219,8 +219,26 @@ function splitTitle(title) {
 export function mountFoot(base) {
   const foot = document.createElement('footer');
   foot.className = 'site-foot';
+  let lessonMeta = '';
+  try {
+    const data = [...document.querySelectorAll('script[type="application/ld+json"]')]
+      .map((script) => JSON.parse(script.textContent))
+      .find((item) => item['@type'] === 'LearningResource');
+    if (data?.dateModified && data.name && data.url) {
+      const [year, month, day] = data.dateModified.split('-');
+      if (year && month && day) {
+        lessonMeta = `<div class="site-foot-meta">` +
+          `<p>本課最後更新：${year} 年 ${Number(month)} 月 ${Number(day)} 日</p>` +
+          `<p>引用本頁：Swarm Lab（${year}）。〈${data.name}〉。Swarm Lab 群飛智能教學。` +
+          `<a href="${data.url}">${data.url}</a></p></div>`;
+      }
+    }
+  } catch {
+    // 首頁沒有課程資料，或資料格式不正確時維持原本頁尾。
+  }
   foot.innerHTML =
-    `<div><span><b>Swarm Lab</b> · 群飛智能互動教學．MIT 授權、內容開源</span>` +
+    lessonMeta +
+    `<div class="site-foot-main"><span><b>Swarm Lab</b> · 群飛智能互動教學．MIT 授權、內容開源</span>` +
     `<nav aria-label="頁尾"><a href="${base}">課程首頁</a>` +
     `<a href="https://github.com/aqua5230/drone-swarm-lab">原始碼</a></nav></div>`;
   document.body.appendChild(foot);

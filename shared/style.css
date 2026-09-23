@@ -106,11 +106,16 @@ h1 {
   font-size: clamp(2.1rem, 1.25rem + 2.8vw, 3.25rem);
   font-style: normal;
   font-weight: 700;
-  letter-spacing: -.03em;
   line-height: 1.2;
   min-width: 0;
   overflow-wrap: anywhere;
 }
+
+h1,
+h2,
+h3,
+.lesson-card h3,
+.part-head { text-wrap: balance; }
 
 .lede {
   max-width: 38rem;
@@ -159,6 +164,14 @@ h1 {
   --tp-label-foreground-color: var(--screen-muted);
   --tp-monitor-background-color: var(--screen);
   --tp-monitor-foreground-color: var(--screen-muted);
+}
+
+.stage-figure { margin: 0 0 var(--space-6); }
+.stage-caption {
+  margin-block-start: var(--space-3);
+  color: var(--muted);
+  font-size: .875rem;
+  line-height: 1.6;
 }
 
 #canvas-holder { min-height: 540px; background: var(--screen); }
@@ -234,7 +247,6 @@ h1 {
   margin-block: var(--space-7) var(--space-2);
   font-size: 1.5rem;
   font-weight: 700;
-  letter-spacing: -.01em;
   line-height: 1.3;
 }
 
@@ -482,7 +494,6 @@ h1 {
   font-family: var(--font-display);
   font-size: 1.25rem;
   font-style: normal;
-  letter-spacing: -.01em;
   line-height: 1.35;
   overflow-wrap: anywhere;
   transition: color var(--dur-fast) var(--ease-out);
@@ -518,7 +529,6 @@ a.lesson-card:active h3 { color: var(--ink); }
   font-size: 1.25rem;
   font-style: normal;
   font-weight: 700;
-  letter-spacing: -.01em;
 }
 
 .part-intro {
@@ -597,7 +607,7 @@ a.lesson-card:active h3 { color: var(--ink); }
 
 .site-foot { margin-block-start: var(--space-8); border-block-start: 1px solid var(--ink); background: var(--paper-2); }
 
-.site-foot > div {
+.site-foot > .site-foot-main {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -614,6 +624,19 @@ a.lesson-card:active h3 { color: var(--ink); }
 
 .site-foot b { color: var(--ink); font-family: var(--font-display); }
 .site-foot nav { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4); }
+.site-foot-meta {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 72rem;
+  margin-inline: auto;
+  padding: var(--space-4) var(--space-5) 0;
+  color: var(--muted);
+  font-size: .8125rem;
+  line-height: 1.6;
+}
+.site-foot-meta p { margin: 0; }
+.site-foot-meta p + p { margin-block-start: var(--space-1); }
+.site-foot-meta a { overflow-wrap: anywhere; }
 
 /* 分享列是螢幕的一部分，桌機在畫布下、手機在面板下。 */
 .share-bar {
@@ -664,7 +687,7 @@ a.lesson-card:active h3 { color: var(--ink); }
     gap: var(--space-6);
   }
 
-  .stage { position: sticky; top: var(--nav-height); z-index: 200; align-self: start; }
+  .stage-figure { position: sticky; top: var(--nav-height); z-index: 200; align-self: start; }
   .lesson-layout .notes { max-width: none; margin-inline: 0; padding-inline: 0; }
 }
 
